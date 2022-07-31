@@ -12,18 +12,17 @@
     "type": "git",
     "url": "https://github.com/tidory/tidory"
   },
+  "dependencies": {
+    "autoprefixer": "^10.4.8",
+    "tidory": "^8.0.5"
+  },
   "devDependencies": {
-    "eslint": "^6.8.0",
-    "eslint-config-standard": "^14.1.1",
-    "eslint-loader": "^4.0.0",
-    "eslint-plugin-import": "^2.23.3",
+    "eslint": "^8.20.0",
+    "eslint-config-standard": "^17.0.0",
+    "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^5.1.0",
+    "eslint-plugin-promise": "^6.0.0",
     "eslint-plugin-standard": "^5.0.0",
     "pug-lint": "^2.6.0"
-  },
-  "dependencies": {
-    "autoprefixer": "^6.7.7",
-    "tidory": "^8.0.5"
   }
 }
