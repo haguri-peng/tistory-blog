@@ -11,3 +11,7 @@
  *
  * after import assets it will be contained in app.js
  */
+import { createApp } from 'vue';
+import App from '../components/App.vue';
+
+createApp(App).mount('#app');
