@@ -15,24 +15,28 @@ export default {
     AppHeader,
     LoadingSpinner,
   },
-  props: {
-    category: {
-      type: Array,
-      default: [],
-    },
-    test: String,
-  },
+  // props: {
+  //   category: {
+  //     type: String,
+  //   },
+  //   test: String,
+  // },
+  // props: ['category', 'test'],
   data() {
     return {
       isLoading: true,
+      category: '',
     };
   },
   created() {
     setTimeout(() => {
       this.isLoading = false;
     }, 1000);
-
-    // console.log(this.test);
+  },
+  updated() {
+    // console.log($('#category').text());
+    // console.log(this);
+    this.category = $('#category').text();
   },
 };
 </script>

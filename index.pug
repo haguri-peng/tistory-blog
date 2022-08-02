@@ -5,15 +5,26 @@ block TIDORY
     include /assets/category.js
 
   s_t3
+    #category
+
     #app
-      - var test = 'haguri';
-      //- - var tmp = #{getCategory()};
-      //- - console.log(categoryList)
+      script.
+        document.addEventListener("DOMContentLoaded", function (event) { 
+          getCategory();
+
+          //- categoryData = document.getElementById('category').innerHTML;
+          //- console.log(categoryData);
+          //- $('#app').attr('category', categoryData);
+        });
 
       //- Using Vue Component
-      app(category=tmp test=test)
+      app
+      //- app(category= #app(category))
 
   style.
+    #category {
+      display: none;
+    }
     #app {
       height: 100vh;
       align-items: center;
