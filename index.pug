@@ -1,12 +1,17 @@
 extends app
 
 block TIDORY
+  script
+    include /assets/category.js
+
   s_t3
     #app
+      - var test = 'haguri';
+      //- - var tmp = #{getCategory()};
+      //- - console.log(categoryList)
+
       //- Using Vue Component
-      app(title="[##_title_##]")
-    //- #__tidory
-    //-   include views/Header
+      app(category=tmp test=test)
 
   style.
     #app {

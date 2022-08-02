@@ -14,4 +14,9 @@
 import { createApp } from 'vue';
 import App from '../components/App.vue';
 
-createApp(App).mount('#app');
+const app = createApp({
+  components: {
+    App,
+  },
+});
+const vm = app.mount('#app');

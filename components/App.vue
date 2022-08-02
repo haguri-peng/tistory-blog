@@ -1,6 +1,7 @@
 <template>
   <div class="app">
-    <app-header></app-header>
+    <!-- <app-header></app-header> -->
+    <!-- {{ test }} -->
     <loading-spinner v-if="isLoading"></loading-spinner>
   </div>
 </template>
@@ -14,7 +15,13 @@ export default {
     AppHeader,
     LoadingSpinner,
   },
-  props: ['title'],
+  props: {
+    category: {
+      type: Array,
+      default: [],
+    },
+    test: String,
+  },
   data() {
     return {
       isLoading: true,
@@ -23,7 +30,9 @@ export default {
   created() {
     setTimeout(() => {
       this.isLoading = false;
-    }, 500);
+    }, 1000);
+
+    // console.log(this.test);
   },
 };
 </script>
