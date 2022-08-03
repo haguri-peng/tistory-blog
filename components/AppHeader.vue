@@ -1,22 +1,58 @@
 <template>
   <header>
-    <!-- <s_sidebar>
-      <s_sidebar_element> -->
     <!-- 카테고리 -->
     <div class="category">
-      <!-- <h3>카테고리</h3> -->
-      <!-- {{ categoryList }} -->
+      <ul>
+        <li
+          v-for="item in categoryList"
+          :key="item.menuNm"
+          :class="{ active: activeMenu == item.menuNm }"
+          @click="clickMenu(item.menuNm, item.link)"
+        >
+          <span class="menu"> {{ item.menuNm }}</span>
+          <span class="cnt"> [{{ item.contentCnt }}] </span>
+          <span class="link"> {{ item.link }} </span>
+          <span class="newFlag"> {{ showFlag(item.newFlag) }} </span>
+        </li>
+      </ul>
     </div>
-    <!-- </s_sidebar_element>
-    </s_sidebar> -->
   </header>
 </template>
 
 <script>
 export default {
-  // props: ['categoryList'],
-  created() {
-    // console.log($('.link_item'));
+  props: ['category'],
+  data() {
+    return {
+      categoryList: [],
+      activeMenu: '',
+    };
+  },
+  methods: {
+    setCategoryList() {
+      if (this.categoryList.length == 0) {
+        const arrTmp = JSON.parse(this.category);
+        for (let i = 0; i < arrTmp.length; i++) {
+          if (arrTmp[i].contentCnt == 0) continue;
+          this.categoryList.push(arrTmp[i]);
+          if (i == arrTmp.length - 1) {
+            this.$forceUpdate();
+          }
+        }
+      }
+    },
+    showFlag(bNewFlag) {
+      if (bNewFlag) {
+        return 'N';
+      }
+    },
+    clickMenu(menuNm, link) {
+      this.activeMenu = menuNm;
+      this.$emit('moveMenu', menuNm, link);
+    },
+  },
+  updated() {
+    this.setCategoryList();
   },
 };
 </script>
@@ -27,57 +63,39 @@ div.category {
   top: 0;
   left: 0;
   width: 100%;
-  height: 200px;
-  overflow-x: auto;
+  height: 60px;
+  /* overflow-x: auto; */
+  /* background-color: #c4dfaa; */
 }
-.tt_category {
-  position: absolute;
-  /* top: 160px;
-  left: 50px; */
-  box-sizing: border-box;
-  /* list-style: none;
-  padding-bottom: 45px;
-  overflow: auto; */
-}
-.tt_category .link_tit {
-  display: none;
-}
-.tt_category .category_list {
+div.category ul {
   display: inline-flex;
+  height: 100%;
 }
-.tt_category .category_list .c_cnt {
-  display: none;
-}
-.tt_category .category_list li {
+div.category ul li {
   list-style: none;
-  /* padding: 20px 0; */
   font-weight: 400;
   padding-right: 40px;
+  cursor: pointer;
+  align-self: center;
+  transition: 0.2s;
 }
-/* .tt_category .category_list li:first-child {
-  padding-top: 0;
-} */
-.tt_category .category_list li:last-child {
-  padding-bottom: 0;
+div.category ul li.active {
+  font-size: 1.2rem;
+  font-weight: 600;
+  text-decoration: underline;
 }
-.tt_category .category_list li .index {
-  margin-bottom: 10px;
-  color: rgba(0, 0, 0, 0.6);
-  font-weight: 500;
+div.category ul li:hover {
+  color: #73a9ad;
+  transform: scale(1.05, 1.05);
 }
-.tt_category .category_list li .link_item {
-  color: rgba(0, 0, 0, 0.8);
-  transition-duration: unset;
-  font-weight: 300;
+div.category span.cnt {
+  font-weight: lighter;
 }
-.tt_category .category_list li .link_item img {
+div.category span.link {
   display: none;
 }
-.tt_category .category_list li.current .index {
-  color: lightcoral;
-}
-.tt_category .category_list li.current .link_item {
-  color: crimson;
+div.category span.newFlag {
+  color: red;
   font-weight: 500;
 }
 </style>
