@@ -14,7 +14,9 @@
   },
   "dependencies": {
     "autoprefixer": "^10.4.8",
+    "axios": "^0.27.2",
     "jQuery": "^1.7.4",
+    "lodash": "^4.17.21",
     "tidory": "^8.0.5",
     "vue": "^3.2.37",
     "vue-router": "^4.0.13"
