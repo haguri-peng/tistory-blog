@@ -1,8 +1,10 @@
 <template>
   <div class="app">
-    <!-- <app-header></app-header> -->
-    <!-- {{ test }} -->
+    <app-header :category="category" @moveMenu="movePage"></app-header>
     <loading-spinner v-if="isLoading"></loading-spinner>
+    <div class="app-contents" v-else>
+      <router-view></router-view>
+    </div>
   </div>
 </template>
 
@@ -15,12 +17,6 @@ export default {
     AppHeader,
     LoadingSpinner,
   },
-  // props: {
-  //   category: {
-  //     type: String,
-  //   },
-  //   test: String,
-  // },
   // props: ['category', 'test'],
   data() {
     return {
@@ -28,10 +24,20 @@ export default {
       category: '',
     };
   },
+  methods: {
+    showLoadingSpinner() {
+      this.isLoading = true;
+      setTimeout(() => {
+        this.isLoading = false;
+      }, 1000);
+    },
+    movePage(menuNm, link) {
+      this.showLoadingSpinner();
+      this.$router.push(link);
+    },
+  },
   created() {
-    setTimeout(() => {
-      this.isLoading = false;
-    }, 1000);
+    this.showLoadingSpinner();
   },
   updated() {
     // console.log($('#category').text());
