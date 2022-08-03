@@ -20,6 +20,8 @@
 </template>
 
 <script>
+import { fetchCategoryList } from '../api/index';
+
 export default {
   props: ['category'],
   data() {
@@ -50,6 +52,13 @@ export default {
       this.activeMenu = menuNm;
       this.$emit('moveMenu', menuNm, link);
     },
+    async fetchCategory() {
+      const { data } = await fetchCategoryList();
+      console.log(data);
+    },
+  },
+  created() {
+    this.fetchCategory();
   },
   updated() {
     this.setCategoryList();
@@ -74,7 +83,8 @@ div.category ul {
 div.category ul li {
   list-style: none;
   font-weight: 400;
-  padding-right: 40px;
+  /* padding-right: 40px; */
+  padding: 0 20px;
   cursor: pointer;
   align-self: center;
   transition: 0.2s;
