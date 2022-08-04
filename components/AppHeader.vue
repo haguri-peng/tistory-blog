@@ -6,12 +6,12 @@
         <li
           v-for="category in categoryList"
           :key="category.id"
-          :class="{ active: activeCategory == category.name }"
-          @click="clickCategory(category.name)"
+          :class="{ active: activeCategory == category.id }"
+          @click="clickCategory(category.id)"
         >
           <span class="menu"> {{ category.name }}</span>
           <span class="cnt"> [{{ category.entries }}] </span>
-          <!-- <span class="newFlag"> {{ showFlag(category.newFlag) }} </span> -->
+          <span class="newFlag"> {{ showFlag(category.id) }} </span>
         </li>
       </ul>
     </div>
@@ -19,23 +19,50 @@
 </template>
 
 <script>
+import { fetchPostList } from '../api/index';
+import _ from 'lodash';
+
 export default {
   props: ['categoryList'],
   data() {
     return {
       activeCategory: '',
+      recentCategoryIds: [],
     };
   },
   methods: {
-    // showFlag(bNewFlag) {
-    //   if (bNewFlag) {
-    //     return 'N';
-    //   }
-    // },
-    clickCategory(name) {
-      this.activeCategory = name;
-      this.$emit('moveCategory', name);
+    async fetchPost(pageNum) {
+      const { data } = await fetchPostList(pageNum);
+      // console.log(data);
+
+      if (data.tistory.status == '200') {
+        // 최근에 올린 글 목록 (10개. 발행된 건만)
+        this.recentPosts = _.filter(
+          data.tistory.item.posts,
+          (p) => p.visibility == '20'
+        );
+        this.recentCategoryIds = _.keys(
+          _.countBy(this.recentPosts, 'categoryId')
+        );
+        // console.log(this.recentCategoryIds);
+      }
     },
+    showFlag(categoryId) {
+      const fIdx = _.findIndex(
+        this.recentCategoryIds,
+        (id) => id == categoryId
+      );
+      if (fIdx > -1) {
+        return 'N';
+      }
+    },
+    clickCategory(categoryId) {
+      this.activeCategory = categoryId;
+      this.$emit('moveCategory', categoryId);
+    },
+  },
+  created() {
+    this.fetchPost(1);
   },
 };
 </script>

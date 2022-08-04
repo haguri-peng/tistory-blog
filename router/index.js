@@ -5,8 +5,12 @@ const routes = [
     path: '/',
     component: () => import('../components/AppMain.vue'),
   },
+  // {
+  //   path: '/:id',
+  //   component: () => import('../components/AppContent.vue'),
+  // },
   {
-    path: '/category/:menuNm',
+    path: '/category/:categoryId',
     component: () => import('../components/AppCategory.vue'),
   },
   {

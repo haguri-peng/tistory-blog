@@ -26,7 +26,7 @@ export default {
   data() {
     return {
       isLoading: true,
-      category: '',
+      category: [],
     };
   },
   methods: {
@@ -45,9 +45,9 @@ export default {
         this.isLoading = false;
       }, 1000);
     },
-    moveCategory(name) {
+    moveCategory(id) {
       this.showLoadingSpinner();
-      this.$router.push(`/category/${name}`);
+      this.$router.push(`/category/${id}`);
     },
   },
   created() {
@@ -55,7 +55,7 @@ export default {
     this.fetchCategory();
 
     /**
-     * Page type(body_id)
+     * Page type(data-body-id)
      * 홈화면(tt-body-index)
      * 글화면(tt-body-page)
      * 카테고리 글 리스트(tt-body-category)
@@ -66,7 +66,7 @@ export default {
      * 지역로그(tt-body-location)
      */
 
-    // console.log(this.$attrs.bodyid);
+    // console.log(this.$attrs.data-body-id);
     // console.log(this.$route);
   },
 };
