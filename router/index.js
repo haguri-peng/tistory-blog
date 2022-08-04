@@ -9,6 +9,10 @@ const routes = [
     path: '/category/:menuNm',
     component: () => import('../components/AppCategory.vue'),
   },
+  {
+    path: '/:pathMatch(.*)*',
+    redirect: '/',
+  },
 ];
 
 const router = createRouter({
