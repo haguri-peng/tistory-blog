@@ -26,4 +26,35 @@ function fetchCategoryList() {
   return instance.get(`/category/list?${queryString}`);
 }
 
-export { fetchCategoryList };
+function fetchPostList(pageNum) {
+  const queryString =
+    'access_token=' +
+    params.accessToken +
+    '&output=' +
+    params.outputType +
+    '&blogName=' +
+    params.blogName +
+    '&page=' +
+    (pageNum || 1);
+  return instance.get(`/post/list?${queryString}`);
+}
+
+function fetchPostListByCategory(categoryId, pageNum) {
+  const queryString =
+    'access_token=' +
+    params.accessToken +
+    '&output=' +
+    params.outputType +
+    '&blogName=' +
+    params.blogName +
+    '&page=' +
+    (pageNum || 1);
+  return instance.get(`/post/list?${queryString}`, {
+    params: {
+      categoryId,
+      // visibility: '20', // 발행된 건만
+    },
+  });
+}
+
+export { fetchCategoryList, fetchPostList, fetchPostListByCategory };
