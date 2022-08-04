@@ -4,15 +4,14 @@
     <div class="category">
       <ul>
         <li
-          v-for="item in categoryList"
-          :key="item.menuNm"
-          :class="{ active: activeMenu == item.menuNm }"
-          @click="clickMenu(item.menuNm, item.link)"
+          v-for="category in categoryList"
+          :key="category.id"
+          :class="{ active: activeCategory == category.name }"
+          @click="clickCategory(category.name)"
         >
-          <span class="menu"> {{ item.menuNm }}</span>
-          <span class="cnt"> [{{ item.contentCnt }}] </span>
-          <span class="link"> {{ item.link }} </span>
-          <span class="newFlag"> {{ showFlag(item.newFlag) }} </span>
+          <span class="menu"> {{ category.name }}</span>
+          <span class="cnt"> [{{ category.entries }}] </span>
+          <!-- <span class="newFlag"> {{ showFlag(category.newFlag) }} </span> -->
         </li>
       </ul>
     </div>
@@ -20,48 +19,23 @@
 </template>
 
 <script>
-import { fetchCategoryList } from '../api/index';
-
 export default {
-  props: ['category'],
+  props: ['categoryList'],
   data() {
     return {
-      categoryList: [],
-      activeMenu: '',
+      activeCategory: '',
     };
   },
   methods: {
-    setCategoryList() {
-      if (this.categoryList.length == 0) {
-        const arrTmp = JSON.parse(this.category);
-        for (let i = 0; i < arrTmp.length; i++) {
-          if (arrTmp[i].contentCnt == 0) continue;
-          this.categoryList.push(arrTmp[i]);
-          if (i == arrTmp.length - 1) {
-            this.$forceUpdate();
-          }
-        }
-      }
+    // showFlag(bNewFlag) {
+    //   if (bNewFlag) {
+    //     return 'N';
+    //   }
+    // },
+    clickCategory(name) {
+      this.activeCategory = name;
+      this.$emit('moveCategory', name);
     },
-    showFlag(bNewFlag) {
-      if (bNewFlag) {
-        return 'N';
-      }
-    },
-    clickMenu(menuNm, link) {
-      this.activeMenu = menuNm;
-      this.$emit('moveMenu', menuNm, link);
-    },
-    async fetchCategory() {
-      const { data } = await fetchCategoryList();
-      console.log(data);
-    },
-  },
-  created() {
-    this.fetchCategory();
-  },
-  updated() {
-    this.setCategoryList();
   },
 };
 </script>
@@ -90,6 +64,7 @@ div.category ul li {
   transition: 0.2s;
 }
 div.category ul li.active {
+  color: lightcoral;
   font-size: 1.2rem;
   font-weight: 600;
   text-decoration: underline;
@@ -100,9 +75,6 @@ div.category ul li:hover {
 }
 div.category span.cnt {
   font-weight: lighter;
-}
-div.category span.link {
-  display: none;
 }
 div.category span.newFlag {
   color: red;
