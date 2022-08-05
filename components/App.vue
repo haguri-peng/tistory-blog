@@ -14,7 +14,7 @@
 <script>
 import AppHeader from './AppHeader.vue';
 import LoadingSpinner from './LoadingSpinner.vue';
-import { fetchCategoryList } from '../api/index';
+import { fetchBlogInfo, fetchCategoryList } from '../api/index';
 import _ from 'lodash';
 
 export default {
@@ -27,9 +27,17 @@ export default {
     return {
       isLoading: true,
       category: [],
+      postCnt: 0,
     };
   },
   methods: {
+    async fetchBlog() {
+      const { data } = await fetchBlogInfo();
+      // console.log(data);
+      this.postCnt =
+        _.find(data.tistory.item.blogs, ['name', 'haguri-peng']).statistics
+          .post || 0;
+    },
     async fetchCategory() {
       const { data } = await fetchCategoryList();
       // console.log(data.tistory);
@@ -43,7 +51,7 @@ export default {
       this.isLoading = true;
       setTimeout(() => {
         this.isLoading = false;
-      }, 1000);
+      }, 500);
     },
     moveCategory(id) {
       this.showLoadingSpinner();
@@ -52,6 +60,7 @@ export default {
   },
   created() {
     this.showLoadingSpinner();
+    this.fetchBlog();
     this.fetchCategory();
 
     /**
@@ -72,4 +81,9 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+div.app-contents {
+  display: block;
+  text-align: -webkit-center;
+}
+</style>
