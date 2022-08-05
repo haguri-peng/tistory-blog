@@ -15,6 +15,12 @@ const params = {
   outputType: 'json',
 };
 
+function fetchBlogInfo() {
+  const queryString =
+    'access_token=' + params.accessToken + '&output=' + params.outputType;
+  return instance.get(`/blog/info?${queryString}`);
+}
+
 function fetchCategoryList() {
   const queryString =
     'access_token=' +
@@ -57,4 +63,9 @@ function fetchPostListByCategory(categoryId, pageNum) {
   });
 }
 
-export { fetchCategoryList, fetchPostList, fetchPostListByCategory };
+export {
+  fetchBlogInfo,
+  fetchCategoryList,
+  fetchPostList,
+  fetchPostListByCategory,
+};
