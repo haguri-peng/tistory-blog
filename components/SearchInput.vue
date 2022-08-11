@@ -6,7 +6,13 @@
       v-model="keyword"
       @keyup.enter="$emit('search', $event.target.value)"
     />
-    <button type="button" class="btn" @click="searchKeyword">Search</button>
+    <button type="button" class="btn" @click="searchKeyword">
+      <font-awesome-icon
+        icon="fa-solid fa-magnifying-glass"
+        beat
+        style="--fa-animation-duration: 2s"
+      />
+    </button>
   </div>
 </template>
 
@@ -34,10 +40,16 @@ export default {
   width: 200px;
   font-size: 1.2rem;
   font-weight: 500;
+  border-radius: 5px;
 }
 .btn {
   pointer-events: all;
   font-size: 1.2rem;
-  font-weight: 500;
+  font-weight: 400;
+  padding: 0 5px;
+  margin-left: 5px;
+  background-color: unset;
+  border: unset;
+  cursor: pointer;
 }
 </style>
