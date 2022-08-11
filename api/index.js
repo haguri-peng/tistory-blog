@@ -63,9 +63,37 @@ function fetchPostListByCategory(categoryId, pageNum) {
   });
 }
 
+function fetchPost(postId) {
+  const queryString =
+    'access_token=' +
+    params.accessToken +
+    '&output=' +
+    params.outputType +
+    '&blogName=' +
+    params.blogName +
+    '&postId=' +
+    postId;
+  return instance.get(`/post/read?${queryString}`);
+}
+
+function fetchComments(postId) {
+  const queryString =
+    'access_token=' +
+    params.accessToken +
+    '&output=' +
+    params.outputType +
+    '&blogName=' +
+    params.blogName +
+    '&postId=' +
+    postId;
+  return instance.get(`/comment/list?${queryString}`);
+}
+
 export {
   fetchBlogInfo,
   fetchCategoryList,
   fetchPostList,
   fetchPostListByCategory,
+  fetchPost,
+  fetchComments,
 };
