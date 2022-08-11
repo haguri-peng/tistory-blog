@@ -51,7 +51,7 @@ export default {
       this.isLoading = true;
       setTimeout(() => {
         this.isLoading = false;
-      }, 500);
+      }, 300);
     },
     moveCategory(id) {
       this.showLoadingSpinner();
@@ -82,6 +82,9 @@ export default {
 </script>
 
 <style>
+div.app {
+  width: 100%;
+}
 div.app-contents {
   display: block;
   text-align: -webkit-center;

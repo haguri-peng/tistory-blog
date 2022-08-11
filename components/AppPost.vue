@@ -24,8 +24,14 @@ export default {
 <style scoped>
 li {
   display: inline-block;
-  width: 30%;
+  width: 40%;
   border: 3px solid #73a9ad;
   margin: 10px 10px;
+  opacity: 0.8;
+}
+li:hover {
+  border: 3px solid darkcyan;
+  opacity: 1;
+  cursor: pointer;
 }
 </style>
