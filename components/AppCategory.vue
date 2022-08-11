@@ -1,12 +1,13 @@
 <template>
   <loading-spinner v-if="isLoading"></loading-spinner>
-  <div v-else>
+  <div style="width: 100%" v-else>
     <div class="posts">
       <ul>
         <app-post
           v-for="post in postList"
           :key="post.id"
           :postItem="post"
+          @openContent="moveContent"
         ></app-post>
       </ul>
       <app-paging :page="pageInfo" @movePage="fetchPostByCategory"></app-paging>
@@ -95,6 +96,13 @@ export default {
       this.pageInfo.currentPage = 1;
       this.pageInfo.totalPage = 1;
       this.isLoading = false;
+    },
+    moveContent(id) {
+      this.isLoading = true;
+      setTimeout(() => {
+        this.$router.push(`/${id}`);
+        this.isLoading = false;
+      }, 300);
     },
   },
   created() {

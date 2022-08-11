@@ -21,8 +21,8 @@ export default {
     },
   },
   methods: {
-    clickPost(id) {
-      console.log('postId >> ' + id);
+    clickPost(postId) {
+      this.$emit('openContent', postId);
     },
   },
 };
@@ -39,7 +39,7 @@ li {
 }
 li:hover {
   /* border: 3px solid darkcyan; */
-  background-color: rgb(254, 251, 231, 0.4);
+  background-color: rgba(196, 223, 170, 0.2);
   color: lightcoral;
   /* opacity: 1; */
   cursor: pointer;
