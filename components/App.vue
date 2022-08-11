@@ -86,7 +86,8 @@ div.app {
   width: 100%;
 }
 div.app-contents {
-  display: block;
+  display: flex;
   text-align: -webkit-center;
+  justify-content: center;
 }
 </style>
