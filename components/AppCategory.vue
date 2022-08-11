@@ -61,16 +61,16 @@ export default {
       }
       this.isLoading = false;
     },
-    async searchPosts(keyword, pageNum) {
-      const tmpPosts = [];
-      const limitCnt = 10;
-      const maxPageNum = Math.ceil($vm.data.postCnt / 10);
+    async searchPosts(keyword) {
+      this.isLoading = true;
+      this.postList = [];
 
-      // console.log(keyword, pageNum);
-      // console.log($vm);
+      const tmpPosts = [];
+      const limitCnt = 15; // 최대 15개까지만 검색
+      const maxPageNum = Math.ceil(this.$parent.$parent.postCnt / 10);
 
       for (
-        pageNum = pageNum || 1;
+        let pageNum = 1;
         tmpPosts.length < limitCnt && pageNum <= maxPageNum;
         pageNum++
       ) {
@@ -89,7 +89,12 @@ export default {
           }
         }
       }
-      console.log(tmpPosts);
+      // console.log(tmpPosts);
+
+      this.postList = tmpPosts;
+      this.pageInfo.currentPage = 1;
+      this.pageInfo.totalPage = 1;
+      this.isLoading = false;
     },
   },
   created() {
@@ -107,7 +112,7 @@ div.posts {
   height: calc(100% - 60px);
 }
 ul {
-  margin: 20px 0;
+  margin: 50px 0;
   list-style: none;
 }
 </style>
