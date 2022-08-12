@@ -1,7 +1,8 @@
 <template>
-  <div class="content">
+  <div class="content" ref="content">
+    <h1 class="title">{{ title }}</h1>
     <div v-html="content"></div>
-    <div class="top-down">
+    <div class="top-down" v-show="isContent">
       <div @click="gotoTop">
         <font-awesome-icon
           icon="fa-solid fa-arrow-up"
@@ -24,7 +25,7 @@
 </template>
 
 <script>
-import { fetchPost } from '../api/index';
+import { fetchPost, fetchComments } from '../api/index';
 
 export default {
   data() {
@@ -33,7 +34,16 @@ export default {
       content: '',
       tags: [],
       comments: [],
+      intervalId: '',
     };
+  },
+  computed: {
+    isContent() {
+      return this.content == '' ? false : true;
+    },
+    contentHeight() {
+      return this.$refs.content.clientHeight;
+    },
   },
   methods: {
     async getContent() {
@@ -41,39 +51,85 @@ export default {
       // console.log(data);
 
       if (data.tistory.status == '200') {
+        this.title = data.tistory.item.title;
         this.content = data.tistory.item.content;
+        this.tags = data.tistory.item.tags.tag;
+      }
+    },
+    async getComments() {
+      const { data } = await fetchComments(this.$route.params.id);
+      // console.log(data);
 
-        setTimeout(() => {
-          console.log($('div.content').css('height'));
-        }, 300);
+      if (data.tistory.status == '200') {
+        this.comments = data.tistory.item.comments;
       }
     },
     gotoTop() {
-      window.scrollTo(0, 0);
+      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
     },
   },
   created() {
     // console.log(this.$route.params.id);
+
     this.getContent();
+    this.getComments();
+  },
+  updated() {
+    const headerHeight = 60;
+    const contentTopMargin = 30;
+    const contentInnerPadding = 20;
+
+    this.intervalId = setInterval(() => {
+      $('#app').css(
+        'height',
+        this.contentHeight +
+          headerHeight +
+          contentTopMargin +
+          contentInnerPadding +
+          'px'
+      );
+    }, 100);
+
+    setTimeout(() => {
+      clearInterval(this.intervalId);
+    }, 5000);
+  },
+  unmounted() {
+    $('#app').css('height', 'auto');
+    clearInterval(this.intervalId);
   },
 };
 </script>
 
 <style scoped>
+@keyframes fadeInUp {
+  from {
+    transform: TranslateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: TranslateX(0);
+    opacity: 1;
+  }
+}
 div.content {
   position: absolute;
   margin-top: 30px;
+  padding: 10px;
   top: 60px;
   width: 88%;
   /* background-color: rgba(144, 200, 172, 0.3); */
-}
-div.content > div > div {
-  padding: 10px;
+  animation-name: fadeInUp;
+  animation-duration: 0.8s;
 }
 div.top-down {
   position: sticky;
   float: right;
-  bottom: 20px;
-  right: 20px;
+  bottom: 15px;
+  /* right: 20px; */
+}
+h1.title {
+  margin-bottom: 20px;
+  color: darkcyan;
 }
 </style>
