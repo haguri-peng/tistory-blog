@@ -39,8 +39,8 @@ li {
 }
 li:hover {
   /* border: 3px solid darkcyan; */
-  background-color: rgba(196, 223, 170, 0.2);
-  color: lightcoral;
+  /* background-color: rgba(196, 223, 170, 0.2); */
+  color: #f9ebc8;
   /* opacity: 1; */
   cursor: pointer;
 }

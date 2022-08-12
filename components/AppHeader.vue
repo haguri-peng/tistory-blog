@@ -91,7 +91,7 @@ div.category ul li {
   transition: 0.2s;
 }
 div.category ul li.active {
-  color: lightcoral;
+  color: #fefbe7;
   font-size: 1.2rem;
   font-weight: 600;
   text-decoration: underline;
