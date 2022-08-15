@@ -15,7 +15,7 @@
       @click="clickFirstPage"
     />
     <font-awesome-icon
-      icon="fa-solid fa-angle-left"
+      icon="fa-solid fa-backward-step"
       size="lg"
       title="previous"
       fade
@@ -46,7 +46,7 @@
       </span>
     </div>
     <font-awesome-icon
-      icon="fa-solid fa-angle-right"
+      icon="fa-solid fa-forward-step"
       size="lg"
       title="next"
       fade
@@ -92,7 +92,7 @@ export default {
     },
     showNextIcon() {
       return (
-        Math.floor(this.page.currentPage / this.showPageCnt) *
+        Math.floor((this.page.currentPage - 1) / this.showPageCnt) *
           this.showPageCnt +
           (this.showPageCnt + 1) <=
         this.page.totalPage
@@ -102,7 +102,7 @@ export default {
   methods: {
     getPageNum(n) {
       return (
-        Math.floor(this.page.currentPage / this.showPageCnt) *
+        Math.floor((this.page.currentPage - 1) / this.showPageCnt) *
           this.showPageCnt +
         n
       );
@@ -118,7 +118,7 @@ export default {
     },
     clickPreviousPage() {
       this.movePage(
-        Math.floor(this.page.currentPage / this.showPageCnt) *
+        Math.floor((this.page.currentPage - 1) / this.showPageCnt) *
           this.showPageCnt -
           this.showPageCnt +
           1
@@ -126,7 +126,7 @@ export default {
     },
     clickNextPage() {
       this.movePage(
-        Math.floor(this.page.currentPage / this.showPageCnt) *
+        Math.floor((this.page.currentPage - 1) / this.showPageCnt) *
           this.showPageCnt +
           (this.showPageCnt + 1)
       );
