@@ -1,7 +1,8 @@
 <template>
   <div class="content" ref="content">
     <h1 class="title">{{ title }}</h1>
-    <div v-html="content"></div>
+    <!-- <div v-html="content"></div> -->
+    <app-content-main :content="content"></app-content-main>
     <div class="top-down" v-show="isContent">
       <div @click="gotoTop">
         <font-awesome-icon
@@ -25,9 +26,13 @@
 </template>
 
 <script>
+import AppContentMain from './AppContentMain.vue';
 import { fetchPost, fetchComments } from '../api/index';
 
 export default {
+  components: {
+    AppContentMain,
+  },
   data() {
     return {
       title: '',
@@ -41,9 +46,9 @@ export default {
     isContent() {
       return this.content == '' ? false : true;
     },
-    contentHeight() {
-      return this.$refs.content.clientHeight;
-    },
+    // contentHeight() {
+    //   return this.$refs.content.clientHeight;
+    // },
   },
   methods: {
     async getContent() {
@@ -82,7 +87,8 @@ export default {
     this.intervalId = setInterval(() => {
       $('#app').css(
         'height',
-        this.contentHeight +
+        // this.contentHeight +
+        this.$refs.content.clientHeight +
           headerHeight +
           contentTopMargin +
           contentInnerPadding +
@@ -92,7 +98,7 @@ export default {
 
     setTimeout(() => {
       clearInterval(this.intervalId);
-    }, 5000);
+    }, 10000);
   },
   unmounted() {
     $('#app').css('height', 'auto');
