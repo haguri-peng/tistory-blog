@@ -20,11 +20,13 @@
     "@fortawesome/vue-fontawesome": "^3.0.1",
     "autoprefixer": "^10.4.8",
     "axios": "^0.27.2",
+    "htmlparser2": "^8.0.1",
     "jQuery": "^1.7.4",
     "lodash": "^4.17.21",
     "tidory": "^8.0.5",
     "vue": "^3.2.37",
-    "vue-router": "^4.0.13"
+    "vue-router": "^4.0.13",
+    "vue-tweet": "^2.0.2"
   },
   "devDependencies": {
     "babel-eslint": "^10.1.0",
