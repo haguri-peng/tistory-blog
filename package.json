@@ -26,7 +26,7 @@
     "tidory": "^8.0.5",
     "vue": "^3.2.37",
     "vue-router": "^4.0.13",
-    "vue-tweet": "^2.0.2"
+    "vuex": "^4.0.2"
   },
   "devDependencies": {
     "babel-eslint": "^10.1.0",
