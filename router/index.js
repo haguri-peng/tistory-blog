@@ -1,4 +1,8 @@
-import { createWebHistory, createRouter } from 'vue-router';
+import {
+  // createWebHistory,
+  createWebHashHistory,
+  createRouter,
+} from 'vue-router';
 
 const routes = [
   {
@@ -13,14 +17,20 @@ const routes = [
     path: '/category/:categoryId',
     component: () => import('../components/AppCategory.vue'),
   },
+  // {
+  //   path: '/404',
+  //   component: () => import('../components/404.vue'),
+  // },
   {
     path: '/:pathMatch(.*)*',
-    redirect: '/',
+    // redirect: '/404',
+    component: () => import('../components/404.vue'),
   },
 ];
 
 const router = createRouter({
-  history: createWebHistory(),
+  // history: createWebHistory(),
+  history: createWebHashHistory(),
   routes,
 });
 
