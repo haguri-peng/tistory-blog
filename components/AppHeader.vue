@@ -91,13 +91,13 @@ div.category ul li {
   transition: 0.2s;
 }
 div.category ul li.active {
-  color: #fefbe7;
-  font-size: 1.2rem;
+  color: #76549a;
+  font-size: 1.3rem;
   font-weight: 600;
   text-decoration: underline;
 }
 div.category ul li:hover {
-  color: #73a9ad;
+  /* color: #a0bcc2; */
   transform: scale(1.05, 1.05);
 }
 div.category span.cnt {

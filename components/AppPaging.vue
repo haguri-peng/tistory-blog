@@ -156,7 +156,8 @@ div.pages span.hide {
 }
 div.pages span.active a {
   font-weight: 800;
-  color: darkcyan;
+  font-size: 1.4rem;
+  color: #76549a;
   text-decoration: none;
   cursor: default;
 }
@@ -165,7 +166,7 @@ div.pages a {
   font-size: 1.3rem;
 }
 div.pages a:link {
-  color: #a0bcc2;
+  color: rgba(118, 84, 154, 0.33);
 }
 div.pages a:hover {
   color: black;

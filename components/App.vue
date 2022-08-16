@@ -89,5 +89,6 @@ div.app-contents {
   display: flex;
   text-align: -webkit-center;
   justify-content: center;
+  align-items: center;
 }
 </style>
