@@ -99,10 +99,12 @@ export default {
     },
     moveContent(id) {
       this.isLoading = true;
-      setTimeout(() => {
-        this.$router.push(`/${id}`);
-        this.isLoading = false;
-      }, 300);
+      this.$router.push(`/${id}`);
+
+      // setTimeout(() => {
+      //   this.$router.push(`/${id}`);
+      //   this.isLoading = false;
+      // }, 300);
     },
   },
   created() {

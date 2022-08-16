@@ -1,21 +1,12 @@
 <template>
-  <div>
-    <!-- Content Main -->
-    <div v-html="content"></div>
-    <!-- <div v-html="modContent"></div> -->
-    <!-- <Tweet tweet-id="342107352041922560" /> -->
-  </div>
+  <div v-html="content"></div>
 </template>
 
 <script>
 import * as htmlparser2 from 'htmlparser2';
 import _ from 'lodash';
-// import Tweet from 'vue-tweet';
 
 export default {
-  //   components: {
-  //     Tweet,
-  //   },
   props: ['content'],
   //   data() {
   //     return {
@@ -28,8 +19,7 @@ export default {
       const dom = htmlparser2.parseDocument(this.content);
 
       if (dom != null) {
-        const children = dom.children;
-        const twtrEl = _.filter(children, ['name', 'blockquote']);
+        const twtrEl = _.filter(dom.children, ['name', 'blockquote']);
 
         if (twtrEl.length > 0) {
           // Tweet widget 보이게 설정
