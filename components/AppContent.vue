@@ -22,6 +22,19 @@
         />
       </div> -->
     </div>
+    <div class="tags">
+      <span class="tag" v-for="(tag, index) in tags" :key="index">
+        <span class="title" v-if="index === 0">
+          Tags
+          <font-awesome-icon
+            icon="fa-solid fa-tags"
+            style="margin-right: 20px"
+          />
+        </span>
+        #{{ tag }}
+      </span>
+    </div>
+    <div class="comments"></div>
   </div>
 </template>
 
@@ -46,9 +59,6 @@ export default {
     isContent() {
       return this.content == '' ? false : true;
     },
-    // contentHeight() {
-    //   return this.$refs.content.clientHeight;
-    // },
   },
   methods: {
     async getContent() {
@@ -87,7 +97,6 @@ export default {
     this.intervalId = setInterval(() => {
       $('#app').css(
         'height',
-        // this.contentHeight +
         this.$refs.content.clientHeight +
           headerHeight +
           contentTopMargin +
@@ -123,10 +132,10 @@ div.content {
   margin-top: 30px;
   padding: 10px;
   top: 60px;
-  width: 88%;
+  width: 80%;
   /* background-color: rgba(144, 200, 172, 0.3); */
   animation-name: fadeInUp;
-  animation-duration: 0.8s;
+  animation-duration: 1.1s;
 }
 div.top-down {
   position: sticky;
@@ -136,6 +145,14 @@ div.top-down {
 }
 h1.title {
   margin-bottom: 20px;
-  color: darkcyan;
+  color: #df7861;
+}
+div.tags {
+  /* background-color: rgba(118, 84, 154, 0.22); */
+  color: #76549a;
+  margin-top: 30px;
+}
+div.tags span.tag {
+  margin-right: 5px;
 }
 </style>
