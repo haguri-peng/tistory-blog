@@ -12,7 +12,7 @@
       </ul>
       <app-paging :page="pageInfo" @movePage="fetchPostByCategory"></app-paging>
     </div>
-    <search-input @search="searchPosts"></search-input>
+    <search-input :searchWord="getKeyword" @search="searchPosts"></search-input>
   </div>
 </template>
 
@@ -21,7 +21,10 @@ import SearchInput from './SearchInput.vue';
 import AppPost from './AppPost.vue';
 import AppPaging from './AppPaging.vue';
 import LoadingSpinner from './LoadingSpinner.vue';
+
 import { fetchPostListByCategory, fetchPostList } from '../api/index';
+import { mapGetters } from 'vuex';
+
 import _ from 'lodash';
 
 export default {
@@ -39,6 +42,9 @@ export default {
       isLoading: false,
     };
   },
+  computed: {
+    ...mapGetters(['getCategoryId', 'getPageNum', 'getKeyword']),
+  },
   methods: {
     async fetchPostByCategory(pageNum) {
       this.isLoading = true;
@@ -46,7 +52,10 @@ export default {
 
       const { data } = await fetchPostListByCategory(
         this.$route.params.categoryId,
-        pageNum || 1
+        pageNum ||
+          (this.$route.params.categoryId == this.getCategoryId
+            ? this.getPageNum
+            : 1)
       );
       // console.log(data);
 
@@ -59,10 +68,21 @@ export default {
 
         // 발행된 건만
         this.postList = _.filter(data.tistory.item.posts, ['visibility', '20']);
+
+        // 카테고리 정보 세팅
+        this.setCategoryInfo({
+          id: this.$route.params.categoryId,
+          page: this.pageInfo.currentPage,
+        });
       }
       this.isLoading = false;
     },
     async searchPosts(keyword) {
+      if (keyword == '') {
+        alert('검색어를 입력해주세요.');
+        return;
+      }
+
       this.isLoading = true;
       this.postList = [];
 
@@ -96,21 +116,27 @@ export default {
       this.pageInfo.currentPage = 1;
       this.pageInfo.totalPage = 1;
       this.isLoading = false;
+
+      this.setKeyword(keyword);
     },
     moveContent(id) {
       this.isLoading = true;
       this.$router.push(`/${id}`);
-
-      // setTimeout(() => {
-      //   this.$router.push(`/${id}`);
-      //   this.isLoading = false;
-      // }, 300);
+    },
+    setCategoryInfo(categoryInfo) {
+      // 카테고리 및 페이지 번호를 vuex에 세팅
+      this.$store.dispatch('setCategoryInfo', categoryInfo);
+    },
+    setKeyword(keyword) {
+      this.$store.dispatch('setWord', keyword);
     },
   },
   created() {
-    // console.log(this.$route.params.categoryId);
-    // console.log($vm.data.postCnt);
-    this.fetchPostByCategory();
+    if (this.getKeyword != '') {
+      this.searchPosts(this.getKeyword);
+    } else {
+      this.fetchPostByCategory();
+    }
   },
 };
 </script>
