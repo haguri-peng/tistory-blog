@@ -46,8 +46,12 @@ const store = createStore({
       // Vuex's state
       commit('setCategoryId', categoryInfo.id);
       commit('setPageNum', categoryInfo.page);
-
-      return true;
+    },
+    setWord({ commit }, keyword) {
+      commit('setKeyword', keyword);
+    },
+    clearWord({ commit }) {
+      commit('clearKeyword');
     },
   },
 });
