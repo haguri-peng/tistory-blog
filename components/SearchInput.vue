@@ -18,6 +18,12 @@
 
 <script>
 export default {
+  props: {
+    searchWord: {
+      type: String,
+      default: '',
+    },
+  },
   data() {
     return {
       keyword: '',
@@ -27,6 +33,11 @@ export default {
     searchKeyword() {
       this.$emit('search', this.keyword);
     },
+  },
+  created() {
+    if (this.searchWord != '') {
+      this.keyword = this.searchWord;
+    }
   },
 };
 </script>
@@ -41,6 +52,7 @@ export default {
   font-size: 1.2rem;
   font-weight: 500;
   border-radius: 5px;
+  background-color: #fcf8e8;
 }
 .btn {
   pointer-events: all;
