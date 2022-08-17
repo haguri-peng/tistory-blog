@@ -16,7 +16,7 @@
       </span>
     </div>
     <div class="comments">
-      <p v-show="comments">
+      <p v-show="comments.length > 0">
         {{ comments.length }} Comments
         <font-awesome-icon icon="fa-solid fa-comments" />
         <button type="button" style="float: right" @click="addComment">
@@ -108,7 +108,14 @@ export default {
       // console.log(data);
 
       if (data.tistory.status == '200') {
-        this.comments = data.tistory.item.comments;
+        if (
+          data.tistory.item.comments != null &&
+          data.tistory.item.comments.length > 0
+        ) {
+          this.comments = data.tistory.item.comments;
+        } else {
+          this.comments = [];
+        }
       }
     },
     addComment() {
