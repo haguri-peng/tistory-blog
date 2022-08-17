@@ -59,6 +59,10 @@ export default {
     clickCategory(categoryId) {
       this.activeCategory = categoryId;
       this.$emit('moveCategory', categoryId);
+      this.clearKeyword();
+    },
+    clearKeyword() {
+      this.$store.dispatch('clearWord');
     },
   },
   created() {
