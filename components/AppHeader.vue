@@ -7,6 +7,7 @@
           v-for="category in categoryList"
           :key="category.id"
           :class="{ active: activeCategory == category.id }"
+          :data-category-id="category.id"
           @click="clickCategory(category.id)"
         >
           <span class="menu"> {{ category.name }}</span>
