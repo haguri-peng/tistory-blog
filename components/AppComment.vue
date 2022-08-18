@@ -4,12 +4,16 @@
       <div class="content">
         <div class="title">댓글 작성</div>
         <textarea
-          v-model="commentText"
+          v-model="comment"
           name="text"
           rows="5"
           placeholder="댓글을 작성해주세요."
-          style="width: 100%"
+          style="width: 100%; resize: none"
         ></textarea>
+        <label for="check">
+          <input type="checkbox" id="check" v-model="arrChk" value="secret" />
+          비밀댓글
+        </label>
       </div>
       <div class="actions">
         <button class="btn submit" @click="submit">등록</button>
@@ -25,22 +29,28 @@ export default {
   data() {
     return {
       dialogState: false,
-      commentText: '',
+      comment: '',
+      arrChk: [],
     };
   },
   methods: {
     submit() {
-      const text = this.commentText;
+      const objData = {
+        secret: this.arrChk.length > 0 ? 1 : 0, // 1: 비밀댓글, 0: 공개댓글
+        content: this.comment,
+      };
 
-      this.dialogState = false;
-      this.commentText = '';
-
-      this.$emit('closeModal', 'submit', text);
+      this.resetData();
+      this.$emit('closeModal', 'submit', objData);
     },
     close() {
-      this.dialogState = false;
-      this.commentText = '';
+      this.resetData();
       this.$emit('closeModal', 'close');
+    },
+    resetData() {
+      this.dialogState = false;
+      this.comment = '';
+      this.arrChk = [];
     },
   },
   watch: {
@@ -73,9 +83,9 @@ export default {
 }
 .actions button.btn {
   pointer-events: all;
-  margin: 0 2px;
-  padding: 0 5px;
-  border-radius: 2px;
+  margin: 0 4px;
+  padding: 0 8px;
+  border-radius: 4px;
   cursor: pointer;
   font-size: 1rem;
 }

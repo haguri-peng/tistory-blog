@@ -82,7 +82,7 @@
 <script>
 import AppContentMain from './AppContentMain.vue';
 import AppComment from './AppComment.vue';
-import { fetchPost, fetchComments } from '../api/index';
+import { fetchPost, fetchComments, insertComment } from '../api/index';
 
 export default {
   components: {
@@ -91,6 +91,8 @@ export default {
   },
   data() {
     return {
+      postId: '',
+      categoryId: '',
       title: '',
       content: '',
       tags: [],
@@ -110,6 +112,8 @@ export default {
       // console.log(data);
 
       if (data.tistory.status == '200') {
+        this.postId = this.$route.params.id;
+        this.categoryId = data.tistory.item.categoryId;
         this.title = data.tistory.item.title;
         this.content = data.tistory.item.content;
         this.tags = data.tistory.item.tags.tag;
@@ -133,12 +137,19 @@ export default {
     addComment() {
       this.showModal = true;
     },
-    hideModal(action, text) {
+    async hideModal(action, objData) {
       this.showModal = false;
 
       // 작업중..
       if (action == 'submit') {
-        console.log('text >> ' + text);
+        objData.postId = this.postId;
+        // console.log(objData);
+
+        const { data } = await insertComment(objData);
+        if (data.tistory.status == '200') {
+          alert('댓글이 등록되었습니다.');
+          location.reload();
+        }
       }
     },
     gotoTop() {

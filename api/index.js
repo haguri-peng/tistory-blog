@@ -89,6 +89,23 @@ function fetchComments(postId) {
   return instance.get(`/comment/list?${queryString}`);
 }
 
+function insertComment(data) {
+  const queryString =
+    'access_token=' +
+    params.accessToken +
+    '&output=' +
+    params.outputType +
+    '&blogName=' +
+    params.blogName +
+    '&postId=' +
+    data.postId +
+    '&content=' +
+    data.content +
+    '&secret=' +
+    data.secret;
+  return instance.post(`/comment/write?${queryString}`);
+}
+
 export {
   fetchBlogInfo,
   fetchCategoryList,
@@ -96,4 +113,5 @@ export {
   fetchPostListByCategory,
   fetchPost,
   fetchComments,
+  insertComment,
 };
