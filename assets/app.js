@@ -16,6 +16,10 @@ import App from '../components/App.vue';
 import router from '../router/index';
 import store from '../store/index';
 
+/* Gitart Vue Dialog */
+import 'gitart-vue-dialog/dist/style.css';
+import { GDialog } from 'gitart-vue-dialog';
+
 /* import the fontawesome core */
 import { library } from '@fortawesome/fontawesome-svg-core';
 
@@ -40,4 +44,5 @@ app
   .use(router)
   .use(store)
   .component('font-awesome-icon', FontAwesomeIcon)
+  .component('GDialog', GDialog)
   .mount('#app');
