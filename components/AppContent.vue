@@ -1,8 +1,10 @@
 <template>
   <div class="content" ref="content">
     <h1 class="title">{{ title }}</h1>
+
     <!-- <div v-html="content"></div> -->
     <app-content-main :content="content"></app-content-main>
+
     <div class="tags">
       <span class="tag" v-for="(tag, index) in tags" :key="index">
         <span class="title" v-if="index === 0">
@@ -15,6 +17,7 @@
         #{{ tag }}
       </span>
     </div>
+
     <div class="comments">
       <p v-show="comments.length > 0">
         {{ comments.length }} Comments
@@ -33,6 +36,8 @@
           <font-awesome-icon
             icon="fa-solid fa-house-user"
             :title="comment.name"
+            style="cursor: pointer; margin-right: 5px"
+            @click="openCommenterPage(comment.homepage)"
           />
           <span>{{ comment.name }}</span>
           <span style="margin-left: 30px; font-size: small">
@@ -47,6 +52,7 @@
         </div>
       </div>
     </div>
+
     <div class="top-down" v-show="isContent">
       <div @click="gotoTop">
         <font-awesome-icon
@@ -67,16 +73,21 @@
         />
       </div>
     </div>
+
+    <!-- Modal -->
+    <app-comment :showModal="showModal" @closeModal="hideModal"></app-comment>
   </div>
 </template>
 
 <script>
 import AppContentMain from './AppContentMain.vue';
+import AppComment from './AppComment.vue';
 import { fetchPost, fetchComments } from '../api/index';
 
 export default {
   components: {
     AppContentMain,
+    AppComment,
   },
   data() {
     return {
@@ -85,6 +96,7 @@ export default {
       tags: [],
       comments: [],
       intervalId: '',
+      showModal: false,
     };
   },
   computed: {
@@ -119,7 +131,15 @@ export default {
       }
     },
     addComment() {
-      alert('작업중입니다!!');
+      this.showModal = true;
+    },
+    hideModal(action, text) {
+      this.showModal = false;
+
+      // 작업중..
+      if (action == 'submit') {
+        console.log('text >> ' + text);
+      }
     },
     gotoTop() {
       window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
@@ -127,6 +147,9 @@ export default {
     gotoComments() {
       const commentsEl = document.querySelector('div.comments');
       commentsEl.scrollIntoView({ behavior: 'smooth' });
+    },
+    openCommenterPage(url) {
+      window.open(url, '_blank');
     },
   },
   created() {
@@ -195,7 +218,7 @@ h1.title {
 div.tags {
   /* background-color: rgba(118, 84, 154, 0.22); */
   color: #76549a;
-  margin-top: 30px;
+  margin-top: 20px;
 }
 div.tags span.tag {
   margin-right: 5px;
@@ -231,10 +254,10 @@ button {
   pointer-events: all;
   padding: 2px 5px;
   cursor: pointer;
-  background-color: rgba(118, 84, 154, 0.5);
+  background-color: rgba(118, 84, 154, 0.11);
   border-radius: 3px;
 }
 button:hover {
-  background-color: rgba(223, 120, 97, 0.5);
+  background-color: rgba(118, 84, 154, 0.66);
 }
 </style>
