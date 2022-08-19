@@ -35,9 +35,14 @@ export default {
   },
   methods: {
     submit() {
+      if (this.comment == '') {
+        alert('댓글이 입력되지 않았습니다.');
+        return;
+      }
+
       const objData = {
         secret: this.arrChk.length > 0 ? 1 : 0, // 1: 비밀댓글, 0: 공개댓글
-        content: this.comment,
+        content: this.comment.replace(/\n/g, '  '), // 개행문자는 공백 2칸으로 치환
       };
 
       this.resetData();
