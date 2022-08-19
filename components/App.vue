@@ -82,6 +82,9 @@ export default {
 </script>
 
 <style>
+a {
+  color: #df7861;
+}
 div.app {
   width: 100%;
 }

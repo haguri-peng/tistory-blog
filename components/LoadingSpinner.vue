@@ -16,12 +16,12 @@ export default {};
   height: 240px;
 }
 .spinner {
-  width: 50px;
-  height: 50px;
+  width: 35px;
+  height: 35px;
   border-radius: 50%;
-  border: 5px solid #76549a;
+  border: 5px solid #fcf8e8;
   border-bottom: 5px solid #df7861;
-  animation: spin 1s linear infinite;
+  animation: spin 0.5s linear infinite;
   position: relative;
 }
 @keyframes spin {
