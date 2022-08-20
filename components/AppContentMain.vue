@@ -65,4 +65,11 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+div {
+  font-size: 1.2rem;
+  text-align: initial;
+  padding: 0 50px;
+  width: 80%;
+}
+</style>

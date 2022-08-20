@@ -88,6 +88,7 @@ div.category ul {
 }
 div.category ul li {
   list-style: none;
+  font-size: 1.2rem;
   font-weight: 400;
   /* padding-right: 40px; */
   padding: 0 20px;
@@ -97,7 +98,7 @@ div.category ul li {
 }
 div.category ul li.active {
   color: #76549a;
-  font-size: 1.3rem;
+  font-size: 1.4rem;
   font-weight: 600;
   text-decoration: underline;
 }
