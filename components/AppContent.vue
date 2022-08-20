@@ -19,7 +19,8 @@
     </div>
 
     <div class="comments">
-      <p v-show="comments.length > 0">
+      <!-- <p v-show="comments.length > 0"> -->
+      <p>
         {{ comments.length }} Comments
         <font-awesome-icon icon="fa-solid fa-comments" />
         <button type="button" style="float: right" @click="addComment">
@@ -211,7 +212,7 @@ div.content {
   margin-top: 30px;
   padding: 10px;
   top: 60px;
-  width: 70%;
+  width: 65%;
   /* background-color: rgba(144, 200, 172, 0.3); */
   animation-name: fadeInUp;
   animation-duration: 1.1s;
@@ -223,7 +224,7 @@ div.top-down {
   /* right: 20px; */
 }
 h1.title {
-  margin-bottom: 20px;
+  margin-bottom: 59px;
   color: #df7861;
 }
 div.tags {
@@ -235,7 +236,7 @@ div.tags span.tag {
   margin-right: 5px;
 }
 div.comments {
-  margin-top: 30px;
+  margin-top: 59px;
   width: 80%;
   color: darkslategray;
 }
