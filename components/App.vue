@@ -44,7 +44,8 @@ export default {
 
       if (data.tistory.status == '200') {
         const categories = data.tistory.item.categories;
-        this.category = _.filter(categories, (c) => Number(c.entries) > 0);
+        // this.category = _.filter(categories, (c) => Number(c.entries) > 0);
+        this.category = categories;
       }
     },
     showLoadingSpinner() {
