@@ -4,7 +4,7 @@
     <div class="category">
       <ul>
         <li
-          v-for="category in categoryList"
+          v-for="category in getTopCategory"
           :key="category.id"
           :class="{ active: activeCategory == category.id }"
           :data-category-id="category.id"
@@ -15,6 +15,25 @@
           <span class="newFlag"> {{ showFlag(category.id) }} </span>
         </li>
       </ul>
+    </div>
+    <div class="subCategory" :class="{ hide: subCategoryList.length == 0 }">
+      <ul>
+        <li v-for="subCategory in subCategoryList">
+          <span class="menu"> {{ subCategory.name }}</span>
+          <span class="cnt"> [{{ subCategory.entries }}] </span>
+          <span class="newFlag"> {{ showFlag(subCategory.id) }} </span>
+        </li>
+      </ul>
+      <div style="margin-top: 10px">
+        <font-awesome-icon
+          icon="fa-solid fa-caret-up"
+          size="lg"
+          title="close"
+          bounce
+          style="cursor: pointer"
+          @click="hideSubCategory"
+        />
+      </div>
     </div>
   </header>
 </template>
@@ -29,7 +48,13 @@ export default {
     return {
       activeCategory: '',
       recentCategoryIds: [],
+      subCategoryList: [],
     };
+  },
+  computed: {
+    getTopCategory() {
+      return _.filter(this.categoryList, (c) => c.parent == '');
+    },
   },
   methods: {
     async fetchPost(pageNum) {
@@ -58,12 +83,29 @@ export default {
       }
     },
     clickCategory(categoryId) {
+      // Sub Category display CSS 초기화
+      $('div.subCategory').css('display', '');
+
       this.activeCategory = categoryId;
-      this.$emit('moveCategory', categoryId);
-      this.clearKeyword();
+      const subCategory = _.filter(
+        this.categoryList,
+        (c) => c.parent == categoryId
+      );
+      // console.log(subCategory);
+
+      if (subCategory.length == 0) {
+        this.subCategoryList = [];
+        this.$emit('moveCategory', categoryId);
+        this.clearKeyword();
+      } else {
+        this.subCategoryList = subCategory;
+      }
     },
     clearKeyword() {
       this.$store.dispatch('clearWord');
+    },
+    hideSubCategory() {
+      $('div.subCategory').slideUp(400);
     },
   },
   created() {
@@ -73,6 +115,16 @@ export default {
 </script>
 
 <style scoped>
+@keyframes fadeInDown {
+  from {
+    transform: TranslateY(-30px);
+    opacity: 0;
+  }
+  to {
+    transform: TranslateX(0);
+    opacity: 1;
+  }
+}
 div.category {
   position: absolute;
   top: 0;
@@ -112,5 +164,26 @@ div.category span.cnt {
 div.category span.newFlag {
   color: red;
   font-weight: 500;
+}
+div.subCategory {
+  position: absolute;
+  font-size: 1.1rem;
+  top: 0;
+  width: 100%;
+  padding-top: 60px;
+  background-color: rgba(252, 248, 232, 0.55);
+  animation-name: fadeInDown;
+  animation-duration: 0.7s;
+  z-index: 999;
+}
+div.subCategory li {
+  cursor: pointer;
+}
+div.subCategory li:hover {
+  color: #76549a;
+  text-decoration: underline;
+}
+div.subCategory.hide {
+  display: none;
 }
 </style>
