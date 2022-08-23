@@ -15,12 +15,14 @@ const params = {
   outputType: 'json',
 };
 
+// 블로그 정보
 function fetchBlogInfo() {
   const queryString =
     'access_token=' + params.accessToken + '&output=' + params.outputType;
   return instance.get(`/blog/info?${queryString}`);
 }
 
+// 카테고리 목록
 function fetchCategoryList() {
   const queryString =
     'access_token=' +
@@ -32,6 +34,7 @@ function fetchCategoryList() {
   return instance.get(`/category/list?${queryString}`);
 }
 
+// 글 목록
 function fetchPostList(pageNum) {
   const queryString =
     'access_token=' +
@@ -45,6 +48,7 @@ function fetchPostList(pageNum) {
   return instance.get(`/post/list?${queryString}`);
 }
 
+// 카테고리별 글 목록
 function fetchPostListByCategory(categoryId, pageNum) {
   const queryString =
     'access_token=' +
@@ -63,6 +67,7 @@ function fetchPostListByCategory(categoryId, pageNum) {
   });
 }
 
+// 글 읽기
 function fetchPost(postId) {
   const queryString =
     'access_token=' +
@@ -76,6 +81,7 @@ function fetchPost(postId) {
   return instance.get(`/post/read?${queryString}`);
 }
 
+// 게시글 댓글 목록
 function fetchComments(postId) {
   const queryString =
     'access_token=' +
@@ -89,6 +95,7 @@ function fetchComments(postId) {
   return instance.get(`/comment/list?${queryString}`);
 }
 
+// 댓글 작성
 function insertComment(data) {
   const queryString =
     'access_token=' +
@@ -96,14 +103,69 @@ function insertComment(data) {
     '&output=' +
     params.outputType +
     '&blogName=' +
-    params.blogName +
+    data.blogName +
     '&postId=' +
     data.postId +
     '&content=' +
     data.content +
     '&secret=' +
     data.secret;
+
+  if (
+    data.parentId != null &&
+    data.parentId != '' &&
+    data.parentId != undefined
+  ) {
+    queryString += '&parentId=' + data.parentId;
+  }
+
   return instance.post(`/comment/write?${queryString}`);
+}
+
+// 댓글 수정
+function modifyComment(data) {
+  const queryString =
+    'access_token=' +
+    params.accessToken +
+    '&output=' +
+    params.outputType +
+    '&blogName=' +
+    data.blogName +
+    '&postId=' +
+    data.postId +
+    '&commentId=' +
+    data.commentId +
+    '&content=' +
+    data.content +
+    '&secret=' +
+    data.secret;
+
+  if (
+    data.parentId != null &&
+    data.parentId != '' &&
+    data.parentId != undefined
+  ) {
+    queryString += '&parentId=' + data.parentId;
+  }
+
+  return instance.post(`/comment/modify?${queryString}`);
+}
+
+// 댓글 삭제
+function deleteComment(data) {
+  const queryString =
+    'access_token=' +
+    params.accessToken +
+    '&output=' +
+    params.outputType +
+    '&blogName=' +
+    data.blogName +
+    '&postId=' +
+    data.postId +
+    '&commentId=' +
+    data.commentId;
+
+  return instance.post(`/comment/delete?${queryString}`);
 }
 
 export {
@@ -114,4 +176,6 @@ export {
   fetchPost,
   fetchComments,
   insertComment,
+  modifyComment,
+  deleteComment,
 };
