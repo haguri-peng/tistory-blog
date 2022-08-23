@@ -8,7 +8,7 @@
           name="text"
           rows="5"
           placeholder="댓글을 작성해주세요."
-          style="width: 100%; resize: none"
+          style="font-size: 1rem; width: 100%; resize: none"
         ></textarea>
         <label for="check">
           <input type="checkbox" id="check" v-model="arrChk" value="secret" />
@@ -16,7 +16,10 @@
         </label>
       </div>
       <div class="actions">
-        <button class="btn submit" @click="submit">등록</button>
+        <button class="btn submit" @click="submit">
+          <template v-if="mode == 'M'">수정</template>
+          <template v-else>등록</template>
+        </button>
         <button class="btn close" @click="close">닫기</button>
       </div>
     </div>
@@ -24,6 +27,8 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
   props: ['showModal'],
   data() {
@@ -31,7 +36,11 @@ export default {
       dialogState: false,
       comment: '',
       arrChk: [],
+      mode: '', // 'M' 값인 경우 수정모드
     };
+  },
+  computed: {
+    ...mapGetters(['getParentCommentId', 'getCommentId', 'getModComment']),
   },
   methods: {
     submit() {
@@ -42,8 +51,16 @@ export default {
 
       const objData = {
         secret: this.arrChk.length > 0 ? 1 : 0, // 1: 비밀댓글, 0: 공개댓글
-        content: this.comment.replace(/\n/g, '  '), // 개행문자는 공백 2칸으로 치환
+        // content: this.comment.replace(/\n/g, '  '), // 개행문자는 공백 2칸으로 치환
+        // content: this.comment,
+        content: this.comment.replace(/\n/g, '\r\n'),
+        parentId: this.getParentCommentId,
       };
+
+      // 댓글 수정인 경우
+      if (this.mode == 'M') {
+        objData.commentId = this.getCommentId;
+      }
 
       this.resetData();
       this.$emit('closeModal', 'submit', objData);
@@ -56,11 +73,20 @@ export default {
       this.dialogState = false;
       this.comment = '';
       this.arrChk = [];
+      this.mode = '';
+
+      this.$store.dispatch('clearCommentInfo');
     },
   },
   watch: {
     showModal() {
       this.dialogState = this.showModal;
+    },
+    getModComment() {
+      // console.log('htytest');
+
+      this.mode = 'M';
+      this.comment = this.getModComment;
     },
   },
 };

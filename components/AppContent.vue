@@ -34,16 +34,47 @@
         :class="{ hide: comment.open == 'N' }"
       >
         <div class="name">
-          <font-awesome-icon
-            icon="fa-solid fa-house-user"
-            :title="comment.name"
-            style="cursor: pointer; margin-right: 5px"
-            @click="openCommenterPage(comment.homepage)"
-          />
-          <span>{{ comment.name }}</span>
-          <span style="margin-left: 30px; font-size: small">
-            {{ comment.date }}
-          </span>
+          <div
+            class="left"
+            :class="{
+              noAuth: comment.homepage != $parent.$parent.loginUserUrl,
+            }"
+          >
+            <font-awesome-icon
+              icon="fa-solid fa-house-user"
+              :title="comment.name"
+              style="cursor: pointer; margin-right: 5px"
+              @click="openCommenterPage(comment.homepage)"
+            />
+            <span>{{ comment.name }}</span>
+            <span style="margin-left: 30px; font-size: small">
+              {{ comment.date }}
+            </span>
+          </div>
+          <div
+            class="comment-mod-del"
+            style="float: right; width: 5%"
+            :class="{
+              noAuth: comment.homepage != $parent.$parent.loginUserUrl,
+            }"
+            @mouseleave="commentModDelOut($event.target)"
+          >
+            <font-awesome-icon
+              icon="fa-solid fa-ellipsis"
+              style="cursor: pointer"
+              @click="toggleCommentModDelBtn($event.target)"
+            />
+            <ul style="list-style: none; display: none">
+              <li
+                @click="
+                  modComment(comment.id, comment.parentId, comment.comment)
+                "
+              >
+                수정
+              </li>
+              <li @click="delComment(comment.id)">삭제</li>
+            </ul>
+          </div>
         </div>
         <div class="comment" v-if="comment.visibility == '0'">
           승인 대기중인 댓글입니다.
@@ -83,7 +114,13 @@
 <script>
 import AppContentMain from './AppContentMain.vue';
 import AppComment from './AppComment.vue';
-import { fetchPost, fetchComments, insertComment } from '../api/index';
+import {
+  fetchPost,
+  fetchComments,
+  insertComment,
+  modifyComment,
+  deleteComment,
+} from '../api/index';
 
 export default {
   components: {
@@ -136,20 +173,86 @@ export default {
       }
     },
     addComment() {
+      if (this.$parent.$parent.loginUserUrl == '') {
+        alert('로그인이 필요합니다.');
+        return;
+      }
+
       this.showModal = true;
     },
     async hideModal(action, objData) {
       this.showModal = false;
 
-      // 작업중..
+      // 댓글 등록 및 수정
       if (action == 'submit') {
         objData.postId = this.postId;
+        objData.blogName = this.$parent.$parent.loginUserUrl
+          .split('//')[1]
+          .split('.')[0];
         // console.log(objData);
 
-        const { data } = await insertComment(objData);
-        if (data.tistory.status == '200') {
-          alert('댓글이 등록되었습니다.');
-          location.reload();
+        try {
+          if (
+            objData.commentId != null &&
+            objData.commentId != undefined &&
+            objData.commentId != ''
+          ) {
+            // 수정
+            const { data } = await modifyComment(objData);
+            if (data.tistory.status == '200') {
+              alert('댓글이 수정되었습니다.');
+              this.getComments();
+            } else {
+              alert(data.tistory.error_message);
+            }
+          } else {
+            // 등록
+            const { data } = await insertComment(objData);
+            if (data.tistory.status == '200') {
+              alert('댓글이 등록되었습니다.');
+              // location.reload();
+              this.getComments();
+            } else {
+              alert(data.tistory.error_message);
+            }
+          }
+        } catch (err) {
+          alert(err.response.data.tistory.error_message);
+        }
+      }
+    },
+    modComment(commentId, parentCommentId, comment) {
+      // vuex 댓글 부분 세팅
+      const commentInfo = {
+        parentCommentId,
+        commentId,
+        comment,
+      };
+      // console.log(commentInfo);
+
+      this.$store.dispatch('setCommentInfo', commentInfo);
+      this.showModal = true;
+    },
+    async delComment(commentId) {
+      if (confirm('댓글을 삭제하시겠습니까?')) {
+        const objData = {
+          blogName: this.$parent.$parent.loginUserUrl
+            .split('//')[1]
+            .split('.')[0],
+          postId: this.postId,
+          commentId,
+        };
+        // console.log(objData);
+
+        try {
+          const { data } = await deleteComment(objData);
+          if (data.tistory.status == '200') {
+            alert('댓글이 삭제되었습니다.');
+            this.getComments();
+          }
+        } catch (err) {
+          // console.error(err);
+          alert(err.response.data.tistory.error_message);
         }
       }
     },
@@ -162,6 +265,13 @@ export default {
     },
     openCommenterPage(url) {
       window.open(url, '_blank');
+    },
+    toggleCommentModDelBtn(el) {
+      $(el).parent().find('ul').toggle();
+    },
+    commentModDelOut(el) {
+      // console.log('test');
+      $(el).parent().find('ul').hide();
     },
   },
   created() {
@@ -188,6 +298,10 @@ export default {
     setTimeout(() => {
       clearInterval(this.intervalId);
     }, 10000);
+
+    // console.log(this.$parent.$parent.postCnt);
+    // console.log(this.$parent.$parent.loginUserName);
+    // console.log(this);
   },
   unmounted() {
     $('#app').css('height', 'auto');
@@ -246,17 +360,41 @@ div.comments p {
   padding-bottom: 4px;
 }
 div.comments > div {
-  padding: 10px;
+  padding: 15px;
   border-bottom: 1px solid #76549a;
 }
 div.comments > div.hide {
   display: none;
 }
 div.comments > div > div.name {
-  display: flex;
+  /* display: flex; */
+  display: contents;
   align-items: center;
   margin-bottom: 5px;
   padding-left: 40px;
+}
+div.comments > div > div.name > div.left {
+  float: left;
+  width: 95%;
+  text-align: initial;
+}
+div.comments > div > div.name > div.left.noAuth {
+  width: 100%;
+}
+div.comment-mod-del.noAuth {
+  display: none;
+}
+div.comment-mod-del svg:hover {
+  color: #76549a;
+}
+div.comment-mod-del li {
+  font-size: 0.8rem;
+}
+div.comment-mod-del li:hover {
+  font-size: 0.8rem;
+  font-weight: bold;
+  color: #76549a;
+  cursor: pointer;
 }
 div.comments > div > div.comment {
   text-align: left;
