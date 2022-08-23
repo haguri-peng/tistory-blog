@@ -210,8 +210,9 @@ export default {
             const { data } = await insertComment(objData);
             if (data.tistory.status == '200') {
               alert('댓글이 등록되었습니다.');
-              // location.reload();
+
               this.getComments();
+              setTimeout(this.setAppHeight, 100);
             } else {
               alert(data.tistory.error_message);
             }
@@ -248,7 +249,9 @@ export default {
           const { data } = await deleteComment(objData);
           if (data.tistory.status == '200') {
             alert('댓글이 삭제되었습니다.');
+
             this.getComments();
+            setTimeout(this.setAppHeight, 100);
           }
         } catch (err) {
           // console.error(err);
@@ -273,18 +276,11 @@ export default {
       // console.log('test');
       $(el).parent().find('ul').hide();
     },
-  },
-  created() {
-    // console.log(this.$route.params.id);
+    setAppHeight() {
+      const headerHeight = 60;
+      const contentTopMargin = 30;
+      const contentInnerPadding = 20;
 
-    this.getContent();
-    this.getComments();
-
-    const headerHeight = 60;
-    const contentTopMargin = 30;
-    const contentInnerPadding = 20;
-
-    this.intervalId = setInterval(() => {
       $('#app').css(
         'height',
         this.$refs.content.clientHeight +
@@ -293,15 +289,19 @@ export default {
           contentInnerPadding +
           'px'
       );
-    }, 100);
+    },
+  },
+  created() {
+    // console.log(this.$route.params.id);
+
+    this.getContent();
+    this.getComments();
+
+    this.intervalId = setInterval(this.setAppHeight, 100);
 
     setTimeout(() => {
       clearInterval(this.intervalId);
     }, 10000);
-
-    // console.log(this.$parent.$parent.postCnt);
-    // console.log(this.$parent.$parent.loginUserName);
-    // console.log(this);
   },
   unmounted() {
     $('#app').css('height', 'auto');
