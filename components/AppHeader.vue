@@ -18,7 +18,10 @@
     </div>
     <div class="subCategory" :class="{ hide: subCategoryList.length == 0 }">
       <ul>
-        <li v-for="subCategory in subCategoryList">
+        <li
+          v-for="subCategory in subCategoryList"
+          @click="clickCategory(subCategory.id)"
+        >
           <span class="menu"> {{ subCategory.name }}</span>
           <span class="cnt"> [{{ subCategory.entries }}] </span>
           <span class="newFlag"> {{ showFlag(subCategory.id) }} </span>
@@ -185,5 +188,8 @@ div.subCategory li:hover {
 }
 div.subCategory.hide {
   display: none;
+}
+div.subCategory div:hover {
+  color: red;
 }
 </style>
