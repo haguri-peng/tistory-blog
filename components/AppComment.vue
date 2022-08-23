@@ -14,6 +14,9 @@
           <input type="checkbox" id="check" v-model="arrChk" value="secret" />
           비밀댓글
         </label>
+        <span style="margin-left: 20px; color: blue" v-if="mode == 'M'">
+          *댓글 수정은 한 번만 가능합니다.
+        </span>
       </div>
       <div class="actions">
         <button class="btn submit" @click="submit">
@@ -51,9 +54,7 @@ export default {
 
       const objData = {
         secret: this.arrChk.length > 0 ? 1 : 0, // 1: 비밀댓글, 0: 공개댓글
-        // content: this.comment.replace(/\n/g, '  '), // 개행문자는 공백 2칸으로 치환
-        // content: this.comment,
-        content: this.comment.replace(/\n/g, '\r\n'),
+        content: this.comment.replace(/\n/g, '  '), // 개행문자는 공백 2칸으로 치환
         parentId: this.getParentCommentId,
       };
 
