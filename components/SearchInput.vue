@@ -53,6 +53,7 @@ export default {
   font-weight: 500;
   border-radius: 5px;
   background-color: #fcf8e8;
+  padding: 0 5px;
 }
 .btn {
   pointer-events: all;
