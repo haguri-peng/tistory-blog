@@ -69,6 +69,7 @@ export default store;
 
 ### Modal
 
+댓글 등록 시 Modal 사용   
 [Gitart Vue Dialog](https://github.com/gitart-group/vue-dialog)
 
 
@@ -81,7 +82,7 @@ export default store;
 ## Tistory
 
 Tistory 에서 제공하는 Open API 를 활용 ([Tistory Open API](https://tistory.github.io/document-tistory-apis/))   
-제공해주는 Open API 에 한계가 있어 이를 감안하고 최대한 개발하였으니 참고 바랍니다.
+제공해주는 Open API 에 한계가 있어 이를 감안하고 개발하였으니 참고 바랍니다.
 
 
 ## 저작권
