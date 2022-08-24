@@ -1,11 +1,18 @@
 <template>
   <div class="aside">
-    <div>
+    <div class="list">
       <ul>
         <!-- <li>1</li>
         <li>22</li>
         <li>333</li> -->
       </ul>
+    </div>
+    <div class="image">
+      <img
+        src="../images/fat_haguri.png"
+        alt=""
+        style="width: 150px; height: 200px; margin-top: 50px; float: left"
+      />
     </div>
   </div>
 
@@ -529,11 +536,16 @@ div.aside {
   right: 0;
   top: 150px;
   width: 20%;
+}
+div.aside > div.list {
+  text-align: left;
   border-left: 2px solid #df7861;
 }
-div.aside > div {
-  text-align: left;
-}
+/* div.aside > div.image {
+  width: 150px;
+  height: 150px;
+  margin-top: 50px;
+} */
 div.aside ul {
   padding-left: 10px;
   list-style: none;
