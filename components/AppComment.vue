@@ -3,6 +3,12 @@
     <div class="wrapper">
       <div class="content">
         <div class="title">댓글 작성</div>
+        <input
+          type="text"
+          v-model="blogName"
+          placeholder="작성자의 블로그 주소를 입력해주세요. Ex) 'haguri-peng.tistory.com'에서 'haguri-peng'만"
+          style="width: 99%; margin-bottom: 5px"
+        />
         <textarea
           v-model="comment"
           name="text"
@@ -37,6 +43,7 @@ export default {
   data() {
     return {
       dialogState: false,
+      blogName: '',
       comment: '',
       arrChk: [],
       mode: '', // 'M' 값인 경우 수정모드
@@ -47,14 +54,19 @@ export default {
   },
   methods: {
     submit() {
+      if (this.blogName == '') {
+        alert('블로그 주소는 필수입니다.');
+        return;
+      }
       if (this.comment == '') {
         alert('댓글이 입력되지 않았습니다.');
         return;
       }
 
       const objData = {
-        secret: this.arrChk.length > 0 ? 1 : 0, // 1: 비밀댓글, 0: 공개댓글
+        blogName: this.blogName,
         content: this.comment.replace(/\n/g, '  '), // 개행문자는 공백 2칸으로 치환
+        secret: this.arrChk.length > 0 ? 1 : 0, // 1: 비밀댓글, 0: 공개댓글
         parentId: this.getParentCommentId,
       };
 
@@ -72,6 +84,7 @@ export default {
     },
     resetData() {
       this.dialogState = false;
+      this.blogName = '';
       this.comment = '';
       this.arrChk = [];
       this.mode = '';
