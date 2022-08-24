@@ -28,9 +28,8 @@ export default {
       isLoading: true,
       category: [],
       postCnt: 0,
-      loginUserName: '',
-      loginUserNickName: '',
-      loginUserUrl: '',
+      loginId: '',
+      loginUserId: '',
     };
   },
   methods: {
@@ -42,13 +41,12 @@ export default {
         _.find(data.tistory.item.blogs, ['name', 'haguri-peng']).statistics
           .post || 0;
 
-      const defaultBlog = _.head(
-        _.filter(data.tistory.item.blogs, ['default', 'Y'])
-      );
+      // const defaultBlog = _.head(
+      //   _.filter(data.tistory.item.blogs, ['default', 'Y'])
+      // );
       // console.log(defaultBlog);
-      this.loginUserName = defaultBlog.name || '';
-      this.loginUserNickName = defaultBlog.nickname || '';
-      this.loginUserUrl = defaultBlog.url || '';
+      this.loginId = data.tistory.item.id || '';
+      this.loginUserId = data.tistory.item.userId || '';
     },
     async fetchCategory() {
       const { data } = await fetchCategoryList();
