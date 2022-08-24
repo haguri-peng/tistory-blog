@@ -1,6 +1,9 @@
 <template>
   <div class="content" ref="content">
-    <h1 class="title">{{ title }}</h1>
+    <div class="title">
+      <h1>{{ title }}</h1>
+      <p class="date">작성일시: {{ date }}</p>
+    </div>
 
     <!-- <div v-html="content"></div> -->
     <app-content-main :content="content"></app-content-main>
@@ -37,7 +40,7 @@
           <div
             class="left"
             :class="{
-              noAuth: comment.homepage != $parent.$parent.loginUserUrl,
+              noAuth: comment.homepage != $parent.$parent.loginId,
             }"
           >
             <font-awesome-icon
@@ -55,7 +58,7 @@
             class="comment-mod-del"
             style="float: right; width: 5%"
             :class="{
-              noAuth: comment.homepage != $parent.$parent.loginUserUrl,
+              noAuth: comment.homepage != $parent.$parent.loginId,
             }"
             @mouseleave="commentModDelOut($event.target)"
           >
@@ -72,7 +75,7 @@
               >
                 수정
               </li>
-              <li @click="delComment(comment.id)">삭제</li>
+              <li @click="delComment(comment.id, comment.homepage)">삭제</li>
             </ul>
           </div>
         </div>
@@ -134,6 +137,7 @@ export default {
       title: '',
       content: '',
       tags: [],
+      date: '',
       comments: [],
       intervalId: '',
       showModal: false,
@@ -155,6 +159,7 @@ export default {
         this.title = data.tistory.item.title;
         this.content = data.tistory.item.content;
         this.tags = data.tistory.item.tags.tag;
+        this.date = data.tistory.item.date;
       }
     },
     async getComments() {
@@ -173,7 +178,7 @@ export default {
       }
     },
     addComment() {
-      if (this.$parent.$parent.loginUserUrl == '') {
+      if (this.$parent.$parent.loginId == '') {
         alert('로그인이 필요합니다.');
         return;
       }
@@ -186,9 +191,7 @@ export default {
       // 댓글 등록 및 수정
       if (action == 'submit') {
         objData.postId = this.postId;
-        objData.blogName = this.$parent.$parent.loginUserUrl
-          .split('//')[1]
-          .split('.')[0];
+        // objData.blogName = this.$parent.$parent.loginId;
         // console.log(objData);
 
         try {
@@ -234,12 +237,10 @@ export default {
       this.$store.dispatch('setCommentInfo', commentInfo);
       this.showModal = true;
     },
-    async delComment(commentId) {
+    async delComment(commentId, homepage) {
       if (confirm('댓글을 삭제하시겠습니까?')) {
         const objData = {
-          blogName: this.$parent.$parent.loginUserUrl
-            .split('//')[1]
-            .split('.')[0],
+          blogName: homepage.split('//')[1].split('.')[0],
           postId: this.postId,
           commentId,
         };
@@ -337,14 +338,20 @@ div.top-down {
   bottom: 15px;
   /* right: 20px; */
 }
-h1.title {
+div.title {
   margin-bottom: 59px;
+}
+div.title h1 {
   color: #df7861;
 }
+div.title p.date {
+  color: #76549a;
+  font-size: 0.9rem;
+}
 div.tags {
-  /* background-color: rgba(118, 84, 154, 0.22); */
   color: #76549a;
   margin-top: 20px;
+  font-weight: bold;
 }
 div.tags span.tag {
   margin-right: 5px;
