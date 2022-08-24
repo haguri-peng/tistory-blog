@@ -1,4 +1,14 @@
 <template>
+  <div class="aside">
+    <div>
+      <ul>
+        <!-- <li>1</li>
+        <li>22</li>
+        <li>333</li> -->
+      </ul>
+    </div>
+  </div>
+
   <div class="content" ref="content">
     <div class="title">
       <h1>{{ title }}</h1>
@@ -160,6 +170,113 @@ export default {
         this.content = data.tistory.item.content;
         this.tags = data.tistory.item.tags.tag;
         this.date = data.tistory.item.date;
+
+        // aside 영역 세팅
+        $('div.aside').hide();
+        setTimeout(() => {
+          var sAsideHtml = '';
+          $('div.content')
+            .find('h2,h3,h4')
+            .each(function (idx, item) {
+              const tagName = item.tagName.toLowerCase();
+              let fontSize = '';
+              if (tagName == 'h2') {
+                fontSize = '1rem';
+              } else if (tagName == 'h3') {
+                fontSize = '0.9rem';
+              } else if (tagName == 'h4') {
+                fontSize = '0.8rem';
+              }
+              sAsideHtml +=
+                '<li class="' +
+                tagName +
+                '" style="font-size: ' +
+                fontSize +
+                '">' +
+                $(this).text() +
+                '</li>';
+            });
+          $('div.aside ul').append(sAsideHtml);
+          $('div.aside ul li')
+            .hover(
+              // hover
+              function () {
+                $(this)
+                  // .css('color', '#76549a')
+                  .css('text-decoration', 'underline')
+                  .css('cursor', 'default');
+              },
+              function () {
+                $(this)
+                  // .css('color', '')
+                  .css('text-decoration', '')
+                  .css('cursor', '');
+              }
+            )
+            .click(function () {
+              // 클릭 시 해당 영역으로 스크롤 이동
+              const asideTag = $(this).attr('class');
+              const asideText = $(this).text();
+
+              const clickEl = $('div.content')
+                .find(asideTag)
+                .filter(function () {
+                  return $(this).text() == asideText;
+                });
+              // console.log(clickEl);
+
+              if (clickEl.length > 0) {
+                clickEl[0].scrollIntoView({ behavior: 'smooth' });
+              }
+            })
+            .each(function (idx, item) {
+              const asideTag = $(this).attr('class');
+              const asideText = $(this).text();
+
+              const el = $('div.content')
+                .find(asideTag)
+                .filter(function () {
+                  return $(this).text() == asideText;
+                });
+              // console.log(el);
+
+              if (el.length > 0) {
+                // console.log(el[0].offsetTop);
+                const headerHeight = 60;
+                const contentTopMargin = 30;
+
+                $(this).attr(
+                  'data-offset-top',
+                  el[0].offsetTop + headerHeight + contentTopMargin
+                );
+              }
+            });
+          // offsetTop: 2196
+          $('div.aside').fadeIn();
+
+          // 스크롤 Event
+          $(window).scroll(function () {
+            const top = $(window).scrollTop();
+            // console.log('top >> ' + top);
+
+            let bFind = false;
+            $('div.aside ul li').each(function (idx, item) {
+              if (
+                !bFind &&
+                parseInt($(this).data('offsetTop')) <= top + 1 &&
+                ($(this).next().length > 0
+                  ? parseInt($(this).next().data('offsetTop'))
+                  : top + 1) >=
+                  top + 1
+              ) {
+                $(this).css('color', '#df7861');
+                bFind = true;
+              } else {
+                $(this).css('color', '');
+              }
+            });
+          });
+        }, 300);
       }
     },
     async getComments() {
@@ -407,6 +524,25 @@ div.comments > div > div.comment {
   text-align: left;
   padding-left: 80px;
 }
+div.aside {
+  position: fixed;
+  right: 0;
+  top: 150px;
+  width: 20%;
+  border-left: 2px solid #df7861;
+}
+div.aside > div {
+  text-align: left;
+}
+div.aside ul {
+  padding-left: 10px;
+  list-style: none;
+}
+/* div.aside ul > li:hover {
+  color: #76549a;
+  text-decoration: underline;
+  cursor: default;
+} */
 button {
   pointer-events: all;
   padding: 2px 5px;
