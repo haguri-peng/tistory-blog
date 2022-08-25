@@ -97,7 +97,7 @@ function fetchComments(postId) {
 
 // 댓글 작성
 function insertComment(data) {
-  const queryString =
+  let queryString =
     'access_token=' +
     params.accessToken +
     '&output=' +
@@ -124,7 +124,7 @@ function insertComment(data) {
 
 // 댓글 수정
 function modifyComment(data) {
-  const queryString =
+  let queryString =
     'access_token=' +
     params.accessToken +
     '&output=' +
