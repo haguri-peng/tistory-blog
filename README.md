@@ -1,7 +1,7 @@
 ## Vue 를 활용한 Tistory Blog
 
-※ 작업중..   
-아직 블로그에 배포한 상태는 아닙니다.
+어느 정도 작업이 완료되어 블로그에 배포하였습니다.   
+자잘한 문제점이 있어서 수정중..
 
 🐸 [Haguri & Peng's Blog](https://haguri-peng.tistory.com)
 
@@ -83,6 +83,22 @@ export default store;
 
 Tistory 에서 제공하는 Open API 를 활용 ([Tistory Open API](https://tistory.github.io/document-tistory-apis/))   
 제공해주는 Open API 에 한계가 있어 이를 감안하고 개발하였으니 참고 바랍니다.
+
+### 댓글
+
+댓글의 수정/삭제 기능을 구현하였으나 Open API 에서 로그인한 사용자의 정보를 알 수 없어(사용자 검증 문제) 실질적으로 사용할 수 없습니다.   
+로그인한 사용자를 알 수 없기에 댓글 등록 시, 블로그 주소 정보를 입력하고 댓글을 입력해야 등록할 수 있습니다.
+
+### 공지사항 및 방명록
+
+Open API 에서 제공하지 않음
+
+
+## Tidory
+
+빌드 후 배포하여 보니 app.xxxx.js 파일에서 연결된 다른 script(.js) 파일을 찾지 못하는 문제가 발생.   
+확인해보니 'tidory.config.js' 에서 설정한 'public_path' 대로 경로가 제대로 세팅되지 않아 수동으로 변경하여 문제를 해결하였습니다.   
+관련 내용은 'README.md' 파일이나 [Issues] 탭에 정리해서 올리겠습니다.
 
 
 ## 저작권
