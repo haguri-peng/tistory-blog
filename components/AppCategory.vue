@@ -1,6 +1,9 @@
 <template>
   <loading-spinner v-if="isLoading"></loading-spinner>
   <div style="width: 100%" v-else>
+    <div class="category-title">
+      {{ categoryName }}
+    </div>
     <div class="posts">
       <ul>
         <app-post
@@ -22,7 +25,11 @@ import AppPost from './AppPost.vue';
 import AppPaging from './AppPaging.vue';
 import LoadingSpinner from './LoadingSpinner.vue';
 
-import { fetchPostListByCategory, fetchPostList } from '../api/index';
+import {
+  fetchCategoryList,
+  fetchPostListByCategory,
+  fetchPostList,
+} from '../api/index';
 import { mapGetters } from 'vuex';
 
 import _ from 'lodash';
@@ -40,6 +47,7 @@ export default {
       searchPostList: [],
       pageInfo: {},
       isLoading: false,
+      categoryName: '',
     };
   },
   computed: {
@@ -74,6 +82,9 @@ export default {
           id: this.$route.params.categoryId,
           page: this.pageInfo.currentPage,
         });
+
+        // 카테고리 목록 조회
+        this.getCategoryList();
       }
       this.isLoading = false;
     },
@@ -130,6 +141,21 @@ export default {
     setKeyword(keyword) {
       this.$store.dispatch('setWord', keyword);
     },
+    async getCategoryList() {
+      const { data } = await fetchCategoryList();
+
+      if (data.tistory.status == '200') {
+        const currentCategory = _.find(data.tistory.item.categories, [
+          'id',
+          this.getCategoryId,
+        ]);
+        // console.log(currentCategory);
+
+        if (currentCategory != null && currentCategory != undefined) {
+          this.categoryName = currentCategory.label.replace(/\//g, ' > ');
+        }
+      }
+    },
   },
   created() {
     if (this.getKeyword != '') {
@@ -142,6 +168,12 @@ export default {
 </script>
 
 <style scoped>
+div.category-title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #76549a;
+  margin-bottom: 50px;
+}
 div.posts {
   position: relative;
   width: 80%;
