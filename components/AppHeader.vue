@@ -16,11 +16,15 @@
         </li>
       </ul>
     </div>
-    <div class="subCategory" :class="{ hide: subCategoryList.length == 0 }">
+    <div
+      class="subCategory"
+      :class="{ hide: subCategoryList.length == 0 }"
+      @mouseleave="subCategoryOut"
+    >
       <ul>
         <li
           v-for="subCategory in subCategoryList"
-          @click="clickCategory(subCategory.id)"
+          @click="clickCategory(subCategory.id, 'sub')"
         >
           <span class="menu"> {{ subCategory.name }}</span>
           <span class="cnt"> [{{ subCategory.entries }}] </span>
@@ -30,7 +34,7 @@
       <div style="margin-top: 10px">
         <font-awesome-icon
           icon="fa-solid fa-caret-up"
-          size="lg"
+          size="2x"
           title="close"
           bounce
           style="cursor: pointer"
@@ -85,11 +89,14 @@ export default {
         return 'N';
       }
     },
-    clickCategory(categoryId) {
+    clickCategory(categoryId, subFlag) {
       // Sub Category display CSS 초기화
       $('div.subCategory').css('display', '');
 
-      this.activeCategory = categoryId;
+      if (subFlag != 'sub') {
+        this.activeCategory = categoryId;
+      }
+
       const subCategory = _.filter(
         this.categoryList,
         (c) => c.parent == categoryId
@@ -109,6 +116,9 @@ export default {
     },
     hideSubCategory() {
       $('div.subCategory').slideUp(400);
+    },
+    subCategoryOut() {
+      this.hideSubCategory();
     },
   },
   created() {
@@ -165,7 +175,7 @@ div.category span.cnt {
   font-weight: lighter;
 }
 div.category span.newFlag {
-  color: red;
+  color: #df7861;
   font-weight: 500;
 }
 div.subCategory {
@@ -180,6 +190,7 @@ div.subCategory {
   z-index: 999;
 }
 div.subCategory li {
+  font-size: 1.3rem;
   cursor: pointer;
 }
 div.subCategory li:hover {
@@ -190,6 +201,9 @@ div.subCategory.hide {
   display: none;
 }
 div.subCategory div:hover {
-  color: red;
+  color: #df7861;
+}
+div.subCategory span.newFlag {
+  color: #df7861;
 }
 </style>
