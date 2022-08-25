@@ -1,4 +1,5 @@
 <template>
+  <div class="nav">Category: {{ categoryName }}</div>
   <div class="aside">
     <div class="list">
       <ul>
@@ -135,6 +136,7 @@
 import AppContentMain from './AppContentMain.vue';
 import AppComment from './AppComment.vue';
 import {
+  fetchCategoryList,
   fetchPost,
   fetchComments,
   insertComment,
@@ -156,6 +158,7 @@ export default {
       tags: [],
       date: '',
       comments: [],
+      categoryName: '',
       intervalId: '',
       showModal: false,
     };
@@ -178,9 +181,13 @@ export default {
         this.tags = data.tistory.item.tags.tag;
         this.date = data.tistory.item.date;
 
+        // 카테고리 목록 조회
+        this.getCategoryList();
+
         // aside 영역 세팅
         $('div.aside').hide();
         setTimeout(() => {
+          // Twitter 가 로딩되는 경우가 있어서 1초 뒤에 나타나도록 설정
           var sAsideHtml = '';
           $('div.content')
             .find('h2,h3,h4')
@@ -283,7 +290,7 @@ export default {
               }
             });
           });
-        }, 300);
+        }, 1000);
       }
     },
     async getComments() {
@@ -400,6 +407,21 @@ export default {
     commentModDelOut(el) {
       // console.log('test');
       $(el).parent().find('ul').hide();
+    },
+    async getCategoryList() {
+      const { data } = await fetchCategoryList();
+
+      if (data.tistory.status == '200') {
+        const currentCategory = _.find(data.tistory.item.categories, [
+          'id',
+          this.categoryId,
+        ]);
+        // console.log(currentCategory);
+
+        if (currentCategory != null && currentCategory != undefined) {
+          this.categoryName = currentCategory.label.replace(/\//g, ' > ');
+        }
+      }
     },
     setAppHeight() {
       const headerHeight = 60;
@@ -531,6 +553,17 @@ div.comments > div > div.comment {
   text-align: left;
   padding-left: 80px;
 }
+div.nav {
+  position: fixed;
+  left: 0;
+  top: 150px;
+  width: 20%;
+  font-weight: bold;
+  text-align: left;
+  text-decoration: underline;
+  padding-left: 40px;
+  color: #76549a;
+}
 div.aside {
   position: fixed;
   right: 0;
@@ -550,11 +583,6 @@ div.aside ul {
   padding-left: 10px;
   list-style: none;
 }
-/* div.aside ul > li:hover {
-  color: #76549a;
-  text-decoration: underline;
-  cursor: default;
-} */
 button {
   pointer-events: all;
   padding: 2px 5px;
