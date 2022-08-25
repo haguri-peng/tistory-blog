@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <skin>
    <information>
-      <name>TIDORY</name>
+      <name>Haguri & Peng's Blog</name>
       <version>1.0</version>
       <description>
-         <![CDATA[티스토리 프레임워크, 티도리(TIDORY)]]>
+         <![CDATA[ Vue로 작업한 하구리와 펭의 블로그입니다. (TIDORY 프레임워크를 활용) ]]>
       </description>
       <license>
-         <![CDATA[MIT]]>
+         <![CDATA[ MIT ]]>
       </license>
    </information>
    <author>
-      <name>SangWoo Jeong</name>
-      <homepage>http://www.tidory.com</homepage>
-      <email>pronist@naver.com</email>
+      <name>Haguri</name>
+      <homepage>https://github.com/haguri-peng/</homepage>
+      <email>hty851111@naver.com</email>
    </author>
 </skin>
