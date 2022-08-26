@@ -62,6 +62,23 @@ export default {
       //   }
     },
   },
+  created() {
+    // const $that = this;
+    twttr.ready((twttr) => {
+      // At this point the widget.js file had been loaded.
+      // We can now make use of the twttr events
+      twttr.events.bind('loaded', (event) => {
+        // At this point all tweets have been fully loaded
+        // and rendered and you we can proceed with our Javascript
+
+        // console.log('Created widget', event);
+        if (event.widgets.length > 0) {
+          // Tweet이 로딩되면서 content 영역이 변경됨에 따라 Aside 영역을 재설정한다.
+          this.$emit('refreshAside');
+        }
+      });
+    });
+  },
 };
 </script>
 

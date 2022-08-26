@@ -24,7 +24,10 @@
     </div>
 
     <!-- <div v-html="content"></div> -->
-    <app-content-main :content="content"></app-content-main>
+    <app-content-main
+      :content="content"
+      @refreshAside="setAsideSection"
+    ></app-content-main>
 
     <div class="tags">
       <span class="tag" v-for="(tag, index) in tags" :key="index">
@@ -185,112 +188,32 @@ export default {
         this.getCategoryList();
 
         // aside 영역 세팅
-        $('div.aside').hide();
-        setTimeout(() => {
-          // Twitter 가 로딩되는 경우가 있어서 1초 뒤에 나타나도록 설정
-          var sAsideHtml = '';
-          $('div.content')
-            .find('h2,h3,h4')
-            .each(function (idx, item) {
-              const tagName = item.tagName.toLowerCase();
-              let fontSize = '';
-              if (tagName == 'h2') {
-                fontSize = '1rem';
-              } else if (tagName == 'h3') {
-                fontSize = '0.9rem';
-              } else if (tagName == 'h4') {
-                fontSize = '0.8rem';
-              }
-              sAsideHtml +=
-                '<li class="' +
-                tagName +
-                '" style="font-size: ' +
-                fontSize +
-                '">' +
-                $(this).text() +
-                '</li>';
-            });
-          $('div.aside ul').append(sAsideHtml);
-          $('div.aside ul li')
-            .hover(
-              // hover
-              function () {
-                $(this)
-                  // .css('color', '#76549a')
-                  .css('text-decoration', 'underline')
-                  .css('cursor', 'default');
-              },
-              function () {
-                $(this)
-                  // .css('color', '')
-                  .css('text-decoration', '')
-                  .css('cursor', '');
-              }
-            )
-            .click(function () {
-              // 클릭 시 해당 영역으로 스크롤 이동
-              const asideTag = $(this).attr('class');
-              const asideText = $(this).text();
+        // content 부분을 세팅하는 딜레이가 있어서 적정한 timeout을 줘서 처리(0.3초)
+        this.setAsideSection();
 
-              const clickEl = $('div.content')
-                .find(asideTag)
-                .filter(function () {
-                  return $(this).text() == asideText;
-                });
-              // console.log(clickEl);
+        // 스크롤 Event 설정
+        // 스크롤 위치에 따라 어느 영역에 있는지 확인하여 색상을 변경
+        $(window).scroll(function () {
+          const top = $(window).scrollTop();
+          // console.log('top >> ' + top);
 
-              if (clickEl.length > 0) {
-                clickEl[0].scrollIntoView({ behavior: 'smooth' });
-              }
-            })
-            .each(function (idx, item) {
-              const asideTag = $(this).attr('class');
-              const asideText = $(this).text();
-
-              const el = $('div.content')
-                .find(asideTag)
-                .filter(function () {
-                  return $(this).text() == asideText;
-                });
-              // console.log(el);
-
-              if (el.length > 0) {
-                // console.log(el[0].offsetTop);
-                const headerHeight = 60;
-                const contentTopMargin = 30;
-
-                $(this).attr(
-                  'data-offset-top',
-                  el[0].offsetTop + headerHeight + contentTopMargin
-                );
-              }
-            });
-          // offsetTop: 2196
-          $('div.aside').fadeIn();
-
-          // 스크롤 Event
-          $(window).scroll(function () {
-            const top = $(window).scrollTop();
-            // console.log('top >> ' + top);
-
-            let bFind = false;
-            $('div.aside ul li').each(function (idx, item) {
-              if (
-                !bFind &&
-                parseInt($(this).data('offsetTop')) <= top + 1 &&
-                ($(this).next().length > 0
-                  ? parseInt($(this).next().data('offsetTop'))
-                  : top + 1) >=
-                  top + 1
-              ) {
-                $(this).css('color', '#df7861');
-                bFind = true;
-              } else {
-                $(this).css('color', '');
-              }
-            });
+          let bFind = false;
+          $('div.aside ul li').each(function (idx, item) {
+            if (
+              !bFind &&
+              parseInt($(this).data('offsetTop')) <= top + 1 &&
+              ($(this).next().length > 0
+                ? parseInt($(this).next().data('offsetTop'))
+                : top + 1) >=
+                top + 1
+            ) {
+              $(this).css('color', '#df7861');
+              bFind = true;
+            } else {
+              $(this).css('color', '');
+            }
           });
-        }, 1000);
+        });
       }
     },
     async getComments() {
@@ -436,6 +359,91 @@ export default {
           contentInnerPadding +
           'px'
       );
+    },
+    setAsideSection() {
+      $('div.aside ul li').remove();
+      $('div.aside').hide();
+
+      setTimeout(() => {
+        let sAsideHtml = '';
+        $('div.content')
+          .find('h2,h3,h4')
+          .each(function (idx, item) {
+            const tagName = item.tagName.toLowerCase();
+            let fontSize = '';
+            if (tagName == 'h2') {
+              fontSize = '1rem';
+            } else if (tagName == 'h3') {
+              fontSize = '0.9rem';
+            } else if (tagName == 'h4') {
+              fontSize = '0.8rem';
+            }
+            sAsideHtml +=
+              '<li class="' +
+              tagName +
+              '" style="font-size: ' +
+              fontSize +
+              '">' +
+              $(this).text() +
+              '</li>';
+          });
+        console.log(sAsideHtml);
+        $('div.aside ul').append(sAsideHtml);
+        $('div.aside ul li')
+          .hover(
+            // hover
+            function () {
+              $(this)
+                // .css('color', '#76549a')
+                .css('text-decoration', 'underline')
+                .css('cursor', 'default');
+            },
+            function () {
+              $(this)
+                // .css('color', '')
+                .css('text-decoration', '')
+                .css('cursor', '');
+            }
+          )
+          .click(function () {
+            // 클릭 시 해당 영역으로 스크롤 이동
+            const asideTag = $(this).attr('class');
+            const asideText = $(this).text();
+
+            const clickEl = $('div.content')
+              .find(asideTag)
+              .filter(function () {
+                return $(this).text() == asideText;
+              });
+            // console.log(clickEl);
+
+            if (clickEl.length > 0) {
+              clickEl[0].scrollIntoView({ behavior: 'smooth' });
+            }
+          })
+          .each(function (idx, item) {
+            const asideTag = $(this).attr('class');
+            const asideText = $(this).text();
+
+            const el = $('div.content')
+              .find(asideTag)
+              .filter(function () {
+                return $(this).text() == asideText;
+              });
+            // console.log(el);
+
+            if (el.length > 0) {
+              const headerHeight = 60;
+              const contentTopMargin = 30;
+
+              $(this).attr(
+                'data-offset-top',
+                el[0].offsetTop + headerHeight + contentTopMargin
+              );
+            }
+          });
+        $('div.aside').fadeIn();
+      }, 300);
     },
   },
   created() {
