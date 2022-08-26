@@ -72,21 +72,6 @@ export default {
     this.showLoadingSpinner();
     this.fetchBlog();
     this.fetchCategory();
-
-    /**
-     * Page type(data-body-id)
-     * 홈화면(tt-body-index)
-     * 글화면(tt-body-page)
-     * 카테고리 글 리스트(tt-body-category)
-     * 보관함 글 리스트(tt-body-archive)
-     * 태그 리스트(tt-body-tag)
-     * 검색결과 리스트(tt-body-search)
-     * 방명록(tt-body-guestbook)
-     * 지역로그(tt-body-location)
-     */
-
-    // console.log(this.$attrs.data-body-id);
-    // console.log(this.$route);
   },
 };
 </script>
