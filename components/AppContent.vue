@@ -387,7 +387,6 @@ export default {
               $(this).text() +
               '</li>';
           });
-        console.log(sAsideHtml);
         $('div.aside ul').append(sAsideHtml);
         $('div.aside ul li')
           .hover(
