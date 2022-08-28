@@ -1,6 +1,6 @@
 import {
-  // createWebHistory,
-  createWebHashHistory,
+  createWebHistory,
+  // createWebHashHistory,
   createRouter,
 } from 'vue-router';
 
@@ -29,8 +29,8 @@ const routes = [
 ];
 
 const router = createRouter({
-  // history: createWebHistory(),
-  history: createWebHashHistory(),
+  history: createWebHistory(),
+  // history: createWebHashHistory(),
   routes,
 });
 
