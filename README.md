@@ -17,15 +17,16 @@
 ### Vue Router
 
 주소창에 BaseUrl 이외의 Url 로 접근할 수가 없어서 Hash Mode 사용   
-(해결 방안이 있으면 HTML5 Mode 로 변경할 예정)
+배포하여 테스트를 해 본 결과 HTML5 Mode 에서 문제가 없었습니다.   
+즉, 개발하면서 preview 로 확인할 때에는 Hash Mode 를 사용하고, 배포 시에는 HTML5 Mode 로 변경하면 문제 없을 것 같습니다.
 
 [Vue Router History Mode](https://router.vuejs.org/guide/essentials/history-mode.html)
 
 ```js
 // /router/index.js
 import {
-  // createWebHistory,
-  createWebHashHistory,
+  // createWebHistory, // HTML5 Mode
+  createWebHashHistory, // Hash Mode
   createRouter,
 } from 'vue-router';
 
