@@ -1,5 +1,7 @@
 <template>
-  <div class="nav">Category: {{ categoryName }}</div>
+  <div class="nav">
+    <div class="category">Category: {{ categoryName }}</div>
+  </div>
   <div class="aside">
     <div class="list">
       <ul>
@@ -14,6 +16,10 @@
         alt=""
         style="width: 150px; height: 200px; margin-top: 50px; float: left"
       />
+    </div>
+    <div class="recentTagData">
+      <font-awesome-icon icon="fa-solid fa-tags" />
+      <span v-for="tag in recentTagData"> #{{ tag }} </span>
     </div>
   </div>
 
@@ -140,6 +146,7 @@ import AppContentMain from './AppContentMain.vue';
 import AppComment from './AppComment.vue';
 import {
   fetchCategoryList,
+  fetchPostList,
   fetchPost,
   fetchComments,
   insertComment,
@@ -162,6 +169,7 @@ export default {
       date: '',
       comments: [],
       categoryName: '',
+      recentTagData: '',
       intervalId: '',
       showModal: false,
     };
@@ -186,6 +194,9 @@ export default {
 
         // 카테고리 목록 조회
         this.getCategoryList();
+
+        // 최근글 5개에서 태그 정보를 가져온다.
+        this.getTagList();
 
         // aside 영역 세팅
         // content 부분을 세팅하는 딜레이가 있어서 적정한 timeout을 줘서 처리(0.3초)
@@ -346,6 +357,26 @@ export default {
         }
       }
     },
+    async getTagList() {
+      const { data } = await fetchPostList();
+      // console.log(data);
+
+      if (data.tistory.status == '200') {
+        // 최근글 5개만
+        const postList = _.take(data.tistory.item.posts, 5);
+
+        let tagList = [];
+        for (const post of postList) {
+          const { data } = await fetchPost(post.id);
+          if (data.tistory.status == '200') {
+            tagList = _.flatten([...tagList, ...data.tistory.item.tags.tag]);
+          }
+        }
+
+        tagList = _.uniq(tagList);
+        this.recentTagData = tagList;
+      }
+    },
     setAppHeight() {
       const headerHeight = 60;
       const contentTopMargin = 30;
@@ -372,18 +403,18 @@ export default {
             const tagName = item.tagName.toLowerCase();
             let fontSize = '';
             if (tagName == 'h2') {
-              fontSize = '1rem';
+              fontSize = '1rem;';
             } else if (tagName == 'h3') {
-              fontSize = '0.9rem';
+              fontSize = '0.9rem;';
             } else if (tagName == 'h4') {
-              fontSize = '0.8rem';
+              fontSize = '0.8rem;';
             }
             sAsideHtml +=
               '<li class="' +
               tagName +
               '" style="font-size: ' +
               fontSize +
-              '">' +
+              ' margin: 5px 0">' +
               $(this).text() +
               '</li>';
           });
@@ -395,7 +426,7 @@ export default {
               $(this)
                 // .css('color', '#76549a')
                 .css('text-decoration', 'underline')
-                .css('cursor', 'default');
+                .css('cursor', 'pointer');
             },
             function () {
               $(this)
@@ -442,7 +473,7 @@ export default {
             }
           });
         $('div.aside').fadeIn();
-      }, 300);
+      }, 500);
     },
   },
   created() {
@@ -565,10 +596,12 @@ div.nav {
   left: 0;
   top: 150px;
   width: 20%;
+  text-align: right;
+  z-index: 100;
+}
+div.nav div.category {
   font-weight: bold;
-  text-align: left;
   text-decoration: underline;
-  padding-left: 40px;
   color: #76549a;
 }
 div.aside {
@@ -576,19 +609,27 @@ div.aside {
   right: 0;
   top: 150px;
   width: 20%;
+  z-index: 100;
+  display: inline-grid;
 }
 div.aside > div.list {
   text-align: left;
   border-left: 2px solid #df7861;
 }
-/* div.aside > div.image {
-  width: 150px;
-  height: 150px;
-  margin-top: 50px;
-} */
 div.aside ul {
   padding-left: 10px;
   list-style: none;
+}
+div.aside div.recentTagData {
+  margin-top: 80px;
+  width: 90%;
+  text-align: left;
+  font-size: 0.8rem;
+}
+div.aside div.recentTagData span:hover {
+  text-decoration: underline;
+  font-weight: bold;
+  cursor: pointer;
 }
 button {
   pointer-events: all;
