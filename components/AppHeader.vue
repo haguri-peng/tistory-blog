@@ -3,6 +3,15 @@
     <!-- 카테고리 -->
     <div class="category">
       <ul>
+        <li>
+          <font-awesome-icon
+            icon="fa-solid fa-house"
+            size="lg"
+            beat
+            style="cursor: pointer; --fa-animation-duration: 2s"
+            @click="moveHome"
+          />
+        </li>
         <li
           v-for="category in getTopCategory"
           :key="category.id"
@@ -119,6 +128,9 @@ export default {
     },
     subCategoryOut() {
       this.hideSubCategory();
+    },
+    moveHome() {
+      this.$router.push('/');
     },
   },
   created() {
