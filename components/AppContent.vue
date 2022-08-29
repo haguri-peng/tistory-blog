@@ -41,14 +41,15 @@
     ></app-content-main>
 
     <div class="tags">
-      <span class="tag" v-for="(tag, index) in tags" :key="index">
-        <span class="title" v-if="index === 0">
-          Tags
-          <font-awesome-icon
-            icon="fa-solid fa-tags"
-            style="margin-right: 20px"
-          />
-        </span>
+      Tags
+      <font-awesome-icon icon="fa-solid fa-tags" style="margin-right: 20px" />
+      <span
+        class="tag"
+        v-for="(tag, index) in tags"
+        :key="index"
+        @click="searchTag(tag)"
+      >
+        <!-- <span class="title" v-if="index === 0"> </span> -->
         #{{ tag }}
       </span>
     </div>
@@ -480,6 +481,13 @@ export default {
         $('div.aside').fadeIn();
       }, 500);
     },
+    moveCategory() {
+      this.$router.push(`/category/${this.categoryId}`);
+    },
+    searchTag(tag) {
+      // console.log(tag);
+      // 작업중..
+    },
   },
   created() {
     // console.log(this.$route.params.id);
@@ -540,10 +548,15 @@ div.title p.date {
 div.tags {
   color: #76549a;
   margin-top: 20px;
-  font-weight: bold;
+  padding: 0 50px;
 }
 div.tags span.tag {
   margin-right: 5px;
+}
+div.tags span.tag:hover {
+  font-weight: bold;
+  text-decoration: underline;
+  cursor: pointer;
 }
 div.comments {
   margin-top: 59px;
