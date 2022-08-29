@@ -1,10 +1,23 @@
 {
-    "parser": "babel-eslint",
+    "extends": [
+        "standard"
+    ],
+    "parser": "@babel/eslint-parser",
     "parserOptions": {
-        "ecmaVersion": 2020,
-        "sourceType": "module"
+        "requireConfigFile": false,
+        "babelOptions": {
+            "babelrc": false,
+            "configFile": false,
+            "presets": ["@babel/preset-env"]
+        }
     },
     "rules": {
-        "comma-dangle": "off"
-    }
+        "comma-dangle": "off",
+        "semi": [0, "always"],
+        "space-before-function-paren": "off",
+        "eqeqeq": "off"
+    },
+    "ignorePatterns": [
+        "./dist/*"
+    ]
 }

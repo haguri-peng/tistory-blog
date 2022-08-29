@@ -63,7 +63,6 @@ export default {
     },
   },
   created() {
-    // const $that = this;
     twttr.ready((twttr) => {
       // At this point the widget.js file had been loaded.
       // We can now make use of the twttr events
@@ -88,5 +87,8 @@ div {
   text-align: initial;
   padding: 0 50px;
   width: 80%;
+}
+div ul {
+  padding-left: 30px;
 }
 </style>

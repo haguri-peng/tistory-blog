@@ -1,6 +1,11 @@
 <template>
   <div class="nav">
-    <div class="category">Category: {{ categoryName }}</div>
+    <div class="category">
+      [Category]
+      <div class="category-name" @click="moveCategory">
+        {{ categoryName }}
+      </div>
+    </div>
   </div>
   <div class="aside">
     <div class="list">
@@ -600,9 +605,15 @@ div.nav {
   z-index: 100;
 }
 div.nav div.category {
+  color: #76549a;
+}
+div.nav div.category div.category-name {
+  margin-left: 5px;
+}
+div.nav div.category div.category-name:hover {
   font-weight: bold;
   text-decoration: underline;
-  color: #76549a;
+  cursor: pointer;
 }
 div.aside {
   position: fixed;
