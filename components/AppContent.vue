@@ -375,7 +375,10 @@ export default {
         for (const post of postList) {
           const { data } = await fetchPost(post.id);
           if (data.tistory.status == '200') {
-            tagList = _.flatten([...tagList, ...data.tistory.item.tags.tag]);
+            tagList = _.flatten([
+              ...tagList,
+              ...(data.tistory.item.tags.tag || []),
+            ]);
           }
         }
 
