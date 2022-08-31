@@ -22,11 +22,22 @@ export default {
       const dom = htmlparser2.parseDocument(this.content);
 
       if (dom != null) {
+        // Twitter Widget이 있으면 로딩
         const twtrEl = _.filter(dom.children, ['name', 'blockquote']);
-
         if (twtrEl.length > 0) {
           // Tweet widget 보이게 설정
           twttr.widgets.load();
+        }
+
+        // 코드 영역이 있으면 구문 강조
+        const codeEl = _.filter(
+          dom.children,
+          (c) => c.name == 'div' && c.attributes[0].name == 'v-highlight'
+        );
+        if (codeEl.length > 0) {
+          setTimeout(() => {
+            Prism.highlightAll();
+          }, 500);
         }
       }
 

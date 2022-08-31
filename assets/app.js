@@ -17,6 +17,9 @@ import router from '../router/index';
 import store from '../store/index';
 
 import VueCodeHighlight from 'vue-code-highlight';
+import 'prism-es6/components/prism-markup';
+import 'prism-es6/components/prism-css';
+import 'prism-es6/components/prism-javascript';
 
 /* Gitart Vue Dialog */
 import 'gitart-vue-dialog/dist/style.css';
