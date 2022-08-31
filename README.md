@@ -3,7 +3,7 @@
 어느 정도 작업이 완료되어 블로그에 배포하였습니다.   
 기능은 하나씩 추가중입니다.
 
-🐸 [Haguri & Peng's Blog](https://haguri-peng.tistory.com)
+🐸 [Haguri & Peng's Blog](https://haguri-peng.tistory.com) 🐧
 
 
 ## Vue
@@ -25,16 +25,16 @@
 ```js
 // /router/index.js
 import {
-  // createWebHistory, // HTML5 Mode
-  createWebHashHistory, // Hash Mode
+  createWebHistory, // HTML5 Mode
+  // createWebHashHistory, // Hash Mode
   createRouter,
 } from 'vue-router';
 
 ...
 
 const router = createRouter({
-  // history: createWebHistory(),
-  history: createWebHashHistory(),
+  history: createWebHistory(),
+  // history: createWebHashHistory(),
   routes,
 });
 
@@ -43,7 +43,7 @@ export default router;
 
 ### Vuex
 
-게시글에서 이전 페이지로 이동 시 문제가 있어서   
+게시글에서 이전 페이지로 이동 시 문제가 있어   
 어쩔 수 없이 vuex 를 사용하여 페이지 정보와 검색어를 저장
 ```js
 import { createStore } from 'vuex';
@@ -73,6 +73,11 @@ export default store;
 댓글 등록 시 Modal 사용   
 [Gitart Vue Dialog](https://github.com/gitart-group/vue-dialog)
 
+### Code Highlight
+
+[vue-code-highlight](https://github.com/elisiondesign/vue-code-highlight)   
+[PRISM](https://prismjs.com/)
+
 
 ## Color
 
@@ -97,9 +102,10 @@ Open API 에서 제공하지 않음
 
 ## Tidory
 
-빌드 후 배포하여 보니 app.xxxx.js 파일에서 연결된 다른 script(.js) 파일을 찾지 못하는 문제가 발생.   
+Tidory **8.2.3** 버전으로 업데이트   
+8.0.5 버전에서 빌드 후 배포하여 보니 app.xxxx.js 파일에서 연결된 다른 script(.js) 파일을 찾지 못하는 문제가 발생.   
 확인해보니 'tidory.config.js' 에서 설정한 'public_path' 대로 경로가 제대로 세팅되지 않아 수동으로 변경하여 문제를 해결하였습니다.   
-위 이슈는 Tidory 제작자에게 문의한 결과 8.2.1 버전(제가 사용하고 있는 버전은 8.0.5) 이후부터는 해결되었다고 답변을 받았습니다.
+위 이슈는 Tidory 제작자에게 문의한 결과 8.2.1 버전 이후부터는 해결되었다고 답변을 받았습니다.
 
 
 ## 저작권
