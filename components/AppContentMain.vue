@@ -94,7 +94,7 @@ export default {
   },
   updated() {
     $('div pre[class*="language-"]')
-      .css('padding', '30px 0 0 10px')
+      .css('padding', '30px 0 10px 10px')
       .css('font-size', '1rem');
   },
 };

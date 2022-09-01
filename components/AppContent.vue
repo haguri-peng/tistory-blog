@@ -410,20 +410,20 @@ export default {
           .find('h2,h3,h4')
           .each(function (idx, item) {
             const tagName = item.tagName.toLowerCase();
-            let fontSize = '';
-            if (tagName == 'h2') {
-              fontSize = '1rem;';
-            } else if (tagName == 'h3') {
-              fontSize = '0.9rem;';
-            } else if (tagName == 'h4') {
-              fontSize = '0.8rem;';
-            }
+            // let fontSize = '';
+            // if (tagName == 'h2') {
+            //   fontSize = '1rem;';
+            // } else if (tagName == 'h3') {
+            //   fontSize = '0.9rem;';
+            // } else if (tagName == 'h4') {
+            //   fontSize = '0.8rem;';
+            // }
             sAsideHtml +=
               '<li class="' +
               tagName +
-              '" style="font-size: ' +
-              fontSize +
-              ' margin: 5px 0">' +
+              '" style="font-size: 1rem' +
+              // fontSize +
+              ' margin: 2px 0">' +
               $(this).text() +
               '</li>';
           });
@@ -634,7 +634,7 @@ div.nav div.category div.category-name:hover {
 div.aside {
   position: fixed;
   right: 0;
-  top: 150px;
+  top: 100px;
   width: 20%;
   z-index: 100;
   display: inline-grid;
