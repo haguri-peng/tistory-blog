@@ -536,7 +536,8 @@ div.top-down {
   position: sticky;
   float: right;
   bottom: 15px;
-  /* right: 20px; */
+  margin-right: 20px;
+  z-index: 110;
 }
 div.title {
   margin-bottom: 59px;
