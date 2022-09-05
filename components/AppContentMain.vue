@@ -5,9 +5,18 @@
 <script>
 import * as htmlparser2 from 'htmlparser2';
 import _ from 'lodash';
+import loadScript from '../utils/load-script';
 
 import 'vue-code-highlight/themes/prism-tomorrow.css';
 import 'vue-code-highlight/themes/window.css';
+
+function adfitLoader() {
+  if (typeof window['adfit'] === 'function') {
+    return Promise.resolve();
+  } else {
+    return loadScript('https://t1.daumcdn.net/kas/static/ba.min.js', 'defer');
+  }
+}
 
 export default {
   props: ['content'],
@@ -38,6 +47,18 @@ export default {
           setTimeout(() => {
             Prism.highlightAll();
           }, 500);
+        }
+
+        // 광고 adfit
+        const ads = _.filter(
+          dom.children,
+          (c) => c.name == 'figure' && c.attribs.class == 'ad-wp'
+        );
+        console.log(ads);
+        if (ads.length > 0) {
+          adfitLoader().then(() => {
+            adfit();
+          });
         }
       }
 
