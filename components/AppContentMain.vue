@@ -1,5 +1,6 @@
 <template>
-  <div v-html="content"></div>
+  <!-- <div v-html="content"></div> -->
+  <div v-html="modContent"></div>
 </template>
 
 <script>
@@ -14,21 +15,88 @@ function adfitLoader() {
   if (typeof window['adfit'] === 'function') {
     return Promise.resolve();
   } else {
-    return loadScript('https://t1.daumcdn.net/kas/static/ba.min.js', 'defer');
+    return loadScript('https://t1.daumcdn.net/kas/static/ba.min.js', 'async');
   }
+}
+
+function getAdfitHtml(id) {
+  const width = '728px';
+  const height = '90px';
+
+  let sAdfitHtml = '';
+  sAdfitHtml += '<ins class="kakao_ad_area" ';
+  // sAdfitHtml +=
+  //   'style="display: inline-block; height: 90px; max-height: inherit; min-height: 90px; min-width: 728px; width: 728px; text-decoration: none;" ';
+  sAdfitHtml += 'data-ad-unit="' + id + '" ';
+  sAdfitHtml += 'data-ad-width="' + width + '" ';
+  sAdfitHtml += 'data-ad-height="' + height + '">';
+  sAdfitHtml += '</ins>';
+
+  return sAdfitHtml;
 }
 
 export default {
   props: ['content'],
-  //   data() {
-  //     return {
-  //       isUpdated: false,
-  //       modContent: '',
-  //     };
-  //   },
+  data() {
+    return {
+      isUpdated: false,
+      modContent: '',
+    };
+  },
   watch: {
     content() {
       const dom = htmlparser2.parseDocument(this.content);
+
+      if (dom != null) {
+        // // Twitter Widget이 있으면 로딩
+        // const twtrEl = _.filter(dom.children, ['name', 'blockquote']);
+        // if (twtrEl.length > 0) {
+        //   // Tweet widget 보이게 설정
+        //   twttr.widgets.load();
+        // }
+
+        // // 코드 영역이 있으면 구문 강조
+        // const codeEl = _.filter(
+        //   dom.children,
+        //   (c) => c.name == 'div' && c.attributes[0].name == 'v-highlight'
+        // );
+        // if (codeEl.length > 0) {
+        //   setTimeout(() => {
+        //     Prism.highlightAll();
+        //   }, 500);
+        // }
+
+        if (!this.isUpdated) {
+          let modifiedContent = this.content;
+
+          // 광고 adfit
+          const ads = _.filter(
+            dom.children,
+            (c) => c.name == 'figure' && c.attribs.class == 'ad-wp'
+          );
+          console.log(ads);
+          if (ads.length > 0) {
+            for (let i = 0; i < ads.length; i++) {
+              console.log(getAdfitHtml(ads[i].attribs['data-ad-id-pc']));
+              if (ads[i].attribs['data-ad-vendor'] == 'adfit') {
+                modifiedContent = modifiedContent.replace(
+                  '/<figure[^>]*>*.data-ad-id-pc="(' +
+                    ads[i].attribs['data-ad-id-pc'] +
+                    ').*<\/figure>/g',
+                  getAdfitHtml(ads[i].attribs['data-ad-id-pc'])
+                );
+              }
+            }
+            //
+          }
+
+          this.isUpdated = true;
+          this.modContent = modifiedContent;
+        }
+      }
+    },
+    modContent() {
+      const dom = htmlparser2.parseDocument(this.modContent);
 
       if (dom != null) {
         // Twitter Widget이 있으면 로딩
@@ -49,52 +117,11 @@ export default {
           }, 500);
         }
 
-        // 광고 adfit
-        const ads = _.filter(
-          dom.children,
-          (c) => c.name == 'figure' && c.attribs.class == 'ad-wp'
-        );
-        console.log(ads);
-        if (ads.length > 0) {
-          adfitLoader().then(() => {
-            adfit();
-          });
-        }
+        // load AdFit
+        adfitLoader().then(() => {
+          adfit();
+        });
       }
-
-      //   if (!this.isUpdated && dom != null) {
-      //     const children = dom.children;
-      //     const twtrEl = _.filter(children, ['name', 'blockquote']);
-      //     const twtrIds = [];
-
-      //     twtrEl.forEach((currentValue, index, array) => {
-      //       const twtrIdTag = _.filter(
-      //         currentValue.children,
-      //         (c) => c.name == 'a' && c.attribs.href.indexOf('/status/') > -1
-      //       );
-      //       if (twtrIdTag.length > 0) {
-      //         twtrIds.push(
-      //           twtrIdTag[0].attribs.href.split('/status/')[1].split('?')[0]
-      //         );
-      //       }
-      //     });
-
-      //     let modifiedContent = this.content;
-      //     modifiedContent = modifiedContent.replace(
-      //       /<\s*script[^>]*>(.*?)<\s*\/\s*script>/gm,
-      //       ''
-      //     );
-
-      //     for (let i = 0; i < twtrIds.length; i++) {
-      //       modifiedContent = modifiedContent.replace(
-      //         /<blockquote[^>]*>((\n|\r|.)*?)<\/blockquote>/gm,
-      //         '<Tweet tweet-id="' + twtrIds[i] + '" />'
-      //       );
-      //     }
-
-      //     this.isUpdated = true;
-      //     this.modContent = modifiedContent;
-      //   }
     },
   },
   created() {
