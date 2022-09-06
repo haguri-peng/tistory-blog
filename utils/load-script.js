@@ -9,17 +9,17 @@ export default function loadScript(url, mode) {
     }
 
     script.onload = function () {
-      document.head.removeChild(script);
+      // document.body.removeChild(script);
       resolve();
     };
 
     script.onerror = function () {
-      document.head.removeChild(script);
+      document.body.removeChild(script);
       reject(new Error('Script loading is failed.'));
     };
 
     script.src = url;
 
-    document.head.appendChild(script);
+    document.body.appendChild(script);
   });
 }
