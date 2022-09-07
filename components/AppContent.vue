@@ -6,6 +6,15 @@
         {{ categoryName }}
       </div>
     </div>
+    <div class="adfit">
+      <ins
+        class="kakao_ad_area"
+        data-ad-unit="DAN-rNHsJ1xGbg4tjBAa"
+        data-ad-width="250px"
+        data-ad-height="250px"
+      ></ins
+      >'
+    </div>
   </div>
   <div class="aside">
     <div class="list">
@@ -617,6 +626,7 @@ div.nav {
   position: fixed;
   left: 0;
   top: 150px;
+  bottom: 0;
   width: 20%;
   text-align: right;
   z-index: 100;
@@ -631,6 +641,11 @@ div.nav div.category div.category-name:hover {
   font-weight: bold;
   text-decoration: underline;
   cursor: pointer;
+}
+div.nav div.adfit {
+  position: absolute;
+  bottom: 0;
+  right: 0;
 }
 div.aside {
   position: fixed;
