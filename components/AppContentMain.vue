@@ -21,12 +21,12 @@ function adfitLoader() {
 
 const adfitMiddleId = 'DAN-OrpQV5Dh13ppgSiy';
 function getAdfitHtml() {
-  const width = '728px';
-  const height = '90px';
+  const width = '728';
+  const height = '90';
 
   let sAdfitHtml = '';
   sAdfitHtml +=
-    '    <ins class="kakao_ad_area" style="display: inline-block; height: 90px; max-height: inherit; min-height: 90px; min-width: 728px; width: 728px; text-decoration: none;" data-ad-unit="' +
+    '<ins class="kakao_ad_area" data-ad-unit="' +
     adfitMiddleId +
     '" data-ad-width="' +
     width +

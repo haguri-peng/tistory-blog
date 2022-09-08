@@ -6,23 +6,21 @@
         {{ categoryName }}
       </div>
     </div>
+    <!-- AdFit tistory sidebar 광고 -->
     <div class="adfit">
       <ins
         class="kakao_ad_area"
-        data-ad-unit="DAN-rNHsJ1xGbg4tjBAa"
-        data-ad-width="250px"
-        data-ad-height="250px"
+        data-ad-unit="DAN-pm2qlQF9u7DdI0BL"
+        data-ad-width="160"
+        data-ad-height="600"
       ></ins
       >'
     </div>
   </div>
+
   <div class="aside">
     <div class="list">
-      <ul>
-        <!-- <li>1</li>
-        <li>22</li>
-        <li>333</li> -->
-      </ul>
+      <ul></ul>
     </div>
     <div class="image">
       <img
