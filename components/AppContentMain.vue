@@ -1,6 +1,6 @@
 <template>
   <!-- <div v-html="content"></div> -->
-  <div v-html="modContent"></div>
+  <div v-html="modContent" class="contentMain"></div>
 </template>
 
 <script>
@@ -127,6 +127,10 @@ export default {
     $('div pre[class*="language-"]')
       .css('padding', '30px 0 10px 10px')
       .css('font-size', '1rem');
+
+    // 별도로 CSS 설정
+    $('div.contentMain ul, div.contentMain ol').css('padding-left', '30px');
+    $('div.contentMain p').css('margin', '5px 0');
   },
 };
 </script>
@@ -137,8 +141,5 @@ div {
   text-align: initial;
   padding: 0 50px;
   width: 80%;
-}
-div ul {
-  padding-left: 30px;
 }
 </style>

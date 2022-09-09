@@ -196,7 +196,7 @@ div.subCategory {
   top: 0;
   width: 100%;
   padding-top: 60px;
-  background-color: rgba(252, 248, 232, 0.55);
+  background-color: rgba(252, 248, 232, 0.77);
   animation-name: fadeInDown;
   animation-duration: 0.7s;
   z-index: 999;
