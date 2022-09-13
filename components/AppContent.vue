@@ -1,4 +1,5 @@
 <template>
+  <!-- Left -->
   <div class="nav">
     <div class="category">
       [Category]
@@ -13,11 +14,11 @@
         data-ad-unit="DAN-pm2qlQF9u7DdI0BL"
         data-ad-width="160"
         data-ad-height="600"
-      ></ins
-      >'
+      ></ins>
     </div>
   </div>
 
+  <!-- Right -->
   <div class="aside">
     <div class="list">
       <ul></ul>
@@ -41,7 +42,6 @@
       <p class="date">작성일시: {{ date }}</p>
     </div>
 
-    <!-- <div v-html="content"></div> -->
     <app-content-main
       :content="content"
       @refreshAside="setAsideSection"
