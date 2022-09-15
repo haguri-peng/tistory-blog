@@ -83,6 +83,14 @@
               noAuth: comment.homepage != $parent.$parent.loginId,
             }"
           >
+            <span
+              v-for="n in (comment.level == 1
+                ? comment.level + 1
+                : comment.level) - 2"
+            >
+              &nbsp;&nbsp;&nbsp;&nbsp;
+            </span>
+            <span v-if="comment.level > 1">└─</span>
             <font-awesome-icon
               icon="fa-solid fa-house-user"
               :title="comment.name"
@@ -180,6 +188,7 @@ export default {
       content: '',
       tags: [],
       date: '',
+      acceptComment: false,
       comments: [],
       categoryName: '',
       recentTagData: '',
@@ -204,6 +213,8 @@ export default {
         this.content = data.tistory.item.content;
         this.tags = data.tistory.item.tags.tag;
         this.date = data.tistory.item.date;
+        this.acceptComment =
+          data.tistory.item.acceptComment == '1' ? true : false; // 댓글 허용 여부(허용: 1, 비허용: 0)
 
         // 카테고리 목록 조회
         this.getCategoryList();
@@ -249,7 +260,30 @@ export default {
           data.tistory.item.comments != null &&
           data.tistory.item.comments.length > 0
         ) {
-          this.comments = data.tistory.item.comments;
+          const treeSortComments = _.sortBy(data.tistory.item.comments, [
+            function (comment) {
+              function getParentDate(comment) {
+                if (comment.parentId == '') {
+                  comment.level = 1;
+                  return comment.date;
+                } else {
+                  const parent = _.find(data.tistory.item.comments, [
+                    'id',
+                    comment.parentId,
+                  ]);
+                  comment.level = parent.level + 1;
+                  return getParentDate(parent);
+                }
+              }
+              return getParentDate(comment);
+            },
+            'date',
+          ]);
+
+          // console.log(data.tistory.item.comments);
+          // console.log(treeSortComments);
+
+          this.comments = treeSortComments;
         } else {
           this.comments = [];
         }
@@ -258,6 +292,11 @@ export default {
     addComment() {
       if (this.$parent.$parent.loginId == '') {
         alert('로그인이 필요합니다.');
+        return;
+      }
+
+      if (!this.acceptComment) {
+        alert('댓글이 허용되지 않는 글입니다.');
         return;
       }
 
