@@ -73,11 +73,6 @@ export default store;
 댓글 등록 시 Modal 사용   
 [Gitart Vue Dialog](https://github.com/gitart-group/vue-dialog)
 
-### Code Highlight
-
-[vue-code-highlight](https://github.com/elisiondesign/vue-code-highlight)   
-[PRISM](https://prismjs.com/)
-
 
 ## Color
 

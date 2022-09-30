@@ -16,27 +16,22 @@ import App from '../components/App.vue';
 import router from '../router/index';
 import store from '../store/index';
 
-import VueCodeHighlight from 'vue-code-highlight';
-import 'prism-es6/components/prism-markup';
-import 'prism-es6/components/prism-css';
-import 'prism-es6/components/prism-javascript';
-
-/* Gitart Vue Dialog */
+// Gitart Vue Dialog
 import 'gitart-vue-dialog/dist/style.css';
 import { GDialog } from 'gitart-vue-dialog';
 
-/* import the fontawesome core */
+// import the fontawesome core
 import { library } from '@fortawesome/fontawesome-svg-core';
 
-/* import font awesome icon component */
+// import font awesome icon component
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
-/* import specific icons */
+// import specific icons
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { far } from '@fortawesome/free-regular-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 
-/* add icons to the library */
+// add icons to the library
 library.add(fas, far, fab);
 
 const app = createApp({
@@ -48,7 +43,6 @@ const app = createApp({
 app
   .use(router)
   .use(store)
-  .use(VueCodeHighlight)
   .component('font-awesome-icon', FontAwesomeIcon)
   .component('GDialog', GDialog)
   .mount('#app');

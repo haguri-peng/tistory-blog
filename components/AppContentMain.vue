@@ -8,9 +8,6 @@ import * as htmlparser2 from 'htmlparser2';
 import _ from 'lodash';
 import loadScript from '../utils/load-script';
 
-import 'vue-code-highlight/themes/prism-tomorrow.css';
-import 'vue-code-highlight/themes/window.css';
-
 function adfitLoader() {
   if (typeof window['adfit'] === 'function') {
     return Promise.resolve();
@@ -66,10 +63,7 @@ export default {
                   ads[i].attribs['data-ad-id-pc'] +
                   ').*><\/figure>'
               );
-              modifiedContent = modifiedContent.replace(
-                regex,
-                getAdfitHtml(ads[i].attribs['data-ad-id-pc'])
-              );
+              modifiedContent = modifiedContent.replace(regex, getAdfitHtml());
             }
           }
         }
@@ -89,16 +83,10 @@ export default {
           twttr.widgets.load();
         }
 
-        // 코드 영역이 있으면 구문 강조
-        const codeEl = _.filter(
-          dom.children,
-          (c) => c.name == 'div' && c.attributes[0].name == 'v-highlight'
-        );
-        if (codeEl.length > 0) {
-          setTimeout(() => {
-            Prism.highlightAll();
-          }, 500);
-        }
+        // 코드 구문 강조
+        setTimeout(() => {
+          hljs.highlightAll();
+        }, 500);
 
         // load AdFit
         adfitLoader().then(() => {
@@ -124,9 +112,7 @@ export default {
     });
   },
   updated() {
-    $('div pre[class*="language-"]')
-      .css('padding', '30px 0 10px 10px')
-      .css('font-size', '1rem');
+    $('pre').css('font-size', '1rem');
 
     // 별도로 CSS 설정
     $('div.contentMain ul, div.contentMain ol').css('padding-left', '30px');
