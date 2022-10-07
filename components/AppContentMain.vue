@@ -86,6 +86,7 @@ export default {
         // 코드 구문 강조
         setTimeout(() => {
           hljs.highlightAll();
+          $('[class^=hljs]').css('font-family', "'Nanum Gothic Coding'");
         }, 500);
 
         // load AdFit
@@ -112,7 +113,7 @@ export default {
     });
   },
   updated() {
-    $('pre').css('font-size', '1rem');
+    $('pre').css('font-size', '0.9rem');
 
     // 별도로 CSS 설정
     $('div.contentMain ul, div.contentMain ol').css('padding-left', '30px');
