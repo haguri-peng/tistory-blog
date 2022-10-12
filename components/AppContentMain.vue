@@ -92,6 +92,10 @@ export default {
         // load AdFit
         adfitLoader().then(() => {
           adfit();
+
+          setTimeout(() => {
+            this.$emit('refreshAside');
+          }, 100);
         });
       }
     },

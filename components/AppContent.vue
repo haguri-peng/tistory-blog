@@ -223,7 +223,7 @@ export default {
         this.getTagList();
 
         // aside 영역 세팅
-        // content 부분을 세팅하는 딜레이가 있어서 적정한 timeout을 줘서 처리(0.3초)
+        // content 부분을 세팅하는 딜레이가 있어서 적정한 timeout을 줘서 처리(0.5초)
         this.setAsideSection();
 
         // 스크롤 Event 설정
@@ -236,11 +236,11 @@ export default {
           $('div.aside ul li').each(function (idx, item) {
             if (
               !bFind &&
-              parseInt($(this).data('offsetTop')) <= top + 1 &&
+              parseInt($(this).data('offsetTop')) <= top + 5 &&
               ($(this).next().length > 0
                 ? parseInt($(this).next().data('offsetTop'))
-                : top + 1) >=
-                top + 1
+                : top + 5) >=
+                top + 5
             ) {
               $(this).css('color', '#df7861');
               bFind = true;
@@ -456,38 +456,26 @@ export default {
           .find('h2,h3,h4')
           .each(function (idx, item) {
             const tagName = item.tagName.toLowerCase();
-            // let fontSize = '';
-            // if (tagName == 'h2') {
-            //   fontSize = '1rem;';
-            // } else if (tagName == 'h3') {
-            //   fontSize = '0.9rem;';
-            // } else if (tagName == 'h4') {
-            //   fontSize = '0.8rem;';
-            // }
             sAsideHtml +=
               '<li class="' +
               tagName +
               '" style="font-size: 1rem' +
-              // fontSize +
               ' margin: 2px 0">' +
               $(this).text() +
               '</li>';
           });
-        $('div.aside ul').append(sAsideHtml);
+        // $('div.aside ul').append(sAsideHtml);
+        $('div.aside ul').html(sAsideHtml);
         $('div.aside ul li')
           .hover(
             // hover
             function () {
               $(this)
-                // .css('color', '#76549a')
                 .css('text-decoration', 'underline')
                 .css('cursor', 'pointer');
             },
             function () {
-              $(this)
-                // .css('color', '')
-                .css('text-decoration', '')
-                .css('cursor', '');
+              $(this).css('text-decoration', '').css('cursor', '');
             }
           )
           .click(function () {
