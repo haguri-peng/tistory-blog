@@ -24,7 +24,11 @@ import { GDialog } from 'gitart-vue-dialog';
 import { library } from '@fortawesome/fontawesome-svg-core';
 
 // import font awesome icon component
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import {
+  FontAwesomeIcon,
+  FontAwesomeLayers,
+  FontAwesomeLayersText,
+} from '@fortawesome/vue-fontawesome';
 
 // import specific icons
 import { fas } from '@fortawesome/free-solid-svg-icons';
@@ -44,5 +48,7 @@ app
   .use(router)
   .use(store)
   .component('font-awesome-icon', FontAwesomeIcon)
+  .component('font-awesome-layers', FontAwesomeLayers)
+  .component('font-awesome-layers-text', FontAwesomeLayersText)
   .component('GDialog', GDialog)
   .mount('#app');

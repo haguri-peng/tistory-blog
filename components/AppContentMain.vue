@@ -16,22 +16,12 @@ function adfitLoader() {
   }
 }
 
-const adfitMiddleId = 'DAN-OrpQV5Dh13ppgSiy';
 function getAdfitHtml() {
+  const adfitMiddleId = 'DAN-OrpQV5Dh13ppgSiy';
   const width = '728';
   const height = '90';
 
-  let sAdfitHtml = '';
-  sAdfitHtml +=
-    '<ins class="kakao_ad_area" data-ad-unit="' +
-    adfitMiddleId +
-    '" data-ad-width="' +
-    width +
-    '" data-ad-height="' +
-    height +
-    '"></ins>';
-
-  return sAdfitHtml;
+  return `<ins class="kakao_ad_area" data-ad-unit="${adfitMiddleId}" data-ad-width="${width}" data-ad-height="${height}"></ins>`;
 }
 
 export default {
@@ -117,7 +107,7 @@ export default {
     });
   },
   updated() {
-    $('pre').css('font-size', '0.9rem');
+    $('pre').css('font-size', '0.9rem').css('line-height', '21px');
 
     // 별도로 CSS 설정
     $('div.contentMain ul, div.contentMain ol').css('padding-left', '30px');

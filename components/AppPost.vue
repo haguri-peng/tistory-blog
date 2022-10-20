@@ -4,7 +4,19 @@
     <span class="post-title">
       <span>{{ postItem.title }}</span>
       <span style="margin-left: 5px; font-size: 1rem">
-        [{{ postItem.comments }}]
+        <font-awesome-layers full-width class="fa-lg">
+          <font-awesome-icon icon="fa-regular fa-comment" />
+          <font-awesome-layers-text
+            counter
+            :value="postItem.comments"
+            position="top-right"
+            style="
+              font-size: 3rem;
+              margin-right: -15px;
+              background-color: #76549a;
+            "
+          />
+        </font-awesome-layers>
       </span>
     </span>
     <span class="post-url">{{ postItem.postUrl }}</span>

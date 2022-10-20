@@ -172,6 +172,7 @@ div.category-title {
   font-size: 2rem;
   font-weight: bold;
   color: #76549a;
+  text-decoration: underline;
   margin-bottom: 50px;
 }
 div.posts {
