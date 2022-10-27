@@ -31,8 +31,14 @@
       />
     </div>
     <div class="recentTagData">
-      <font-awesome-icon icon="fa-solid fa-tags" />
-      <span v-for="tag in recentTagData"> #{{ tag }} </span>
+      <div class="recentTagsTitle">
+        Recent Tags <font-awesome-icon icon="fa-solid fa-tags" />
+      </div>
+      <div style="margin-top: 5px">
+        <span v-for="tag in recentTagData">
+          <button type="button" style="font-weight: bold">#{{ tag }}</button>
+        </span>
+      </div>
     </div>
   </div>
 
@@ -698,6 +704,12 @@ div.aside div.recentTagData span:hover {
   text-decoration: underline;
   font-weight: bold;
   cursor: pointer;
+}
+div.aside div.recentTagData div.recentTagsTitle {
+  color: #df7861;
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-decoration: underline;
 }
 button {
   pointer-events: all;
