@@ -44,7 +44,7 @@
 
   <div class="content" ref="content">
     <div class="title">
-      <h1>{{ title }}</h1>
+      <h1>{{ getUnescapedTitle }}</h1>
       <p class="date">작성일시: {{ date }}</p>
     </div>
 
@@ -205,6 +205,9 @@ export default {
   computed: {
     isContent() {
       return this.content == '' ? false : true;
+    },
+    getUnescapedTitle() {
+      return _.unescape(this.title);
     },
   },
   methods: {
