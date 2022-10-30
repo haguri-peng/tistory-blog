@@ -36,7 +36,13 @@
       </div>
       <div style="margin-top: 5px">
         <span v-for="tag in recentTagData">
-          <button type="button" style="font-weight: bold">#{{ tag }}</button>
+          <button
+            type="button"
+            style="font-weight: bold"
+            @click="searchTag(tag)"
+          >
+            #{{ tag }}
+          </button>
         </span>
       </div>
     </div>
@@ -530,9 +536,8 @@ export default {
     moveCategory() {
       this.$router.push(`/category/${this.categoryId}`);
     },
-    searchTag(tag) {
-      // console.log(tag);
-      // 작업중..
+    async searchTag(tag) {
+      this.$router.push(`/search/${tag}`);
     },
   },
   created() {

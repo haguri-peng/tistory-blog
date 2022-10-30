@@ -17,6 +17,10 @@ const routes = [
     path: '/category/:categoryId',
     component: () => import('../components/AppCategory.vue'),
   },
+  {
+    path: '/search/:keyword',
+    component: () => import('../components/AppSearch.vue'),
+  },
   // {
   //   path: '/404',
   //   component: () => import('../components/404.vue'),
