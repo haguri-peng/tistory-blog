@@ -5,15 +5,22 @@
         font-size: 1.5rem;
         font-weight: bold;
         text-align: left;
-        text-decoration: underline;
         padding: 0 0 10px 10px;
         border-bottom: 1px solid purple;
       "
     >
-      '{{ $route.params.keyword }}' Tag 검색결과
+      <font-awesome-icon icon="fa-solid fa-magnifying-glass" beat-fade />
+      ' <span style="color: #df7861">{{ $route.params.keyword }}</span> ' Tag
+      검색결과
+      <span>({{ total }})</span>
     </div>
-    <div v-for="item in result.items" :key="item.id">
-      <div class="tag-item" v-if="item.visibility == 'PUBLIC'">
+
+    <div v-for="item in items" :key="item.id">
+      <div
+        class="tag-item"
+        v-if="item.visibility == 'PUBLIC'"
+        @click="moveContent(item.id)"
+      >
         <div>
           <div class="title">{{ item.title }}</div>
           <div class="summary">{{ item.summary }}</div>
@@ -25,24 +32,58 @@
         />
       </div>
     </div>
+
+    <div
+      style="
+        height: 50px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      "
+    >
+      <div v-if="showNextIcon">
+        <font-awesome-icon
+          icon="fa-solid fa-circle-notch"
+          size="2x"
+          spin-pulse
+          spin-reverse
+          style="color: #76549a; --fa-animation-duration: 0.5s"
+        />
+      </div>
+      <div v-else>&nbsp;</div>
+    </div>
   </div>
 </template>
 
 <script>
-// import { searchTags } from '../api/posts';
+import { searchTags } from '../api/posts';
 
 export default {
   data() {
     return {
+      isLast: true,
+      page: 1,
+      total: 0,
+      items: [],
+      showNextIcon: false,
       result: {},
     };
   },
   methods: {
     async searchTag(tag) {
-      console.log(tag);
+      const { data } = await searchTags(tag, this.page, 10);
+      // console.log(data);
 
-      //   const { data } = await searchTags(tag, 1, 20);
-      //   console.log(data);
+      if (data.code == '200') {
+        this.isLast = data.result.isLast;
+        this.total = data.result.total;
+        for (const item of data.result.items) {
+          this.items.push(item);
+        }
+      }
+    },
+    moveContent(id) {
+      this.$router.push(`/${id}`);
     },
   },
   created() {
@@ -250,17 +291,47 @@ export default {
       total: 13,
     };
 
-    this.result = result;
-    // console.log(this.result);
+    // 개발 시에만 아래에 있는 주석을 풀고 작업!!
+    // TEST Start
+    // this.result = result;
+    // this.isLast = false;
+    // for (const item of result.items) {
+    //   this.items.push(item);
+    // }
+    // TEST End
 
     this.searchTag(this.$route.params.keyword);
+
+    const that = this;
+    $(window).scroll(function () {
+      const scrollTop = $(window).scrollTop();
+      const innerHeight = $(window).innerHeight();
+      const scrollHeight = $('div.search-tags')[0].scrollHeight || 0 + 80;
+
+      // console.log(scrollTop, innerHeight, scrollHeight);
+      // console.log(that.isLast);
+      // console.log(that);
+
+      if (!that.isLast && scrollTop + innerHeight >= scrollHeight) {
+        that.showNextIcon = true;
+        that.page++;
+        that.searchTag(that.$route.params.keyword);
+
+        setTimeout(() => {
+          that.showNextIcon = false;
+        }, 1000);
+      }
+    });
+  },
+  unmounted() {
+    $(window).off('scroll');
   },
 };
 </script>
 
 <style scoped>
 div.search-tags {
-  width: 100%;
+  width: 70%;
   margin-top: 80px;
 }
 div.tag-item {

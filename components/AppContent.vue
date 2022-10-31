@@ -38,7 +38,7 @@
         <span v-for="tag in recentTagData">
           <button
             type="button"
-            style="font-weight: bold"
+            style="font-weight: bold; border: none; margin-right: 5px"
             @click="searchTag(tag)"
           >
             #{{ tag }}
