@@ -7,7 +7,12 @@
           type="text"
           v-model="blogName"
           placeholder="작성자의 블로그 주소를 입력해주세요. Ex) 'haguri-peng.tistory.com'에서 'haguri-peng'만"
-          style="width: 99%; margin-bottom: 5px"
+          style="
+            width: 97%;
+            margin-bottom: 5px;
+            font-size: 1rem;
+            padding: 0 5px;
+          "
           readonly
         />
         <textarea
@@ -15,7 +20,7 @@
           name="text"
           rows="5"
           placeholder="댓글을 작성해주세요."
-          style="font-size: 1rem; width: 100%; resize: none"
+          style="font-size: 1rem; width: 97.4%; resize: none; padding: 5px"
         ></textarea>
         <label for="check">
           <input type="checkbox" id="check" v-model="arrChk" value="secret" />

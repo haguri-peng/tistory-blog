@@ -152,7 +152,7 @@
       <div @click="gotoTop">
         <font-awesome-icon
           icon="fa-solid fa-circle-up"
-          size="lg"
+          size="xl"
           title="top"
           bounce
           style="cursor: pointer"
@@ -161,7 +161,7 @@
       <div @click="gotoComments" style="margin-top: 10px">
         <font-awesome-icon
           icon="fa-solid fa-comment"
-          size="lg"
+          size="xl"
           title="comments"
           flip
           style="cursor: pointer; --fa-animation-duration: 3s"
@@ -586,7 +586,7 @@ div.top-down {
   position: sticky;
   float: right;
   bottom: 15px;
-  margin-right: 20px;
+  margin-right: 5%;
   z-index: 110;
 }
 div.title {
