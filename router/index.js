@@ -18,7 +18,7 @@ const routes = [
     component: () => import('../components/AppCategory.vue'),
   },
   {
-    path: '/search/:keyword',
+    path: '/search/:type/:keyword',
     component: () => import('../components/AppSearch.vue'),
   },
   // {

@@ -1,5 +1,5 @@
 <template>
-  <div class="search-tags">
+  <div class="search-area">
     <div
       style="
         font-size: 1.5rem;
@@ -9,8 +9,11 @@
         border-bottom: 1px solid purple;
       "
     >
-      <!-- <font-awesome-icon icon="fa-solid fa-magnifying-glass" beat-fade /> -->
-      ' <span style="color: #df7861">{{ $route.params.keyword }}</span> ' Tag
+      '
+      <span style="color: #df7861">{{ $route.params.keyword }}</span>
+      '
+      <span v-if="$route.params.type == 'tags'"> Tags</span>
+      <span v-else> Posts</span>
       검색결과
       <span>({{ total }})</span>
     </div>
@@ -56,7 +59,7 @@
 </template>
 
 <script>
-import { searchTags } from '../api/posts';
+import { searchTags, searchPosts } from '../api/posts';
 
 export default {
   data() {
@@ -70,8 +73,15 @@ export default {
     };
   },
   methods: {
-    async searchTag(tag) {
-      const { data } = await searchTags(tag, this.page, 10);
+    async search(type, keyword) {
+      let data;
+      if (type == 'tags') {
+        const res = await searchTags(keyword, this.page, 10);
+        data = res.data;
+      } else if (type == 'posts') {
+        const res = await searchPosts(keyword, this.page, 10);
+        data = res.data;
+      }
       // console.log(data);
 
       if (data.code == '200') {
@@ -300,13 +310,13 @@ export default {
     // }
     // TEST End
 
-    this.searchTag(this.$route.params.keyword);
+    this.search(this.$route.params.type, this.$route.params.keyword);
 
     const that = this;
     $(window).scroll(function () {
       const scrollTop = $(window).scrollTop();
       const innerHeight = $(window).innerHeight();
-      const scrollHeight = $('div.search-tags')[0].scrollHeight || 0 + 80;
+      const scrollHeight = $('div.search-area')[0].scrollHeight || 0 + 80;
 
       // console.log(scrollTop, innerHeight, scrollHeight);
       // console.log(that.isLast);
@@ -315,7 +325,7 @@ export default {
       if (!that.isLast && scrollTop + innerHeight >= scrollHeight) {
         that.showNextIcon = true;
         that.page++;
-        that.searchTag(that.$route.params.keyword);
+        that.search(this.$route.params.type, that.$route.params.keyword);
 
         setTimeout(() => {
           that.showNextIcon = false;
@@ -330,7 +340,7 @@ export default {
 </script>
 
 <style scoped>
-div.search-tags {
+div.search-area {
   width: 70%;
   margin-top: 80px;
 }

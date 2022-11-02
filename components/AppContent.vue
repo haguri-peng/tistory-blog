@@ -539,7 +539,7 @@ export default {
       this.$router.push(`/category/${this.categoryId}`);
     },
     async searchTag(tag) {
-      this.$router.push(`/search/${tag}`);
+      this.$router.push(`/search/tags/${tag}`);
     },
   },
   created() {
