@@ -23,6 +23,13 @@
           <span class="cnt"> [{{ category.entries }}] </span>
           <span class="newFlag"> {{ showFlag(category.id) }} </span>
         </li>
+        <li @click="$emit('showSearchInput')">
+          <font-awesome-icon
+            icon="fa-solid fa-magnifying-glass"
+            beat-fade
+            style="--fa-animation-duration: 4s"
+          />
+        </li>
       </ul>
     </div>
     <div

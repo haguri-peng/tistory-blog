@@ -3,17 +3,27 @@
     <app-header
       :categoryList="category"
       @moveCategory="moveCategory"
+      @showSearchInput="showSearchInput"
     ></app-header>
+
     <loading-spinner v-if="isLoading"></loading-spinner>
     <div class="app-contents" v-else>
       <router-view></router-view>
     </div>
+
+    <!-- Search Modal -->
+    <search-input-modal
+      :showSearch="showSearch"
+      @closeSearchModal="closeSearchModal"
+    ></search-input-modal>
   </div>
 </template>
 
 <script>
 import AppHeader from './AppHeader.vue';
 import LoadingSpinner from './LoadingSpinner.vue';
+import SearchInputModal from './SearchInputModal.vue';
+
 import { fetchBlogInfo, fetchCategoryList } from '../api/index';
 import _ from 'lodash';
 
@@ -21,6 +31,7 @@ export default {
   components: {
     AppHeader,
     LoadingSpinner,
+    SearchInputModal,
   },
   // props: ['bodyId'],
   data() {
@@ -30,6 +41,7 @@ export default {
       postCnt: 0,
       loginId: '',
       loginUserId: '',
+      showSearch: false,
     };
   },
   methods: {
@@ -66,6 +78,17 @@ export default {
     moveCategory(id) {
       this.showLoadingSpinner();
       this.$router.push(`/category/${id}`);
+    },
+    showSearchInput() {
+      // console.log('showSearchInput');
+      this.showSearch = true;
+    },
+    closeSearchModal(type, keyword) {
+      this.showSearch = false;
+
+      if (type == 'search') {
+        this.$router.push(`/search/posts/${keyword}`);
+      }
     },
   },
   created() {
