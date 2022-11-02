@@ -15,7 +15,7 @@
       </ul>
       <app-paging :page="pageInfo" @movePage="fetchPostByCategory"></app-paging>
     </div>
-    <search-input :searchWord="getKeyword" @search="searchPosts"></search-input>
+    <!-- <search-input :searchWord="getKeyword" @search="searchPosts"></search-input> -->
   </div>
 </template>
 
@@ -88,48 +88,48 @@ export default {
       }
       this.isLoading = false;
     },
-    async searchPosts(keyword) {
-      if (keyword == '') {
-        alert('검색어를 입력해주세요.');
-        return;
-      }
+    // async searchPosts(keyword) {
+    //   if (keyword == '') {
+    //     alert('검색어를 입력해주세요.');
+    //     return;
+    //   }
 
-      this.isLoading = true;
-      this.postList = [];
+    //   this.isLoading = true;
+    //   this.postList = [];
 
-      const tmpPosts = [];
-      const limitCnt = 15; // 최대 15개까지만 검색
-      const maxPageNum = Math.ceil(this.$parent.$parent.postCnt / 10);
+    //   const tmpPosts = [];
+    //   const limitCnt = 15; // 최대 15개까지만 검색
+    //   const maxPageNum = Math.ceil(this.$parent.$parent.postCnt / 10);
 
-      for (
-        let pageNum = 1;
-        tmpPosts.length < limitCnt && pageNum <= maxPageNum;
-        pageNum++
-      ) {
-        const { data } = await fetchPostList(pageNum);
-        // console.log(keyword);
-        // console.log(data);
+    //   for (
+    //     let pageNum = 1;
+    //     tmpPosts.length < limitCnt && pageNum <= maxPageNum;
+    //     pageNum++
+    //   ) {
+    //     const { data } = await fetchPostList(pageNum);
+    //     // console.log(keyword);
+    //     // console.log(data);
 
-        for (let i = 0; i < data.tistory.item.posts.length; i++) {
-          const postData = data.tistory.item.posts[i];
-          if (
-            postData.visibility == '20' &&
-            postData.title.indexOf(keyword) > -1
-          ) {
-            tmpPosts.push(postData);
-            if (tmpPosts.length == limitCnt) break;
-          }
-        }
-      }
-      // console.log(tmpPosts);
+    //     for (let i = 0; i < data.tistory.item.posts.length; i++) {
+    //       const postData = data.tistory.item.posts[i];
+    //       if (
+    //         postData.visibility == '20' &&
+    //         postData.title.indexOf(keyword) > -1
+    //       ) {
+    //         tmpPosts.push(postData);
+    //         if (tmpPosts.length == limitCnt) break;
+    //       }
+    //     }
+    //   }
+    //   // console.log(tmpPosts);
 
-      this.postList = tmpPosts;
-      this.pageInfo.currentPage = 1;
-      this.pageInfo.totalPage = 1;
-      this.isLoading = false;
+    //   this.postList = tmpPosts;
+    //   this.pageInfo.currentPage = 1;
+    //   this.pageInfo.totalPage = 1;
+    //   this.isLoading = false;
 
-      this.setKeyword(keyword);
-    },
+    //   this.setKeyword(keyword);
+    // },
     moveContent(id) {
       this.isLoading = true;
       this.$router.push(`/${id}`);
