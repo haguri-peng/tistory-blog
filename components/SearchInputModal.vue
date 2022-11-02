@@ -5,6 +5,7 @@
         type="text"
         class="search-input"
         v-model="keyword"
+        ref="searchInput"
         @keyup.enter="searchKeyword"
       />
       <button type="button" class="btn" @click="searchKeyword">검색</button>
@@ -23,6 +24,11 @@ export default {
   },
   methods: {
     searchKeyword() {
+      if (this.keyword == '') {
+        alert('검색어를 입력해주세요.');
+        return;
+      }
+
       this.$emit('closeSearchModal', 'search', this.keyword);
       this.resetData();
     },
@@ -38,6 +44,12 @@ export default {
   watch: {
     showSearch() {
       this.dialogState = this.showSearch;
+
+      setTimeout(() => {
+        if (this.showSearch) {
+          this.$refs.searchInput.focus();
+        }
+      }, 100);
     },
   },
   updated() {

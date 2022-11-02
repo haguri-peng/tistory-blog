@@ -29,6 +29,7 @@
           <div class="summary">{{ item.summary }}</div>
         </div>
         <img
+          v-if="item.thumbnailUrl != null"
           :src="item.thumbnailUrl"
           alt=""
           style="width: 150px; height: 150px"
@@ -72,6 +73,14 @@ export default {
       result: {},
     };
   },
+  watch: {
+    $route(to, from) {
+      if (to.path != from.path) {
+        this.initData();
+        this.search(this.$route.params.type, this.$route.params.keyword);
+      }
+    },
+  },
   methods: {
     async search(type, keyword) {
       let data;
@@ -91,6 +100,13 @@ export default {
           this.items.push(item);
         }
       }
+    },
+    initData() {
+      this.isLast = true;
+      this.page = 1;
+      this.total = 0;
+      this.items = [];
+      this.showNextIcon = false;
     },
     moveContent(id) {
       this.$router.push(`/${id}`);
@@ -325,7 +341,7 @@ export default {
       if (!that.isLast && scrollTop + innerHeight >= scrollHeight) {
         that.showNextIcon = true;
         that.page++;
-        that.search(this.$route.params.type, that.$route.params.keyword);
+        that.search(that.$route.params.type, that.$route.params.keyword);
 
         setTimeout(() => {
           that.showNextIcon = false;
