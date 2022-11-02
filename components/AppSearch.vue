@@ -9,7 +9,7 @@
         border-bottom: 1px solid purple;
       "
     >
-      <font-awesome-icon icon="fa-solid fa-magnifying-glass" beat-fade />
+      <!-- <font-awesome-icon icon="fa-solid fa-magnifying-glass" beat-fade /> -->
       ' <span style="color: #df7861">{{ $route.params.keyword }}</span> ' Tag
       검색결과
       <span>({{ total }})</span>

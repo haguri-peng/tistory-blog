@@ -305,7 +305,9 @@ export default {
       }
     },
     addComment() {
-      if (this.$parent.$parent.loginId == '') {
+      // if (this.$parent.$parent.loginId == '') {
+      const { user } = window.initData;
+      if (user == null || user == undefined) {
         alert('로그인이 필요합니다.');
         return;
       }

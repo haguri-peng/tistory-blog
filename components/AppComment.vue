@@ -8,6 +8,7 @@
           v-model="blogName"
           placeholder="작성자의 블로그 주소를 입력해주세요. Ex) 'haguri-peng.tistory.com'에서 'haguri-peng'만"
           style="width: 99%; margin-bottom: 5px"
+          readonly
         />
         <textarea
           v-model="comment"
@@ -95,6 +96,11 @@ export default {
   watch: {
     showModal() {
       this.dialogState = this.showModal;
+
+      if (this.showModal) {
+        const { user } = window.initData;
+        this.blogName = user.loginId;
+      }
     },
     getModComment() {
       // console.log('htytest');
