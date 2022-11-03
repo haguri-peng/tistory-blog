@@ -674,12 +674,13 @@ div.nav {
 }
 div.nav div.category {
   color: #76549a;
+  font-size: 1rem;
+  font-weight: bold;
 }
 div.nav div.category div.category-name {
-  margin-left: 5px;
+  margin: 5px 0;
 }
 div.nav div.category div.category-name:hover {
-  font-weight: bold;
   text-decoration: underline;
   cursor: pointer;
 }

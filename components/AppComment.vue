@@ -101,10 +101,24 @@ export default {
     showModal() {
       this.dialogState = this.showModal;
 
-      // if (this.showModal) {
-      //   const { user } = window.initData;
-      //   this.blogName = user.loginId;
-      // }
+      if (this.showModal) {
+        // 로그인한 사용자의 블로그 정보를 가져온다.
+        // 로컬에서는 에러 발생!!
+        $.ajax({
+          url: 'https://www.tistory.com/accio/allBlogs',
+          type: 'get',
+          dataType: 'jsonp',
+          context: this,
+          success: function (res) {
+            // console.log(res);
+            if (res.status == '200') {
+              if (res.data.length > 0) {
+                this.blogName = res.data[0].name;
+              }
+            }
+          },
+        });
+      }
     },
     getModComment() {
       // console.log('htytest');
