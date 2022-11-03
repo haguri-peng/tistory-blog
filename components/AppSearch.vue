@@ -75,9 +75,11 @@ export default {
   },
   watch: {
     $route(to, from) {
-      if (to.path != from.path) {
-        this.initData();
-        this.search(this.$route.params.type, this.$route.params.keyword);
+      if (to.path.indexOf('/search') > -1) {
+        if (to.path != from.path) {
+          this.initData();
+          this.search(this.$route.params.type, this.$route.params.keyword);
+        }
       }
     },
   },

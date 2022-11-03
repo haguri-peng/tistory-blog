@@ -7,8 +7,7 @@
           <font-awesome-icon
             icon="fa-solid fa-house"
             size="lg"
-            beat
-            style="cursor: pointer; --fa-animation-duration: 2s"
+            style="cursor: pointer"
             @click="moveHome"
           />
         </li>
