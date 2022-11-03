@@ -349,7 +349,7 @@ export default {
               alert('댓글이 등록되었습니다.');
 
               this.getComments();
-              setTimeout(this.setAppHeight, 100);
+              setTimeout(this.setAppHeight, 1000);
             } else {
               alert(data.tistory.error_message);
             }
@@ -386,7 +386,7 @@ export default {
             alert('댓글이 삭제되었습니다.');
 
             this.getComments();
-            setTimeout(this.setAppHeight, 100);
+            setTimeout(this.setAppHeight, 1000);
           }
         } catch (err) {
           // console.error(err);

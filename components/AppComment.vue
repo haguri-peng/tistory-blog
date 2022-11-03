@@ -6,14 +6,13 @@
         <input
           type="text"
           v-model="blogName"
-          placeholder="작성자의 블로그 주소를 입력해주세요. Ex) 'haguri-peng.tistory.com'에서 'haguri-peng'만"
+          placeholder="블로그 주소를 입력해주세요. 'haguri-peng.tistory.com'에서 'haguri-peng'만"
           style="
             width: 97%;
             margin-bottom: 5px;
             font-size: 1rem;
             padding: 0 5px;
           "
-          readonly
         />
         <textarea
           v-model="comment"
@@ -102,10 +101,10 @@ export default {
     showModal() {
       this.dialogState = this.showModal;
 
-      if (this.showModal) {
-        const { user } = window.initData;
-        this.blogName = user.loginId;
-      }
+      // if (this.showModal) {
+      //   const { user } = window.initData;
+      //   this.blogName = user.loginId;
+      // }
     },
     getModComment() {
       // console.log('htytest');
