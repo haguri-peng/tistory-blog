@@ -591,11 +591,11 @@ export default {
       }
     },
     toggleReaction() {
-      const { user } = window.initData;
-      if (user == null || user == undefined) {
-        alert('로그인이 필요합니다.');
-        return;
-      }
+      // const { user } = window.initData;
+      // if (user == null || user == undefined) {
+      //   alert('로그인이 필요합니다.');
+      //   return;
+      // }
 
       if (this.isReactionCheck) {
         deleteReaction(this.postId).then(this.getReaction);
