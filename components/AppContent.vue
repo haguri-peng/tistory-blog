@@ -158,6 +158,38 @@
           style="cursor: pointer"
         />
       </div>
+      <div style="margin-top: 10px">
+        <font-awesome-layers full-width class="fa-xl">
+          <font-awesome-icon
+            v-if="isReactionCheck"
+            icon="fa-solid fa-heart"
+            style="
+              color: orangered;
+              cursor: pointer;
+              --fa-animation-duration: 2s;
+            "
+            shake
+            @click="toggleReaction"
+          />
+          <font-awesome-icon
+            v-else
+            icon="fa-regular fa-heart"
+            style="
+              color: orangered;
+              cursor: pointer;
+              --fa-animation-duration: 2s;
+            "
+            shake
+            @click="toggleReaction"
+          />
+          <font-awesome-layers-text
+            counter
+            :value="reactionCount"
+            position="bottom-right"
+            style="margin-right: -15px; font-size: 3rem"
+          />
+        </font-awesome-layers>
+      </div>
       <div @click="gotoComments" style="margin-top: 10px">
         <font-awesome-icon
           icon="fa-solid fa-comment"
@@ -186,6 +218,7 @@ import {
   modifyComment,
   deleteComment,
 } from '../api/index';
+import { searchReaction, postReaction, deleteReaction } from '../api/posts';
 
 export default {
   components: {
@@ -206,6 +239,8 @@ export default {
       recentTagData: '',
       intervalId: '',
       showModal: false,
+      reactionCount: 0,
+      isReactionCheck: false,
     };
   },
   computed: {
@@ -240,6 +275,9 @@ export default {
         // aside 영역 세팅
         // content 부분을 세팅하는 딜레이가 있어서 적정한 timeout을 줘서 처리(0.5초)
         this.setAsideSection();
+
+        // reaction 가져오기
+        this.getReaction();
 
         // 스크롤 Event 설정
         // 스크롤 위치에 따라 어느 영역에 있는지 확인하여 색상을 변경
@@ -540,6 +578,30 @@ export default {
     },
     async searchTag(tag) {
       this.$router.push(`/search/tags/${tag}`);
+    },
+    getReaction() {
+      if (this.postId != '') {
+        searchReaction(this.postId).then(({ data }) => {
+          // console.log(data);
+          if (data.code == '200') {
+            this.reactionCount = data.result.count;
+            this.isReactionCheck = data.result.isCheck;
+          }
+        });
+      }
+    },
+    toggleReaction() {
+      const { user } = window.initData;
+      if (user == null || user == undefined) {
+        alert('로그인이 필요합니다.');
+        return;
+      }
+
+      if (this.isReactionCheck) {
+        deleteReaction(this.postId).then(this.getReaction);
+      } else {
+        postReaction(this.postId).then(this.getReaction);
+      }
     },
   },
   created() {

@@ -3,7 +3,7 @@ import axios from 'axios';
 // axios 초기화
 function createInstance() {
   return axios.create({
-    baseURL: 'https://haguri-peng.tistory.com/m/search',
+    baseURL: 'https://haguri-peng.tistory.com/m',
   });
 }
 
@@ -12,15 +12,36 @@ const instance = createInstance();
 // 글 검색
 function searchPosts(keyword, page, size) {
   return instance.get(
-    `/posts.json?keyword=${keyword}&page=${page - 1}&size=${size || 20}`
+    `/search/posts.json?keyword=${keyword}&page=${page - 1}&size=${size || 20}`
   );
 }
 
 // Tag 검색
 function searchTags(keyword, page, size) {
   return instance.get(
-    `/tags.json?keyword=${keyword}&page=${page - 1}&size=${size || 20}`
+    `/search/tags.json?keyword=${keyword}&page=${page - 1}&size=${size || 20}`
   );
 }
 
-export { searchPosts, searchTags };
+// Reaction 검색
+function searchReaction(postId) {
+  return instance.get(`/${postId}/reaction.json`);
+}
+
+// post Reaction
+function postReaction(postId) {
+  return instance.post(`/${postId}/reaction.json`);
+}
+
+// delete Reaction
+function deleteReaction(postId) {
+  return instance.delete(`/${postId}/reaction.json`);
+}
+
+export {
+  searchPosts,
+  searchTags,
+  searchReaction,
+  postReaction,
+  deleteReaction,
+};
