@@ -19,8 +19,8 @@ export default {};
   width: 35px;
   height: 35px;
   border-radius: 50%;
-  border: 5px solid #fcf8e8;
-  border-bottom: 5px solid #df7861;
+  border: 5px solid #76549a;
+  border-bottom: 5px solid #fcf8e8;
   animation: spin 0.5s linear infinite;
   position: relative;
 }

@@ -1,5 +1,6 @@
 <template>
-  <div class="search-area">
+  <loading-spinner v-if="isFirstLoading"></loading-spinner>
+  <div class="search-area" v-else>
     <div
       style="
         font-size: 1.5rem;
@@ -60,11 +61,16 @@
 </template>
 
 <script>
+import LoadingSpinner from './LoadingSpinner.vue';
 import { searchTags, searchPosts } from '../api/posts';
 
 export default {
+  components: {
+    LoadingSpinner,
+  },
   data() {
     return {
+      isFirstLoading: false,
       isLast: true,
       page: 1,
       total: 0,
@@ -85,6 +91,10 @@ export default {
   },
   methods: {
     async search(type, keyword) {
+      if (this.page == 1) {
+        this.isFirstLoading = true;
+      }
+
       let data;
       if (type == 'tags') {
         const res = await searchTags(keyword, this.page, 10);
@@ -102,6 +112,7 @@ export default {
           this.items.push(item);
         }
       }
+      this.isFirstLoading = false;
     },
     initData() {
       this.isLast = true;
