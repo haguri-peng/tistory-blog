@@ -83,7 +83,12 @@ export default store;
 ## Tistory
 
 Tistory 에서 제공하는 Open API 를 활용 ([Tistory Open API](https://tistory.github.io/document-tistory-apis/))   
-제공해주는 Open API 에 한계가 있어 이를 감안하고 개발하였으니 참고 바랍니다.
+제공해주는 Open API 에 한계가 있어 이를 감안하고 개발하였으니 참고 바랍니다.   
+
+모바일 페이지의 URI(/m)에서 REST api로 제공해주는 게 있어서 구현할 수 있는 부분은 최대한 구현하고 있습니다.   
+
+※현재까지 구현한 목록   
+글 검색, Tag 검색, Reaction
 
 ### 댓글
 
@@ -92,7 +97,8 @@ Tistory 에서 제공하는 Open API 를 활용 ([Tistory Open API](https://tist
 
 ### 공지사항 및 방명록
 
-Open API 에서 제공하지 않음
+Open API 에서 제공하지 않음.   
+추가 작업중..
 
 
 ## Tidory
