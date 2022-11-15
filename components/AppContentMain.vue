@@ -105,6 +105,16 @@ export default {
         }
       });
     });
+
+    // highlight.js
+    // 블로그 내에서 설정한 스타일을 해제하고 다른 스타일로 적용
+    $('link[href*=atom]').attr('disabled', 'disabled');
+
+    let link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href =
+      'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/styles/tomorrow-night-blue.min.css';
+    document.head.appendChild(link);
   },
   updated() {
     $('pre').css('font-size', '0.9rem').css('line-height', '21px');
