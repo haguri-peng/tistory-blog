@@ -7,9 +7,24 @@
           <font-awesome-icon
             icon="fa-solid fa-house"
             size="lg"
+            title="Home"
             style="cursor: pointer"
             @click="moveHome"
           />
+        </li>
+        <li>
+          <font-awesome-layers full-width class="fa-xl">
+            <font-awesome-icon
+              icon="fa-solid fa-book"
+              title="GuestBook"
+              style="color: crimson; cursor: pointer"
+              @click="moveGuestbook"
+            />
+            <font-awesome-layers-text
+              transform="down-12 shrink-7"
+              value="GuestBook"
+            />
+          </font-awesome-layers>
         </li>
         <li
           v-for="category in getTopCategory"
@@ -137,6 +152,9 @@ export default {
     },
     moveHome() {
       this.$router.push('/');
+    },
+    moveGuestbook() {
+      this.$router.push('/guestbook');
     },
   },
   created() {

@@ -38,10 +38,16 @@ function deleteReaction(postId) {
   return instance.delete(`/${postId}/reaction.json`);
 }
 
+// Guest Book count
+function getGuestbookCount() {
+  return instance.get('/guestbook/count.json');
+}
+
 export {
   searchPosts,
   searchTags,
   searchReaction,
   postReaction,
   deleteReaction,
+  getGuestbookCount,
 };
