@@ -11,12 +11,6 @@ const mutations = {
   clearPageNum(state) {
     state.pageNum = '';
   },
-  setKeyword(state, keyword) {
-    state.keyword = keyword;
-  },
-  clearKeyword(state) {
-    state.keyword = '';
-  },
   setParentCommentId(state, parentCommentId) {
     state.parentCommentId = parentCommentId;
   },

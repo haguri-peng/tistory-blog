@@ -5,9 +5,6 @@ const getters = {
   getPageNum(state) {
     return state.pageNum;
   },
-  getKeyword(state) {
-    return state.keyword;
-  },
   getParentCommentId(state) {
     return state.parentCommentId;
   },

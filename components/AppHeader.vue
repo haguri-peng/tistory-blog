@@ -136,13 +136,9 @@ export default {
       if (subCategory.length == 0) {
         this.subCategoryList = [];
         this.$emit('moveCategory', categoryId);
-        this.clearKeyword();
       } else {
         this.subCategoryList = subCategory;
       }
-    },
-    clearKeyword() {
-      this.$store.dispatch('clearWord');
     },
     hideSubCategory() {
       $('div.subCategory').slideUp(400);
