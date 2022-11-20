@@ -6,19 +6,18 @@
         <li>
           <font-awesome-icon
             icon="fa-solid fa-house"
-            size="lg"
+            size="xl"
             title="Home"
             style="cursor: pointer"
             @click="moveHome"
           />
         </li>
-        <li>
+        <li @click="moveGuestbook">
           <font-awesome-layers full-width class="fa-xl">
             <font-awesome-icon
               icon="fa-solid fa-book"
               title="GuestBook"
               style="color: crimson; cursor: pointer"
-              @click="moveGuestbook"
             />
             <font-awesome-layers-text
               transform="down-12 shrink-7"

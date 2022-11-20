@@ -43,6 +43,16 @@ function getGuestbookCount() {
   return instance.get('/guestbook/count.json');
 }
 
+// Guest Book init (get requestUser's info)
+function getGuestbookInit() {
+  return instance.get('/guestbook/init.json');
+}
+
+// get Guest Book
+function getGuestbook(size) {
+  return instance.get(`/guestbook.json?size=${size || 30}`);
+}
+
 export {
   searchPosts,
   searchTags,
@@ -50,4 +60,6 @@ export {
   postReaction,
   deleteReaction,
   getGuestbookCount,
+  getGuestbookInit,
+  getGuestbook,
 };
