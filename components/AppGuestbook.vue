@@ -21,7 +21,12 @@
               @click="moveUrl(item.writer.homepage)"
             />
             <div>
-              <p style="font-weight: bold">{{ item.writer.name }}</p>
+              <p style="font-weight: bold">
+                {{ item.writer.name }}
+                <span v-if="item.isSecret">
+                  <font-awesome-icon icon="fa-solid fa-lock" />
+                </span>
+              </p>
               <p>{{ item.written }}</p>
             </div>
           </div>
