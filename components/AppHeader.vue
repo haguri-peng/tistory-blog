@@ -116,6 +116,14 @@ export default {
       );
       if (fIdx > -1) {
         return 'N';
+      } else {
+        const parentIds = _.chain(this.categoryList)
+          .filter((c) => this.recentCategoryIds.includes(c.id))
+          .map((c) => c.parent)
+          .compact()
+          .value();
+        // console.log(parentIds);
+        return parentIds.includes(categoryId) ? 'N' : '';
       }
     },
     clickCategory(categoryId, subFlag) {
