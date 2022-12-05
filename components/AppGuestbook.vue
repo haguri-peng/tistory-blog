@@ -4,6 +4,14 @@
       【 Guest Book
       <span class="count">{{ this.count }}</span>
       】
+      <button
+        type="button"
+        style="float: right; height: 32px"
+        @click="addGuestbook"
+      >
+        <font-awesome-icon icon="fa-solid fa-pen" title="방명록 작성" />
+        작성
+      </button>
     </h2>
     <div class="gb-list">
       <div v-for="item in gbList" :key="item.id">
@@ -104,6 +112,9 @@ export default {
           'px'
       );
     },
+    addGuestbook() {
+      console.log('addGuestbook!!');
+    },
   },
   created() {
     this.getCount();
@@ -197,5 +208,15 @@ div.content {
 }
 hr {
   margin: 25px 0;
+}
+button {
+  pointer-events: all;
+  padding: 2px 5px;
+  cursor: pointer;
+  background-color: rgba(118, 84, 154, 0.11);
+  border-radius: 3px;
+}
+button:hover {
+  background-color: rgba(118, 84, 154, 0.66);
 }
 </style>
