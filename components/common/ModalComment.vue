@@ -9,8 +9,8 @@
       <div class="content">
         <div class="title">【Comment】</div>
         <input
-          type="text"
           v-if="modalType === 'comment'"
+          type="text"
           v-model="blogName"
           placeholder="Enter your blog's name"
           style="
@@ -22,7 +22,6 @@
         />
         <textarea
           v-model="comment"
-          name="text"
           rows="5"
           placeholder="Insert your comment"
           style="font-size: 1rem; width: 97.4%; resize: none; padding: 5px"
@@ -33,15 +32,15 @@
         </label>
       </div>
       <div class="actions">
-        <button class="btn submit" @click="submit">Add</button>
-        <button class="btn close" @click="close">Close</button>
+        <button class="btn submit" @click="submit">등록</button>
+        <button class="btn close" @click="close">닫기</button>
       </div>
     </div>
   </GDialog>
 </template>
 
 <script>
-import { ref, toRefs, watch, defineComponent } from 'vue';
+import { ref, toRefs, watch, watchEffect, defineComponent } from 'vue';
 
 export default defineComponent({
   emits: ['closeModal'],
@@ -50,23 +49,37 @@ export default defineComponent({
     const { emit } = context;
     const { showModal, type } = toRefs(props);
 
-    const dialogState = ref(showModal);
+    // data
+    const dialogState = ref(false);
     const modalType = ref(type);
+
     const blogName = ref('');
     const comment = ref('');
     const arrChk = ref([]);
 
+    // method
     const clearModal = () => {
       blogName.value = '';
       comment.value = '';
       arrChk.value = [];
     };
     const submit = () => {
+      // input validation
+      if (modalType == 'comment' && blogName == '') {
+        alert('블로그 주소는 필수입니다.');
+        return;
+      }
+      if (comment == '') {
+        alert('Comment가 입력되지 않았습니다.');
+        return;
+      }
+
       const objData = {
         blogName: blogName.value,
         comment: comment.value,
         secret: arrChk.value.length > 0 ? 1 : 0,
       };
+
       clearModal();
       emit('closeModal', 'submit', objData);
     };
@@ -78,9 +91,14 @@ export default defineComponent({
       close();
     };
 
-    // watch props.showModal
-    watch(showModal, () => {
-      dialogState.value = showModal;
+    // watch
+    // props.showModal
+    watch(showModal, (val) => {
+      dialogState.value = val;
+    });
+    // watchEffect
+    watchEffect(() => {
+      // console.log('dialogState >> ' + dialogState.value);
     });
 
     return {

@@ -43,10 +43,18 @@
         </div>
       </div>
     </div>
+
+    <!-- Modal -->
+    <modal-comment
+      :showModal="showModal"
+      :type="modalType"
+      @closeModal="closeModal"
+    />
   </div>
 </template>
 
 <script>
+import ModalComment from './common/ModalComment.vue';
 import {
   getGuestbookCount,
   getGuestbookInit,
@@ -54,6 +62,9 @@ import {
 } from '../api/posts';
 
 export default {
+  components: {
+    ModalComment,
+  },
   data() {
     return {
       count: 0,
@@ -61,6 +72,9 @@ export default {
       gbList: [],
       reqUserId: '',
       reqUserRole: '',
+      // Modal
+      showModal: false,
+      modalType: 'guestbook',
     };
   },
   methods: {
@@ -113,7 +127,56 @@ export default {
       );
     },
     addGuestbook() {
-      console.log('addGuestbook!!');
+      const { user } = window.initData;
+      if (user == null || user == undefined) {
+        alert('로그인이 필요합니다.');
+        return;
+      }
+
+      this.showModal = true;
+    },
+    async closeModal(action, objData) {
+      this.showModal = false;
+
+      console.log(action);
+      console.log(objData);
+
+      // // 댓글 등록 및 수정
+      // if (action == 'submit') {
+      //   objData.postId = this.postId;
+      //   // objData.blogName = this.$parent.$parent.loginId;
+      //   // console.log(objData);
+
+      //   try {
+      //     if (
+      //       objData.commentId != null &&
+      //       objData.commentId != undefined &&
+      //       objData.commentId != ''
+      //     ) {
+      //       // 수정
+      //       const { data } = await modifyComment(objData);
+      //       if (data.tistory.status == '200') {
+      //         alert('댓글이 수정되었습니다.');
+      //         this.getComments();
+      //       } else {
+      //         alert(data.tistory.error_message);
+      //       }
+      //     } else {
+      //       // 등록
+      //       const { data } = await insertComment(objData);
+      //       if (data.tistory.status == '200') {
+      //         alert('댓글이 등록되었습니다.');
+
+      //         this.getComments();
+      //         setTimeout(this.setAppHeight, 1000);
+      //       } else {
+      //         alert(data.tistory.error_message);
+      //       }
+      //     }
+      //   } catch (err) {
+      //     alert(err.response.data.tistory.error_message);
+      //   }
+      // }
     },
   },
   created() {
