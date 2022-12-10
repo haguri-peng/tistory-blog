@@ -59,6 +59,7 @@ import {
   getGuestbookCount,
   getGuestbookInit,
   getGuestbook,
+  postGuestbook,
 } from '../api/posts';
 
 export default {
@@ -138,45 +139,37 @@ export default {
     async closeModal(action, objData) {
       this.showModal = false;
 
-      console.log(action);
-      console.log(objData);
+      // 방명록 등록
+      if (action == 'submit') {
+        try {
+          const { user } = window.initData;
+          if (user == null || user == undefined) {
+            alert('로그인이 필요합니다.');
+            return;
+          }
 
-      // // 댓글 등록 및 수정
-      // if (action == 'submit') {
-      //   objData.postId = this.postId;
-      //   // objData.blogName = this.$parent.$parent.loginId;
-      //   // console.log(objData);
+          const postData = {
+            name: user.name,
+            replier: user.id,
+            comment: objData.comment,
+            secret: objData.secret,
+          };
 
-      //   try {
-      //     if (
-      //       objData.commentId != null &&
-      //       objData.commentId != undefined &&
-      //       objData.commentId != ''
-      //     ) {
-      //       // 수정
-      //       const { data } = await modifyComment(objData);
-      //       if (data.tistory.status == '200') {
-      //         alert('댓글이 수정되었습니다.');
-      //         this.getComments();
-      //       } else {
-      //         alert(data.tistory.error_message);
-      //       }
-      //     } else {
-      //       // 등록
-      //       const { data } = await insertComment(objData);
-      //       if (data.tistory.status == '200') {
-      //         alert('댓글이 등록되었습니다.');
+          const { data } = await postGuestbook(postData);
+          if (data.code == '200') {
+            alert('정상적으로 등록되었습니다.');
 
-      //         this.getComments();
-      //         setTimeout(this.setAppHeight, 1000);
-      //       } else {
-      //         alert(data.tistory.error_message);
-      //       }
-      //     }
-      //   } catch (err) {
-      //     alert(err.response.data.tistory.error_message);
-      //   }
-      // }
+            this.getData();
+          } else {
+            // alert(data.message);
+            alert('에러가 발생하였습니다.');
+          }
+          // }
+        } catch (err) {
+          // alert(err.response.data.message);
+          alert('에러가 발생하였습니다.');
+        }
+      }
     },
   },
   created() {

@@ -7,7 +7,7 @@
   >
     <div class="wrapper">
       <div class="content">
-        <div class="title">【Comment】</div>
+        <div class="title">【{{ title }}】</div>
         <input
           v-if="modalType === 'comment'"
           type="text"
@@ -53,9 +53,17 @@ export default defineComponent({
     const dialogState = ref(false);
     const modalType = ref(type);
 
+    const title = ref('');
     const blogName = ref('');
     const comment = ref('');
     const arrChk = ref([]);
+
+    // set title
+    if (modalType.value == 'comment') {
+      title.value = '댓글';
+    } else if (modalType.value == 'guestbook') {
+      title.value = '방명록';
+    }
 
     // method
     const clearModal = () => {
@@ -65,19 +73,19 @@ export default defineComponent({
     };
     const submit = () => {
       // input validation
-      if (modalType == 'comment' && blogName == '') {
+      if (modalType.value == 'comment' && blogName.value == '') {
         alert('블로그 주소는 필수입니다.');
         return;
       }
-      if (comment == '') {
-        alert('Comment가 입력되지 않았습니다.');
+      if (comment.value == '') {
+        alert('입력된 내용이 없습니다.');
         return;
       }
 
       const objData = {
         blogName: blogName.value,
         comment: comment.value,
-        secret: arrChk.value.length > 0 ? 1 : 0,
+        secret: arrChk.value.length > 0 ? true : false,
       };
 
       clearModal();
@@ -104,6 +112,7 @@ export default defineComponent({
     return {
       dialogState,
       modalType,
+      title,
       blogName,
       comment,
       arrChk,

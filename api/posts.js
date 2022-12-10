@@ -53,6 +53,11 @@ function getGuestbook(size) {
   return instance.get(`/guestbook.json?size=${size || 30}`);
 }
 
+// post Guest Book
+function postGuestbook(postData) {
+  return instance.post('/guestbook.json', postData);
+}
+
 export {
   searchPosts,
   searchTags,
@@ -62,4 +67,5 @@ export {
   getGuestbookCount,
   getGuestbookInit,
   getGuestbook,
+  postGuestbook,
 };
