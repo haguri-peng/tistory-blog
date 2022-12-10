@@ -194,8 +194,7 @@ div.category ul li {
   list-style: none;
   font-size: 1.2rem;
   font-weight: 400;
-  /* padding-right: 40px; */
-  padding: 0 20px;
+  padding: 0 10px;
   cursor: pointer;
   align-self: center;
   transition: 0.2s;
@@ -207,8 +206,8 @@ div.category ul li.active {
   text-decoration: underline;
 }
 div.category ul li:hover {
-  /* color: #a0bcc2; */
   transform: scale(1.05, 1.05);
+  text-decoration: underline;
 }
 div.category span.cnt {
   font-weight: lighter;
