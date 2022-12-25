@@ -24,7 +24,6 @@ html(lang="ko")
     //- Style Sheets
     link(rel="preconnect" href="https://fonts.googleapis.com")
     link(rel="preconnect" href="https://fonts.gstatic.com" crossorigin)
-    //- link(rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hahmlet:wght@300&family=Stylish&display=swap")
     link(rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poor+Story&display=swap")
     link(rel="stylesheet" href="https://fonts.googleapis.com/earlyaccess/nanumgothiccoding.css")
 
@@ -49,11 +48,17 @@ html(lang="ko")
       }
 
     style.
+      @font-face {
+        font-family: 'MaplestoryOTFLight';
+        src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@2.1/MaplestoryOTFLight.woff') format('woff');
+        font-weight: normal;
+        font-style: normal;
+      }
       * {
         padding: 0px;
         margin: 0px;
-        /*font-family: 'Hahmlet', serif;*/
-        font-family: 'Poor Story', cursive, 'Nanum Gothic Coding';
+        /*font-family: 'Poor Story', cursive;*/
+        font-family: 'MaplestoryOTFLight', serif;
       }
       a {
         pointer-events: initial;

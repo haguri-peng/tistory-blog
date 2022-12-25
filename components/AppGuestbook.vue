@@ -94,8 +94,11 @@ export default {
       }
     },
     async getData() {
+      this.getCount();
+
       const { data } = await getGuestbook();
       if (data.code == 200) {
+        this.gbList = [];
         for (const item of data.result.items) {
           this.gbList.push(item);
         }
@@ -173,7 +176,6 @@ export default {
     },
   },
   created() {
-    this.getCount();
     this.getReqUserInfo();
     this.getData();
 
@@ -248,7 +250,7 @@ span.count {
 }
 div.gb-list {
   margin-top: 30px;
-  font-size: 1.2rem;
+  font-size: 1rem;
 }
 div.writer-info {
   display: flex;
