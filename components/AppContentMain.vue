@@ -77,7 +77,7 @@ export default {
         setTimeout(() => {
           hljs.highlightAll();
           $('[class^=hljs]').css('font-family', "'Nanum Gothic Coding'");
-        }, 500);
+        }, 1000);
 
         // load AdFit
         adfitLoader().then(() => {

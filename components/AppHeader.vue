@@ -20,7 +20,7 @@
               style="color: royalblue; cursor: pointer"
             />
             <font-awesome-layers-text
-              transform="down-12 shrink-7"
+              transform="down-12 shrink-8"
               value="GuestBook"
             />
           </font-awesome-layers>
@@ -194,7 +194,7 @@ div.category ul li {
   list-style: none;
   font-size: 1.2rem;
   font-weight: 400;
-  padding: 0 10px;
+  padding: 0 20px;
   cursor: pointer;
   align-self: center;
   transition: 0.2s;
