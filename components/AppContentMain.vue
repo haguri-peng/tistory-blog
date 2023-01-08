@@ -76,7 +76,11 @@ export default {
         // 코드 구문 강조
         setTimeout(() => {
           hljs.highlightAll();
-          $('[class^=hljs]').css('font-family', "'Nanum Gothic Coding'");
+          $('code[class^=hljs]').css('font-family', "'Nanum Gothic Coding'");
+          $('code[class^=hljs] span').css(
+            'font-family',
+            "'Nanum Gothic Coding'"
+          );
         }, 1000);
 
         // load AdFit
