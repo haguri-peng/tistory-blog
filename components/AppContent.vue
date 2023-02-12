@@ -7,14 +7,30 @@
         {{ categoryName }}
       </div>
     </div>
+    <!-- Coupang Dynamic Banner -->
+    <iframe
+      src="https://ads-partners.coupang.com/widgets.html?id=639317&template=carousel&trackingCode=AF6597674&subId=&width=250&height=250"
+      width="250"
+      height="250"
+      frameborder="0"
+      scrolling="no"
+      referrerpolicy="unsafe-url"
+      style="position: absolute; right: 0; bottom: 300px"
+    ></iframe>
     <!-- AdFit tistory sidebar 광고 -->
     <div class="adfit">
       <ins
         class="kakao_ad_area"
+        data-ad-unit="DAN-rNHsJ1xGbg4tjBAa"
+        data-ad-width="250"
+        data-ad-height="250"
+      ></ins>
+      <!-- <ins
+        class="kakao_ad_area"
         data-ad-unit="DAN-pm2qlQF9u7DdI0BL"
         data-ad-width="160"
         data-ad-height="600"
-      ></ins>
+      ></ins> -->
     </div>
   </div>
 
@@ -24,11 +40,21 @@
       <ul></ul>
     </div>
     <div class="image">
-      <img
+      <!-- <img
         src="../images/fat_haguri.png"
         alt=""
         style="width: 150px; height: 200px; margin-top: 50px; float: left"
-      />
+      /> -->
+      <!-- Coupang Dynamic Banner -->
+      <iframe
+        src="https://ads-partners.coupang.com/widgets.html?id=639240&template=carousel&trackingCode=AF6597674&subId=&width=250&height=250"
+        width="250"
+        height="250"
+        frameborder="0"
+        scrolling="no"
+        referrerpolicy="unsafe-url"
+        style="margin-top: 50px; float: left"
+      ></iframe>
     </div>
     <div class="recentTagData">
       <div class="recentTagsTitle">
@@ -768,7 +794,7 @@ div.aside ul {
   list-style: none;
 }
 div.aside div.recentTagData {
-  margin-top: 80px;
+  margin-top: 50px;
   width: 90%;
   text-align: left;
   font-size: 0.8rem;
