@@ -87,14 +87,18 @@ export default {
         adfitLoader().then(() => {
           adfit();
 
-          setTimeout(() => {
-            this.$emit('refreshAside');
-          }, 100);
+          // setTimeout(() => {
+          //   this.$emit('refreshAside');
+          // }, 100);
         });
       }
     },
   },
   created() {
+    window.onload = () => {
+      this.$emit('refreshAside');
+    };
+
     twttr.ready((twttr) => {
       // At this point the widget.js file had been loaded.
       // We can now make use of the twttr events
