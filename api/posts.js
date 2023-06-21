@@ -40,7 +40,7 @@ function deleteReaction(postId) {
 
 // Guest Book count
 function getGuestbookCount() {
-  return instance.get('/api/guestbook/count.json');
+  return instance.get('/api/guestbook/count');
 }
 
 // Guest Book init (get requestUser's info)
@@ -55,7 +55,7 @@ function getGuestbook(size) {
 
 // post Guest Book
 function postGuestbook(postData) {
-  return instance.post('/api/guestbook.json', postData);
+  return instance.post('/api/guestbook', postData);
 }
 
 export {
