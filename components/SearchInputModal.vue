@@ -8,7 +8,13 @@
         ref="searchInput"
         @keyup.enter="searchKeyword"
       />
-      <button type="button" class="btn" @click="searchKeyword">검색</button>
+      <button
+        type="button"
+        class="btn bg-violet-300 hover:bg-violet-400"
+        @click="searchKeyword"
+      >
+        검색
+      </button>
     </div>
   </GDialog>
 </template>

@@ -32,8 +32,8 @@
         </label>
       </div>
       <div class="actions">
-        <button class="btn submit" @click="submit">등록</button>
-        <button class="btn close" @click="close">닫기</button>
+        <button class="btn submit bg-violet-300" @click="submit">등록</button>
+        <button class="btn close bg-violet-300" @click="close">닫기</button>
       </div>
     </div>
   </GDialog>

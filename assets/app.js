@@ -17,6 +17,7 @@ import router from '../router/index';
 import store from '../store/index';
 
 // tailwindcss
+// npx tailwindcss -i ./assets/app.css -o ./assets/tailwind_output.css --watch
 import './tailwind_output.css';
 
 // Gitart Vue Dialog
