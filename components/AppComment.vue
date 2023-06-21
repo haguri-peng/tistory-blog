@@ -30,11 +30,11 @@
         </span>
       </div>
       <div class="actions">
-        <button class="btn submit" @click="submit">
+        <button class="btn submit bg-violet-300" @click="submit">
           <template v-if="mode == 'M'">수정</template>
           <template v-else>등록</template>
         </button>
-        <button class="btn close" @click="close">닫기</button>
+        <button class="btn close bg-violet-300" @click="close">닫기</button>
       </div>
     </div>
   </GDialog>
@@ -42,6 +42,13 @@
 
 <script>
 import { mapGetters } from 'vuex';
+import { getGuestbookInit } from '../api/posts';
+
+function getRequestUser() {
+  return new Promise((resolve, reject) => {
+    resolve(getGuestbookInit());
+  });
+}
 
 export default {
   props: ['showModal'],
@@ -102,27 +109,20 @@ export default {
       this.dialogState = this.showModal;
 
       if (this.showModal) {
-        // 로그인한 사용자의 블로그 정보를 가져온다.
-        // 로컬에서는 에러 발생!!
-        $.ajax({
-          url: 'https://www.tistory.com/accio/allBlogs',
-          type: 'get',
-          dataType: 'jsonp',
-          context: this,
-          success: function (res) {
-            // console.log(res);
-            if (res.status == '200') {
-              if (res.data.length > 0) {
-                this.blogName = res.data[0].name;
-              }
+        // 로그인한 사용자의 정보를 가져온다.
+        getRequestUser()
+          .then(({ data }) => {
+            if (data.code == 200) {
+              const reqUser = data.result.requestUser;
+              this.blogName = reqUser.homepage
+                .replace('https://', '')
+                .replace('.tistory.com', '');
             }
-          },
-        });
+          })
+          .catch((err) => console.error(err));
       }
     },
     getModComment() {
-      // console.log('htytest');
-
       this.mode = 'M';
       this.comment = this.getModComment;
     },
