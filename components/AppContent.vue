@@ -10,12 +10,6 @@
 
     <!-- AdFit tistory sidebar 광고 -->
     <div class="adfit">
-      <!-- <ins
-        class="kakao_ad_area"
-        data-ad-unit="DAN-rNHsJ1xGbg4tjBAa"
-        data-ad-width="250"
-        data-ad-height="250"
-      ></ins> -->
       <ins
         class="kakao_ad_area"
         data-ad-unit="DAN-pm2qlQF9u7DdI0BL"
@@ -37,7 +31,7 @@
         style="width: 150px; height: 200px; margin-top: 50px; float: left"
       /> -->
       <!-- Coupang Dynamic Banner -->
-      <iframe
+      <!-- <iframe
         src="https://ads-partners.coupang.com/widgets.html?id=639317&template=carousel&trackingCode=AF6597674&subId=&width=250&height=250"
         width="250"
         height="250"
@@ -45,7 +39,14 @@
         scrolling="no"
         referrerpolicy="unsafe-url"
         style="margin-top: 50px; float: left"
-      ></iframe>
+      ></iframe> -->
+      <ins
+        class="kakao_ad_area"
+        data-ad-unit="DAN-rNHsJ1xGbg4tjBAa"
+        data-ad-width="250"
+        data-ad-height="250"
+        style="margin-top: 50px; float: left"
+      ></ins>
     </div>
     <div class="recentTagData">
       <div class="recentTagsTitle">

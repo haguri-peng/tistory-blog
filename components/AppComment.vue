@@ -6,7 +6,7 @@
         <input
           type="text"
           v-model="blogName"
-          placeholder="블로그 주소를 입력해주세요. 'haguri-peng.tistory.com'에서 'haguri-peng'만"
+          placeholder="블로그 주소를 입력해주세요. Ex) haguri-peng"
           style="
             width: 97%;
             margin-bottom: 5px;
