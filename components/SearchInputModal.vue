@@ -88,5 +88,6 @@ export default {
   padding: 0 5px;
   margin-left: 5px;
   cursor: pointer;
+  border-radius: 3px;
 }
 </style>
