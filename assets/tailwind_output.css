@@ -578,6 +578,15 @@ video {
   transition-duration: 150ms;
 }
 
+a {
+  color: #df7861;
+  text-decoration: underline;
+}
+
+a:hover {
+  font-weight: bold;
+}
+
 .hover\:bg-violet-400:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(167 139 250 / var(--tw-bg-opacity));
