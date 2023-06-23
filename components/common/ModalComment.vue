@@ -65,7 +65,7 @@ export default defineComponent({
       title.value = '방명록';
     }
 
-    // method
+    // methods
     const clearModal = () => {
       blogName.value = '';
       comment.value = '';
