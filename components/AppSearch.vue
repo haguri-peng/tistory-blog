@@ -61,7 +61,7 @@
 </template>
 
 <script>
-import LoadingSpinner from './LoadingSpinner.vue';
+import LoadingSpinner from './common/LoadingSpinner.vue';
 import { searchTags, searchPosts } from '../api/posts';
 
 export default {

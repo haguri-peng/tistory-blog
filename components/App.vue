@@ -21,7 +21,7 @@
 
 <script>
 import AppHeader from './AppHeader.vue';
-import LoadingSpinner from './LoadingSpinner.vue';
+import LoadingSpinner from './common/LoadingSpinner.vue';
 import SearchInputModal from './common/SearchInputModal.vue';
 
 import { fetchBlogInfo, fetchCategoryList } from '../api/index';

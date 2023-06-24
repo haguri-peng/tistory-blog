@@ -21,7 +21,7 @@
 <script>
 import AppPost from './AppPost.vue';
 import AppPaging from './AppPaging.vue';
-import LoadingSpinner from './LoadingSpinner.vue';
+import LoadingSpinner from './common/LoadingSpinner.vue';
 
 import {
   fetchCategoryList,
