@@ -1,19 +1,17 @@
 <template>
-  <div class="guestbook" ref="guestbook">
+  <div class="absolute top-24 w-3/5" ref="guestbook">
     <h2>
       【 Guest Book
-      <span class="count">{{ this.count }}</span>
+      <span class="text-xl align-top" style="color: orangered">
+        {{ count }}
+      </span>
       】
-      <button
-        type="button"
-        style="float: right; height: 32px"
-        @click="addGuestbook"
-      >
+      <button type="button" class="float-right h-8" @click="addGuestbook">
         <font-awesome-icon icon="fa-solid fa-pen" title="방명록 작성" />
         작성
       </button>
     </h2>
-    <div class="gb-list">
+    <div class="mt-8 text-base">
       <div v-for="item in gbList" :key="item.id">
         <div v-if="reqUserRole == 'owner' || !item.isSecret">
           <div class="writer-info" :data-id="item.id">
@@ -29,7 +27,7 @@
               @click="moveUrl(item.writer.homepage)"
             />
             <div>
-              <p style="font-weight: bold">
+              <p class="font-bold">
                 {{ item.writer.name }}
                 <span v-if="item.isSecret">
                   <font-awesome-icon icon="fa-solid fa-lock" />
@@ -38,14 +36,17 @@
               <p>{{ item.written }}</p>
             </div>
           </div>
-          <div class="content" v-html="handleNewLine(item.content)"></div>
+          <div
+            class="text-left mt-4"
+            v-html="handleNewLine(item.content)"
+          ></div>
           <hr />
         </div>
       </div>
     </div>
 
     <!-- Modal -->
-    <modal-comment
+    <ModalComment
       :showModal="showModal"
       :type="modalType"
       @closeModal="closeModal"
@@ -53,7 +54,9 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, reactive, onMounted, onUnmounted } from 'vue';
+
 import ModalComment from './common/ModalComment.vue';
 import {
   getGuestbookCount,
@@ -62,144 +65,111 @@ import {
   postGuestbook,
 } from '../api/posts';
 
-export default {
-  components: {
-    ModalComment,
-  },
-  data() {
-    return {
-      count: 0,
-      isLast: true,
-      gbList: [],
-      reqUserId: '',
-      reqUserRole: '',
-      // Modal
-      showModal: false,
-      modalType: 'guestbook',
-    };
-  },
-  methods: {
-    async getCount() {
-      const { data } = await getGuestbookCount();
-      if (data.code == 'OK') {
-        this.count = data.data.count;
-      }
-    },
-    async getReqUserInfo() {
-      const { data } = await getGuestbookInit();
-      if (data.code == 200) {
-        const reqUser = data.result.requestUser;
-        this.reqUserId = reqUser.id;
-        this.reqUserRole = reqUser.role;
-      }
-    },
-    async getData() {
-      this.getCount();
+const guestbook = ref(null);
 
-      const { data } = await getGuestbook();
-      if (data.code == 'OK') {
-        this.gbList = [];
-        for (const item of data.data.items) {
-          this.gbList.push(item);
-        }
+// data
+const count = ref(0);
+const isLast = ref(true);
+const gbList = reactive([]);
+const reqUserId = ref('');
+const reqUserRole = ref('');
+// Modal
+const showModal = ref(false);
+const modalType = ref('guestbook');
 
-        setTimeout(this.setAppHeight, 100);
-      }
-    },
-    handleNewLine(str) {
-      return String(str).replace(/(?:\r\n|\r|\n)/g, '</br>');
-    },
-    moveUrl(url) {
-      if (url != '') {
-        window.open(url, '_blank');
-      }
-    },
-    setAppHeight() {
-      // const headerHeight = 60;
-      // const contentTopMargin = 30;
-      // const contentInnerPadding = 20;
-      const top = 100;
+// methods
+const getCount = async () => {
+  const { data } = await getGuestbookCount();
+  if (data.code == 'OK') {
+    count.value = data.data.count;
+  }
+};
+const getReqUserInfo = async () => {
+  const { data } = await getGuestbookInit();
+  if (data.code == 200) {
+    const reqUser = data.result.requestUser;
+    reqUserId.value = reqUser.id;
+    reqUserRole.value = reqUser.role;
+  }
+};
+const getData = async () => {
+  gbList.length = 0;
+  getCount();
 
-      $('#app').css(
-        'height',
-        this.$refs.guestbook.clientHeight +
-          // headerHeight +
-          // contentTopMargin +
-          // contentInnerPadding +
-          top +
-          'px'
-      );
-    },
-    addGuestbook() {
+  do {
+    const { data } = await getGuestbook();
+    if (data.code == 'OK') {
+      for (const item of data.data.items) {
+        gbList.push(item);
+      }
+
+      isLast.value = data.data.isLast;
+      if (isLast.value) {
+        setTimeout(setAppHeight, 100);
+      }
+    }
+  } while (!isLast.value);
+};
+const handleNewLine = (str) => String(str).replace(/(?:\r\n|\r|\n)/g, '</br>');
+const moveUrl = (url) => {
+  if (url != '') {
+    window.open(url, '_blank');
+  }
+};
+const setAppHeight = () => {
+  const top = 100;
+  $('#app').css('height', guestbook.value.clientHeight + top + 'px');
+};
+const addGuestbook = () => {
+  const { user } = window.initData;
+  if (user == null || user == undefined) {
+    alert('로그인이 필요합니다.');
+    return;
+  }
+  showModal.value = true;
+};
+const closeModal = async (action, objData) => {
+  showModal.value = false;
+
+  // 방명록 등록
+  if (action == 'submit') {
+    try {
       const { user } = window.initData;
       if (user == null || user == undefined) {
         alert('로그인이 필요합니다.');
         return;
       }
 
-      this.showModal = true;
-    },
-    async closeModal(action, objData) {
-      this.showModal = false;
+      const postData = {
+        name: user.name,
+        replier: user.id,
+        comment: objData.comment,
+        isSecret: objData.secret,
+      };
 
-      // 방명록 등록
-      if (action == 'submit') {
-        try {
-          const { user } = window.initData;
-          if (user == null || user == undefined) {
-            alert('로그인이 필요합니다.');
-            return;
-          }
-
-          const postData = {
-            name: user.name,
-            replier: user.id,
-            comment: objData.comment,
-            isSecret: objData.secret,
-          };
-
-          const { data } = await postGuestbook(postData);
-          if (data.code == 'OK') {
-            alert('정상적으로 등록되었습니다.');
-
-            this.getData();
-          } else {
-            alert('에러가 발생하였습니다.');
-          }
-        } catch (err) {
-          alert('에러가 발생하였습니다.');
-        }
+      const { data } = await postGuestbook(postData);
+      if (data.code == 'OK') {
+        alert('정상적으로 등록되었습니다.');
+        getData();
+      } else {
+        alert('에러가 발생하였습니다.');
       }
-    },
-  },
-  created() {
-    this.getReqUserInfo();
-    this.getData();
-  },
-  unmounted() {
-    $('#app').css('height', 'auto');
-  },
+    } catch (err) {
+      alert('에러가 발생하였습니다.');
+    }
+  }
 };
+
+onMounted(() => {
+  getReqUserInfo();
+  getData();
+});
+onUnmounted(() => {
+  $('#app').css('height', 'auto');
+});
 </script>
 
 <style scoped>
-div.guestbook {
-  position: absolute;
-  top: 100px;
-  width: 60%;
-}
-/* h2 {
-  text-align: left;
-} */
-span.count {
-  color: orangered;
-  font-size: 1.3rem;
-  vertical-align: top;
-}
-div.gb-list {
-  margin-top: 30px;
-  font-size: 1rem;
-}
 div.writer-info {
   display: flex;
   align-items: center;
@@ -207,10 +177,6 @@ div.writer-info {
 div.writer-info div {
   text-align: left;
   margin-left: 10px;
-}
-div.content {
-  text-align: left;
-  margin-top: 15px;
 }
 hr {
   margin: 25px 0;

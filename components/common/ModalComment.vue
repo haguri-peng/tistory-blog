@@ -5,9 +5,9 @@
     persistent
     @update:modelValue="onClose"
   >
-    <div class="wrapper">
-      <div class="content">
-        <div class="title">【{{ title }}】</div>
+    <div class="wrapper text-black">
+      <div class="p-5">
+        <div class="text-3xl font-bold mb-5">【{{ title }}】</div>
         <input
           v-if="modalType === 'comment'"
           type="text"
@@ -31,7 +31,7 @@
           secret
         </label>
       </div>
-      <div class="actions">
+      <div class="actions flex justify-end">
         <button class="btn submit bg-violet-300" @click="submit">등록</button>
         <button class="btn close bg-violet-300" @click="close">닫기</button>
       </div>
@@ -39,108 +39,83 @@
   </GDialog>
 </template>
 
-<script>
-import { ref, toRefs, watch, watchEffect, defineComponent } from 'vue';
+<script setup>
+import { ref, reactive, toRefs, watch, watchEffect } from 'vue';
 
-export default defineComponent({
-  emits: ['closeModal'],
-  props: ['showModal', 'type'],
-  setup(props, context) {
-    const { emit } = context;
-    const { showModal, type } = toRefs(props);
+const emit = defineEmits(['closeModal']);
+const props = defineProps({
+  showModal: Boolean,
+  type: String,
+});
 
-    // data
-    const dialogState = ref(false);
-    const modalType = ref(type);
+const { showModal, type } = toRefs(props);
 
-    const title = ref('');
-    const blogName = ref('');
-    const comment = ref('');
-    const arrChk = ref([]);
+// data
+const dialogState = ref(false);
+const modalType = ref(type);
 
-    // set title
-    if (modalType.value == 'comment') {
-      title.value = '댓글';
-    } else if (modalType.value == 'guestbook') {
-      title.value = '방명록';
-    }
+const title = ref('');
+const blogName = ref('');
+const comment = ref('');
+const arrChk = reactive([]);
 
-    // methods
-    const clearModal = () => {
-      blogName.value = '';
-      comment.value = '';
-      arrChk.value = [];
-    };
-    const submit = () => {
-      // input validation
-      if (modalType.value == 'comment' && blogName.value == '') {
-        alert('블로그 주소는 필수입니다.');
-        return;
-      }
-      if (comment.value == '') {
-        alert('입력된 내용이 없습니다.');
-        return;
-      }
+// set title
+if (modalType.value == 'comment') {
+  title.value = '댓글';
+} else if (modalType.value == 'guestbook') {
+  title.value = '방명록';
+}
 
-      const objData = {
-        blogName: blogName.value,
-        comment: comment.value,
-        secret: arrChk.value.length > 0 ? true : false,
-      };
+// methods
+const clearModal = () => {
+  blogName.value = '';
+  comment.value = '';
+  arrChk.length = 0;
+};
+const submit = () => {
+  // input validation
+  if (modalType.value == 'comment' && blogName.value == '') {
+    alert('블로그 주소는 필수입니다.');
+    return;
+  }
+  if (comment.value == '') {
+    alert('입력된 내용이 없습니다.');
+    return;
+  }
 
-      clearModal();
-      emit('closeModal', 'submit', objData);
-    };
-    const close = () => {
-      clearModal();
-      emit('closeModal', 'close');
-    };
-    const onClose = () => {
-      close();
-    };
+  const objData = {
+    blogName: blogName.value,
+    comment: comment.value,
+    secret: arrChk.length > 0 ? true : false,
+  };
 
-    // watch
-    // props.showModal
-    watch(showModal, (val) => {
-      dialogState.value = val;
-    });
-    // watchEffect
-    watchEffect(() => {
-      // console.log('dialogState >> ' + dialogState.value);
-    });
+  clearModal();
+  emit('closeModal', 'submit', objData);
+};
+const close = () => {
+  clearModal();
+  emit('closeModal', 'close');
+};
+const onClose = () => {
+  close();
+};
 
-    return {
-      dialogState,
-      modalType,
-      title,
-      blogName,
-      comment,
-      arrChk,
-      submit,
-      close,
-      onClose,
-    };
-  },
+// watch
+watch(showModal, (val) => {
+  dialogState.value = val;
+});
+// watchEffect
+watchEffect(() => {
+  // console.log('dialogState >> ' + dialogState.value);
 });
 </script>
 
 <style scoped>
 .wrapper {
-  color: #000;
   background-color: rgba(118, 84, 154, 0.11);
   border: 3px solid #76549a;
 }
-.content {
-  padding: 20px;
-}
-.title {
-  font-size: 30px;
-  font-weight: 700;
-  margin-bottom: 20px;
-}
 .actions {
-  display: flex;
-  justify-content: flex-end;
   padding: 10px 20px;
   border-top: 1px solid rgba(0, 0, 0, 0.12);
 }
