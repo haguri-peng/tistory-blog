@@ -1,5 +1,5 @@
 <template>
-  <div class="paging">
+  <div class="h-10 mb-5 inline-flex items-center">
     <font-awesome-icon
       icon="fa-solid fa-backward"
       size="lg"
@@ -31,6 +31,7 @@
     <div class="pages">
       <span
         v-for="n in showPageCnt"
+        class="m-1"
         :class="{
           hide: getPageNum(n) > page.totalPage,
           active: getPageNum(n) == page.currentPage,
@@ -76,81 +77,66 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { toRefs, computed } from 'vue';
 import _ from 'lodash';
 
-export default {
-  props: ['page'],
-  data() {
-    return {
-      showPageCnt: 5, // 보여지는 페이지 수
-    };
+const emit = defineEmits(['movePage']);
+const props = defineProps({
+  page: {
+    type: Object,
+    // required: true,
   },
-  computed: {
-    showPreviousIcon() {
-      return this.page.currentPage > this.showPageCnt;
-    },
-    showNextIcon() {
-      return (
-        Math.floor((this.page.currentPage - 1) / this.showPageCnt) *
-          this.showPageCnt +
-          (this.showPageCnt + 1) <=
-        this.page.totalPage
-      );
-    },
-  },
-  methods: {
-    getPageNum(n) {
-      return (
-        Math.floor((this.page.currentPage - 1) / this.showPageCnt) *
-          this.showPageCnt +
-        n
-      );
-    },
-    clickPageNum(evt) {
-      // 현재 페이지만 아니면 페이지 이동
-      if (!_.includes(evt.target.parentElement.classList, 'active')) {
-        this.movePage(Number(evt.target.text));
-      }
-    },
-    clickFirstPage() {
-      this.movePage(1);
-    },
-    clickPreviousPage() {
-      this.movePage(
-        Math.floor((this.page.currentPage - 1) / this.showPageCnt) *
-          this.showPageCnt -
-          this.showPageCnt +
-          1
-      );
-    },
-    clickNextPage() {
-      this.movePage(
-        Math.floor((this.page.currentPage - 1) / this.showPageCnt) *
-          this.showPageCnt +
-          (this.showPageCnt + 1)
-      );
-    },
-    clickLastPage() {
-      this.movePage(this.page.totalPage);
-    },
-    movePage(pageNum) {
-      this.$emit('movePage', pageNum);
-    },
-  },
+});
+
+const { page } = toRefs(props);
+
+// data
+const showPageCnt = 5;
+
+// computed
+const showPreviousIcon = computed(() => page.value.currentPage > showPageCnt);
+const showNextIcon = computed(
+  () =>
+    Math.floor((page.value.currentPage - 1) / showPageCnt) * showPageCnt +
+      (showPageCnt + 1) <=
+    page.value.totalPage
+);
+
+// methods
+const getPageNum = (n) =>
+  Math.floor((page.value.currentPage - 1) / showPageCnt) * showPageCnt + n;
+const clickPageNum = (evt) => {
+  // 현재 페이지만 아니면 페이지 이동
+  if (!_.includes(evt.target.parentElement.classList, 'active')) {
+    movePage(Number(evt.target.text));
+  }
+};
+const clickFirstPage = () => {
+  movePage(1);
+};
+const clickPreviousPage = () => {
+  movePage(
+    Math.floor((page.value.currentPage - 1) / showPageCnt) * showPageCnt -
+      showPageCnt +
+      1
+  );
+};
+const clickNextPage = () => {
+  movePage(
+    Math.floor((page.value.currentPage - 1) / showPageCnt) * showPageCnt +
+      (showPageCnt + 1)
+  );
+};
+const clickLastPage = () => {
+  movePage(page.value.totalPage);
+};
+const movePage = (pageNum) => {
+  emit('movePage', pageNum);
 };
 </script>
 
 <style scoped>
-div.paging {
-  height: 40px;
-  margin-bottom: 20px;
-  display: inline-flex;
-  align-items: center;
-}
-div.pages span {
-  margin: 5px;
-}
 div.pages span.hide {
   display: none;
 }

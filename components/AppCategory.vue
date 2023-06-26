@@ -1,118 +1,112 @@
 <template>
-  <loading-spinner v-if="isLoading"></loading-spinner>
-  <div style="width: 100%" v-else>
+  <LoadingSpinner v-if="isLoading"></LoadingSpinner>
+  <div class="w-full" v-else>
     <div class="category-title">
       {{ categoryName }}
     </div>
     <div class="posts">
       <ul>
-        <app-post
+        <AppPost
           v-for="post in postList"
           :key="post.id"
           :postItem="post"
           @openContent="moveContent"
-        ></app-post>
+        ></AppPost>
       </ul>
-      <app-paging :page="pageInfo" @movePage="fetchPostByCategory"></app-paging>
+      <AppPaging :page="pageInfo" @movePage="fetchPostByCategory"></AppPaging>
     </div>
   </div>
 </template>
 
-<script>
+<script setup>
 import AppPost from './AppPost.vue';
 import AppPaging from './AppPaging.vue';
 import LoadingSpinner from './common/LoadingSpinner.vue';
 
+import { ref, reactive, computed, onMounted } from 'vue';
+import { useStore } from 'vuex';
+import { useRoute, useRouter } from 'vue-router';
+
 import {
   fetchCategoryList,
   fetchPostListByCategory,
-  fetchPostList,
+  // fetchPostList,
 } from '../api/index';
-import { mapGetters } from 'vuex';
-
 import _ from 'lodash';
 
-export default {
-  components: {
-    AppPost,
-    AppPaging,
-    LoadingSpinner,
-  },
-  data() {
-    return {
-      postList: [],
-      searchPostList: [],
-      pageInfo: {},
-      isLoading: false,
-      categoryName: '',
-    };
-  },
-  computed: {
-    ...mapGetters(['getCategoryId', 'getPageNum']),
-  },
-  methods: {
-    async fetchPostByCategory(pageNum) {
-      this.isLoading = true;
-      this.postList = [];
+const store = useStore();
+const route = useRoute();
+const router = useRouter();
 
-      const { data } = await fetchPostListByCategory(
-        this.$route.params.categoryId,
-        pageNum ||
-          (this.$route.params.categoryId == this.getCategoryId
-            ? this.getPageNum
-            : 1)
-      );
-      // console.log(data);
+// data
+const postList = reactive([]);
+const searchPostList = reactive([]);
+const pageInfo = reactive({});
+const isLoading = ref(false);
+const categoryName = ref('');
 
-      if (data.tistory.status == '200') {
-        // 페이징 정보 세팅
-        this.pageInfo.currentPage = data.tistory.item.page;
-        this.pageInfo.totalPage = Math.ceil(
-          Number(data.tistory.item.totalCount) / Number(data.tistory.item.count)
-        );
+// computed
+const getCategoryId = computed(() => store.getters.getCategoryId);
+const getPageNum = computed(() => store.getters.getPageNum);
 
-        // 발행된 건만
-        this.postList = _.filter(data.tistory.item.posts, ['visibility', '20']);
+// methods
+const fetchPostByCategory = async (pageNum) => {
+  isLoading.value = true;
+  postList.length = 0;
 
-        // 카테고리 정보 세팅
-        this.setCategoryInfo({
-          id: this.$route.params.categoryId,
-          page: this.pageInfo.currentPage,
-        });
+  const { data } = await fetchPostListByCategory(
+    route.params.categoryId,
+    pageNum || (route.params.categoryId == getCategoryId ? getPageNum : 1)
+  );
 
-        // 카테고리 목록 조회
-        this.getCategoryList();
-      }
-      this.isLoading = false;
-    },
-    moveContent(id) {
-      this.isLoading = true;
-      this.$router.push(`/${id}`);
-    },
-    setCategoryInfo(categoryInfo) {
-      // 카테고리 및 페이지 번호를 vuex에 세팅
-      this.$store.dispatch('setCategoryInfo', categoryInfo);
-    },
-    async getCategoryList() {
-      const { data } = await fetchCategoryList();
+  if (data.tistory.status == '200') {
+    // 페이징 정보 세팅
+    pageInfo.currentPage = data.tistory.item.page;
+    pageInfo.totalPage = Math.ceil(
+      Number(data.tistory.item.totalCount) / Number(data.tistory.item.count)
+    );
 
-      if (data.tistory.status == '200') {
-        const currentCategory = _.find(data.tistory.item.categories, [
-          'id',
-          this.getCategoryId,
-        ]);
-        // console.log(currentCategory);
+    // 발행된 건만
+    postList.push(..._.filter(data.tistory.item.posts, ['visibility', '20']));
 
-        if (currentCategory != null && currentCategory != undefined) {
-          this.categoryName = currentCategory.label.replace(/\//g, ' > ');
-        }
-      }
-    },
-  },
-  created() {
-    this.fetchPostByCategory();
-  },
+    // 카테고리 정보 세팅
+    setCategoryInfo({
+      id: route.params.categoryId,
+      page: pageInfo.currentPage,
+    });
+
+    // 카테고리 목록 조회
+    getCategoryList();
+  }
+  isLoading.value = false;
 };
+const moveContent = (id) => {
+  isLoading.value = true;
+  router.push(`/${id}`);
+};
+const setCategoryInfo = (categoryInfo) => {
+  // 카테고리 및 페이지 번호를 vuex에 세팅
+  store.dispatch('setCategoryInfo', categoryInfo);
+};
+const getCategoryList = async () => {
+  const { data } = await fetchCategoryList();
+
+  if (data.tistory.status == '200') {
+    const currentCategory = _.find(data.tistory.item.categories, [
+      'id',
+      getCategoryId,
+    ]);
+    // console.log(currentCategory);
+
+    if (currentCategory != null && currentCategory != undefined) {
+      categoryName.value = currentCategory.label.replace(/\//g, ' > ');
+    }
+  }
+};
+
+onMounted(() => {
+  fetchPostByCategory();
+});
 </script>
 
 <style scoped>
