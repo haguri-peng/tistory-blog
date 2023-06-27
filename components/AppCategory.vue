@@ -56,7 +56,8 @@ const fetchPostByCategory = async (pageNum) => {
 
   const { data } = await fetchPostListByCategory(
     route.params.categoryId,
-    pageNum || (route.params.categoryId == getCategoryId ? getPageNum : 1)
+    pageNum ||
+      (route.params.categoryId == getCategoryId.value ? getPageNum.value : 1)
   );
 
   if (data.tistory.status == '200') {
@@ -94,9 +95,8 @@ const getCategoryList = async () => {
   if (data.tistory.status == '200') {
     const currentCategory = _.find(data.tistory.item.categories, [
       'id',
-      getCategoryId,
+      getCategoryId.value,
     ]);
-    // console.log(currentCategory);
 
     if (currentCategory != null && currentCategory != undefined) {
       categoryName.value = currentCategory.label.replace(/\//g, ' > ');

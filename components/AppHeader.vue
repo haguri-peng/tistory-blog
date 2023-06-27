@@ -2,7 +2,7 @@
   <header>
     <!-- 카테고리 -->
     <div class="category">
-      <ul>
+      <ul class="inline-flex h-full">
         <li>
           <font-awesome-icon
             icon="fa-solid fa-house"
@@ -33,7 +33,7 @@
           @click="clickCategory(category.id)"
         >
           <span class="menu"> {{ category.name }}</span>
-          <span class="cnt"> [{{ category.entries }}] </span>
+          <span class="font-light"> [{{ category.entries }}] </span>
           <span class="newFlag"> {{ showFlag(category.id) }} </span>
         </li>
         <li @click="$emit('showSearchInput')">
@@ -74,96 +74,94 @@
   </header>
 </template>
 
-<script>
+<script setup>
+import { ref, reactive, toRefs, computed, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+
 import { fetchPostList } from '../api/index';
 import _ from 'lodash';
 
-export default {
-  props: ['categoryList'],
-  data() {
-    return {
-      activeCategory: '',
-      recentCategoryIds: [],
-      subCategoryList: [],
-    };
-  },
-  computed: {
-    getTopCategory() {
-      return _.filter(this.categoryList, (c) => c.parent == '');
-    },
-  },
-  methods: {
-    async fetchPost(pageNum) {
-      const { data } = await fetchPostList(pageNum);
-      // console.log(data);
+const router = useRouter();
 
-      if (data.tistory.status == '200') {
-        // 최근에 올린 글 목록 (10개. 발행된 건만)
-        this.recentPosts = _.filter(
-          data.tistory.item.posts,
-          (p) => p.visibility == '20'
-        );
-        this.recentCategoryIds = _.keys(
-          _.countBy(this.recentPosts, 'categoryId')
-        );
-        // console.log(this.recentCategoryIds);
-      }
-    },
-    showFlag(categoryId) {
-      const fIdx = _.findIndex(
-        this.recentCategoryIds,
-        (id) => id == categoryId
-      );
-      if (fIdx > -1) {
-        return 'N';
-      } else {
-        const parentIds = _.chain(this.categoryList)
-          .filter((c) => this.recentCategoryIds.includes(c.id))
-          .map((c) => c.parent)
-          .compact()
-          .value();
-        // console.log(parentIds);
-        return parentIds.includes(categoryId) ? 'N' : '';
-      }
-    },
-    clickCategory(categoryId, subFlag) {
-      // Sub Category display CSS 초기화
-      $('div.subCategory').css('display', '');
+const emit = defineEmits(['showSearchInput', 'moveCategory']);
+const props = defineProps(['categoryList']);
 
-      if (subFlag != 'sub') {
-        this.activeCategory = categoryId;
-      }
+const { categoryList } = toRefs(props);
 
-      const subCategory = _.filter(
-        this.categoryList,
-        (c) => c.parent == categoryId
-      );
-      // console.log(subCategory);
+// data
+const activeCategory = ref('');
+const recentCategoryIds = reactive([]);
+const subCategoryList = reactive([]);
 
-      if (subCategory.length == 0) {
-        this.subCategoryList = [];
-        this.$emit('moveCategory', categoryId);
-      } else {
-        this.subCategoryList = subCategory;
-      }
-    },
-    hideSubCategory() {
-      $('div.subCategory').slideUp(400);
-    },
-    subCategoryOut() {
-      this.hideSubCategory();
-    },
-    moveHome() {
-      this.$router.push('/');
-    },
-    moveGuestbook() {
-      this.$router.push('/guestbook');
-    },
-  },
-  created() {
-    this.fetchPost(1);
-  },
+// computed
+const getTopCategory = computed(() =>
+  _.filter(categoryList.value, (c) => c.parent == '')
+);
+
+// methods
+const fetchPost = async (pageNum) => {
+  const { data } = await fetchPostList(pageNum);
+  if (data.tistory.status == '200') {
+    // 최근에 올린 글 목록 (10개. 발행된 건만)
+    const recentPosts = _.filter(
+      data.tistory.item.posts,
+      (p) => p.visibility == '20'
+    );
+    recentCategoryIds.push(..._.keys(_.countBy(recentPosts, 'categoryId')));
+    // console.log(recentCategoryIds);
+  }
 };
+const showFlag = (categoryId) => {
+  const fIdx = _.findIndex(recentCategoryIds, (id) => id == categoryId);
+  if (fIdx > -1) {
+    return 'N';
+  } else {
+    const parentIds = _.chain(categoryList.value)
+      .filter((c) => recentCategoryIds.includes(c.id))
+      .map((c) => c.parent)
+      .compact()
+      .value();
+    // console.log(parentIds);
+    return parentIds.includes(categoryId) ? 'N' : '';
+  }
+};
+const clickCategory = (categoryId, subFlag) => {
+  // Sub Category display CSS 초기화
+  $('div.subCategory').css('display', '');
+
+  if (subFlag != 'sub') {
+    activeCategory.value = categoryId;
+  }
+
+  const subCategory = _.filter(
+    categoryList.value,
+    (c) => c.parent == categoryId
+  );
+  // console.log(subCategory);
+
+  subCategoryList.length = 0;
+  if (subCategory.length == 0) {
+    emit('moveCategory', categoryId);
+  } else {
+    subCategoryList.push(...subCategory);
+  }
+};
+const hideSubCategory = () => {
+  $('div.subCategory').slideUp(400);
+};
+const subCategoryOut = () => {
+  hideSubCategory();
+};
+const moveHome = () => {
+  router.push('/');
+};
+const moveGuestbook = () => {
+  router.push('/guestbook');
+};
+
+onMounted(() => {
+  fetchPost(1);
+});
 </script>
 
 <style scoped>
@@ -183,12 +181,6 @@ div.category {
   left: 0;
   width: 100%;
   height: 60px;
-  /* overflow-x: auto; */
-  /* background-color: #c4dfaa; */
-}
-div.category ul {
-  display: inline-flex;
-  height: 100%;
 }
 div.category ul li {
   list-style: none;
@@ -208,9 +200,6 @@ div.category ul li.active {
 div.category ul li:hover {
   transform: scale(1.05, 1.05);
   text-decoration: underline;
-}
-div.category span.cnt {
-  font-weight: lighter;
 }
 div.category span.newFlag {
   color: #df7861;
