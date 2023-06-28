@@ -1,8 +1,8 @@
 <template>
   <GDialog v-model="dialogState" max-width="500" persistent>
     <div class="wrapper">
-      <div class="content">
-        <div class="title">댓글 작성</div>
+      <div class="p-5">
+        <div class="text-3xl font-bold mb-5">댓글 작성</div>
         <input
           type="text"
           v-model="blogName"
@@ -40,94 +40,100 @@
   </GDialog>
 </template>
 
-<script>
-import { mapGetters } from 'vuex';
+<script setup>
+import { ref, reactive, toRefs, computed, watch } from 'vue';
+import { useStore } from 'vuex';
+
 import { getGuestbookInit } from '../api/posts';
 
+const emit = defineEmits(['closeModal']);
+const props = defineProps(['showModal']);
+
+const { showModal } = toRefs(props);
+
+const store = useStore();
+
+// data
+const dialogState = ref(false);
+const blogName = ref('');
+const comment = ref('');
+const arrChk = reactive([]);
+const mode = ref('');
+
+// computed
+const getParentCommentId = computed(() => store.getters.getParentCommentId);
+const getCommentId = computed(() => store.getters.getCommentId);
+const getModComment = computed(() => store.getters.getModComment);
+
+// methods
+const submit = () => {
+  if (blogName.value == '') {
+    alert('블로그 주소는 필수입니다.');
+    return;
+  }
+  if (comment.value == '') {
+    alert('댓글이 입력되지 않았습니다.');
+    return;
+  }
+
+  const objData = {
+    blogName: blogName.value,
+    content: comment.value.replace(/\n/g, '  '), // 개행문자는 공백 2칸으로 치환
+    secret: arrChk.length > 0 ? 1 : 0, // 1: 비밀댓글, 0: 공개댓글
+    parentId: getParentCommentId.value,
+  };
+
+  // 댓글 수정인 경우
+  if (mode.value == 'M') {
+    objData.commentId = getCommentId.value;
+  }
+
+  resetData();
+  emit('closeModal', 'submit', objData);
+};
+const close = () => {
+  resetData();
+  emit('closeModal', 'close');
+};
+const resetData = () => {
+  dialogState.value = false;
+  blogName.value = '';
+  comment.value = '';
+  arrChk.length = 0;
+  mode.value = '';
+
+  store.dispatch('clearCommentInfo');
+};
+
+// watch
+watch(showModal, (val) => {
+  dialogState.value = val;
+
+  if (val) {
+    // 로그인한 사용자의 정보를 가져온다.
+    getRequestUser()
+      .then(({ data }) => {
+        if (data.code == 200) {
+          const reqUser = data.result.requestUser;
+          blogName.value = reqUser.homepage
+            .replace('https://', '')
+            .replace('.tistory.com', '');
+        }
+      })
+      .catch((err) => console.error(err));
+  }
+});
+watch(getModComment, (val) => {
+  mode.value = 'M';
+  comment.value = val;
+});
+
+// function
 function getRequestUser() {
   return new Promise((resolve, reject) => {
     resolve(getGuestbookInit());
   });
 }
-
-export default {
-  props: ['showModal'],
-  data() {
-    return {
-      dialogState: false,
-      blogName: '',
-      comment: '',
-      arrChk: [],
-      mode: '', // 'M' 값인 경우 수정모드
-    };
-  },
-  computed: {
-    ...mapGetters(['getParentCommentId', 'getCommentId', 'getModComment']),
-  },
-  methods: {
-    submit() {
-      if (this.blogName == '') {
-        alert('블로그 주소는 필수입니다.');
-        return;
-      }
-      if (this.comment == '') {
-        alert('댓글이 입력되지 않았습니다.');
-        return;
-      }
-
-      const objData = {
-        blogName: this.blogName,
-        content: this.comment.replace(/\n/g, '  '), // 개행문자는 공백 2칸으로 치환
-        secret: this.arrChk.length > 0 ? 1 : 0, // 1: 비밀댓글, 0: 공개댓글
-        parentId: this.getParentCommentId,
-      };
-
-      // 댓글 수정인 경우
-      if (this.mode == 'M') {
-        objData.commentId = this.getCommentId;
-      }
-
-      this.resetData();
-      this.$emit('closeModal', 'submit', objData);
-    },
-    close() {
-      this.resetData();
-      this.$emit('closeModal', 'close');
-    },
-    resetData() {
-      this.dialogState = false;
-      this.blogName = '';
-      this.comment = '';
-      this.arrChk = [];
-      this.mode = '';
-
-      this.$store.dispatch('clearCommentInfo');
-    },
-  },
-  watch: {
-    showModal() {
-      this.dialogState = this.showModal;
-
-      if (this.showModal) {
-        // 로그인한 사용자의 정보를 가져온다.
-        getRequestUser()
-          .then(({ data }) => {
-            if (data.code == 200) {
-              const reqUser = data.result.requestUser;
-              this.blogName = reqUser.homepage
-                .replace('https://', '')
-                .replace('.tistory.com', '');
-            }
-          })
-          .catch((err) => console.error(err));
-      }
-    },
-    getModComment() {
-      this.mode = 'M';
-      this.comment = this.getModComment;
-    },
-  },
-};
 </script>
 
 <style scoped>
@@ -135,14 +141,6 @@ export default {
   color: #000;
   background-color: rgba(118, 84, 154, 0.11);
   border: 3px solid #76549a;
-}
-.content {
-  padding: 20px;
-}
-.title {
-  font-size: 30px;
-  font-weight: 700;
-  margin-bottom: 20px;
 }
 .actions {
   display: flex;

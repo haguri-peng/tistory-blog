@@ -1,102 +1,91 @@
 <template>
   <div class="app">
-    <app-header
+    <AppHeader
       :categoryList="category"
       @moveCategory="moveCategory"
       @showSearchInput="showSearchInput"
-    ></app-header>
+    />
 
-    <loading-spinner v-if="isLoading"></loading-spinner>
+    <LoadingSpinner v-if="isLoading" />
     <div class="app-contents" v-else>
       <router-view></router-view>
     </div>
 
     <!-- Search Modal -->
-    <search-input-modal
+    <SearchInputModal
       :showSearch="showSearch"
       @closeSearchModal="closeSearchModal"
-    ></search-input-modal>
+    />
   </div>
 </template>
 
-<script>
+<script setup>
 import AppHeader from './AppHeader.vue';
 import LoadingSpinner from './common/LoadingSpinner.vue';
 import SearchInputModal from './common/SearchInputModal.vue';
 
+import { ref, reactive, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+
 import { fetchBlogInfo, fetchCategoryList } from '../api/index';
 import _ from 'lodash';
 
-export default {
-  components: {
-    AppHeader,
-    LoadingSpinner,
-    SearchInputModal,
-  },
-  // props: ['bodyId'],
-  data() {
-    return {
-      isLoading: true,
-      category: [],
-      postCnt: 0,
-      loginId: '',
-      loginUserId: '',
-      showSearch: false,
-    };
-  },
-  methods: {
-    async fetchBlog() {
-      const { data } = await fetchBlogInfo();
-      // console.log(data);
+const router = useRouter();
 
-      this.postCnt =
-        _.find(data.tistory.item.blogs, ['name', 'haguri-peng']).statistics
-          .post || 0;
+// data
+const isLoading = ref(true);
+const category = reactive([]);
+const postCnt = ref(0);
+const loginId = ref('');
+const loginUserId = ref('');
+const showSearch = ref(false);
 
-      // const defaultBlog = _.head(
-      //   _.filter(data.tistory.item.blogs, ['default', 'Y'])
-      // );
-      // console.log(defaultBlog);
-      this.loginId = data.tistory.item.id || '';
-      this.loginUserId = data.tistory.item.userId || '';
-    },
-    async fetchCategory() {
-      const { data } = await fetchCategoryList();
-      // console.log(data.tistory);
+// methods
+const fetchBlog = async () => {
+  const { data } = await fetchBlogInfo();
+  // console.log(data);
 
-      if (data.tistory.status == '200') {
-        const categories = data.tistory.item.categories;
-        this.category = _.filter(categories, (c) => Number(c.entries) > 0);
-      }
-    },
-    showLoadingSpinner() {
-      this.isLoading = true;
-      setTimeout(() => {
-        this.isLoading = false;
-      }, 300);
-    },
-    moveCategory(id) {
-      this.showLoadingSpinner();
-      this.$router.push(`/category/${id}`);
-    },
-    showSearchInput() {
-      // console.log('showSearchInput');
-      this.showSearch = true;
-    },
-    closeSearchModal(type, keyword) {
-      this.showSearch = false;
-
-      if (type == 'search') {
-        this.$router.push(`/search/posts/${keyword}`);
-      }
-    },
-  },
-  created() {
-    this.showLoadingSpinner();
-    this.fetchBlog();
-    this.fetchCategory();
-  },
+  postCnt.value =
+    _.find(data.tistory.item.blogs, ['name', 'haguri-peng']).statistics.post ||
+    0;
+  loginId.value = data.tistory.item.id || '';
+  loginUserId.value = data.tistory.item.userId || '';
 };
+const fetchCategory = async () => {
+  const { data } = await fetchCategoryList();
+  // console.log(data.tistory);
+
+  if (data.tistory.status == '200') {
+    const categories = data.tistory.item.categories;
+    category.push(..._.filter(categories, (c) => Number(c.entries) > 0));
+  }
+};
+const showLoadingSpinner = () => {
+  isLoading.value = true;
+  setTimeout(() => {
+    isLoading.value = false;
+  }, 300);
+};
+const moveCategory = (id) => {
+  showLoadingSpinner();
+  router.push(`/category/${id}`);
+};
+const showSearchInput = () => {
+  showSearch.value = true;
+};
+const closeSearchModal = (type, keyword) => {
+  showSearch.value = false;
+
+  if (type == 'search') {
+    router.push(`/search/posts/${keyword}`);
+  }
+};
+
+onMounted(() => {
+  showLoadingSpinner();
+  fetchBlog();
+  fetchCategory();
+});
 </script>
 
 <style>
