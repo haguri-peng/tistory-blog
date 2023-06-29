@@ -9,7 +9,7 @@
     </div>
 
     <!-- AdFit tistory sidebar 광고 -->
-    <div class="adfit">
+    <div class="absolute bottom-0 right-0">
       <ins
         class="kakao_ad_area"
         data-ad-unit="DAN-pm2qlQF9u7DdI0BL"
@@ -21,8 +21,8 @@
 
   <!-- Right -->
   <div class="aside">
-    <div class="list">
-      <ul></ul>
+    <div class="text-left" style="border-left: 2px solid #df7861">
+      <ul class="list-none pl-2"></ul>
     </div>
     <div class="image">
       <!-- <img
@@ -52,11 +52,11 @@
       <div class="recentTagsTitle">
         Recent Tags <font-awesome-icon icon="fa-solid fa-tags" />
       </div>
-      <div style="margin-top: 5px">
+      <div class="mt-1">
         <span v-for="(tag, idx) in recentTagData" :key="idx">
           <button
             type="button"
-            style="font-weight: bold; border: none; margin-right: 5px"
+            class="font-bold border-none mr-1"
             @click="searchTag(tag)"
           >
             #{{ tag }}
@@ -66,37 +66,32 @@
     </div>
   </div>
 
-  <div class="content" ref="content">
+  <div class="content" ref="contents">
     <div class="title">
       <h1>{{ getUnescapedTitle }}</h1>
       <p class="date">작성일시: {{ date }}</p>
     </div>
 
-    <app-content-main
-      :content="content"
-      @refreshAside="setAsideSection"
-    ></app-content-main>
+    <AppContentMain :content="content" @refreshAside="setAsideSection" />
 
     <div class="tags">
       Tags
-      <font-awesome-icon icon="fa-solid fa-tags" style="margin-right: 20px" />
+      <font-awesome-icon icon="fa-solid fa-tags" class="mr-5" />
       <span
         class="tag"
         v-for="(tag, index) in tags"
         :key="index"
         @click="searchTag(tag)"
       >
-        <!-- <span class="title" v-if="index === 0"> </span> -->
         #{{ tag }}
       </span>
     </div>
 
     <div class="comments">
-      <!-- <p v-show="comments.length > 0"> -->
       <p>
         {{ comments.length }} Comments
         <font-awesome-icon icon="fa-solid fa-comments" />
-        <button type="button" style="float: right" @click="addComment">
+        <button type="button" class="float-right" @click="addComment">
           <font-awesome-icon icon="fa-solid fa-pen" title="댓글 등록" />
           등록
         </button>
@@ -129,9 +124,7 @@
               @click="openCommenterPage(comment.homepage)"
             />
             <span>{{ comment.name }}</span>
-            <span style="margin-left: 30px; font-size: small">
-              {{ comment.date }}
-            </span>
+            <span class="ml-8 text-xs"> {{ comment.date }} </span>
           </div>
           <div
             class="comment-mod-del"
@@ -177,7 +170,7 @@
           style="cursor: pointer"
         />
       </div>
-      <div style="margin-top: 10px">
+      <div class="mt-3">
         <font-awesome-layers full-width class="fa-xl">
           <font-awesome-icon
             v-if="isReactionCheck"
@@ -209,25 +202,37 @@
           />
         </font-awesome-layers>
       </div>
-      <div @click="gotoComments" style="margin-top: 10px">
-        <font-awesome-icon
-          icon="fa-solid fa-comment"
-          size="xl"
-          title="comments"
-          flip
-          style="cursor: pointer; --fa-animation-duration: 3s"
-        />
+      <div @click="gotoComments" class="mt-3">
+        <font-awesome-layers full-width class="fa-xl">
+          <font-awesome-icon
+            icon="fa-solid fa-comment"
+            title="comments"
+            flip
+            style="cursor: pointer; --fa-animation-duration: 3s"
+          />
+          <font-awesome-layers-text
+            counter
+            :value="comments.length"
+            position="bottom-right"
+            style="margin-right: -15px; font-size: 3rem"
+          />
+        </font-awesome-layers>
       </div>
     </div>
 
     <!-- Modal -->
-    <app-comment :showModal="showModal" @closeModal="hideModal"></app-comment>
+    <AppComment :showModal="showModal" @closeModal="hideModal" />
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, reactive, computed, onMounted, onUnmounted } from 'vue';
+import { useStore } from 'vuex';
+import { useRoute, useRouter } from 'vue-router';
+
 import AppContentMain from './AppContentMain.vue';
 import AppComment from './AppComment.vue';
+
 import {
   fetchCategoryList,
   fetchPostList,
@@ -238,408 +243,392 @@ import {
   deleteComment,
 } from '../api/index';
 import { searchReaction, postReaction, deleteReaction } from '../api/posts';
+import _ from 'lodash';
 
-export default {
-  components: {
-    AppContentMain,
-    AppComment,
-  },
-  data() {
-    return {
-      postId: '',
-      categoryId: '',
-      title: '',
-      content: '',
-      tags: [],
-      date: '',
-      acceptComment: false,
-      comments: [],
-      categoryName: '',
-      recentTagData: [],
-      intervalId: '',
-      showModal: false,
-      reactionCount: 0,
-      isReactionCheck: false,
-    };
-  },
-  computed: {
-    isContent() {
-      return this.content == '' ? false : true;
-    },
-    getUnescapedTitle() {
-      return _.unescape(this.title);
-    },
-  },
-  methods: {
-    async getContent() {
-      const { data } = await fetchPost(this.$route.params.id);
-      // console.log(data);
+const store = useStore();
+const route = useRoute();
+const router = useRouter();
 
-      if (data.tistory.status == '200') {
-        this.postId = this.$route.params.id;
-        this.categoryId = data.tistory.item.categoryId;
-        this.title = data.tistory.item.title;
-        this.content = data.tistory.item.content;
-        this.tags = data.tistory.item.tags.tag;
-        this.date = data.tistory.item.date;
-        this.acceptComment =
-          data.tistory.item.acceptComment == '1' ? true : false; // 댓글 허용 여부(허용: 1, 비허용: 0)
+const contents = ref(null);
 
-        // 카테고리 목록 조회
-        this.getCategoryList();
+// data
+const postId = ref('');
+const categoryId = ref('');
+const title = ref('');
+const content = ref('');
+const tags = reactive([]);
+const date = ref('');
+const acceptComment = ref(false);
+const comments = reactive([]);
+const categoryName = ref('');
+const recentTagData = reactive([]);
+const intervalId = ref('');
+const showModal = ref(false);
+const reactionCount = ref(0);
+const isReactionCheck = ref(false);
 
-        // 최근글 5개에서 태그 정보를 가져온다.
-        this.getTagList();
+// computed
+const isContent = computed(() => (content.value == '' ? false : true));
+const getUnescapedTitle = computed(() => _.unescape(title.value));
 
-        // aside 영역 세팅
-        // content 부분을 세팅하는 딜레이가 있어서 적정한 timeout을 줘서 처리(0.5초)
-        this.setAsideSection();
+// methods
+const getContent = async () => {
+  const { data } = await fetchPost(route.params.id);
+  if (data.tistory.status == '200') {
+    postId.value = route.params.id;
+    categoryId.value = data.tistory.item.categoryId;
+    title.value = data.tistory.item.title;
+    content.value = data.tistory.item.content;
+    tags.push(...data.tistory.item.tags.tag);
+    date.value = data.tistory.item.date;
+    acceptComment.value = data.tistory.item.acceptComment == '1' ? true : false; // 댓글 허용 여부(허용: 1, 비허용: 0)
 
-        // reaction 가져오기
-        this.getReaction();
+    // 카테고리 목록 조회
+    getCategoryList();
 
-        // 스크롤 Event 설정
-        // 스크롤 위치에 따라 어느 영역에 있는지 확인하여 색상을 변경
-        $(window).scroll(function () {
-          const top = $(window).scrollTop();
-          // console.log('top >> ' + top);
+    // 최근글 5개에서 태그 정보를 가져온다.
+    getTagList();
 
-          let bFind = false;
-          $('div.aside ul li').each(function (idx, item) {
-            if (
-              !bFind &&
-              parseInt($(this).data('offsetTop')) <= top + 5 &&
-              ($(this).next().length > 0
-                ? parseInt($(this).next().data('offsetTop'))
-                : top + 5) >=
-                top + 5
-            ) {
-              $(this).css('color', '#df7861');
-              bFind = true;
-            } else {
-              $(this).css('color', '');
-            }
-          });
-        });
-      }
-    },
-    async getComments() {
-      const { data } = await fetchComments(this.$route.params.id);
-      // console.log(data);
+    // aside 영역 세팅
+    // content 부분을 세팅하는 딜레이가 있어서 적정한 timeout을 줘서 처리(0.5초)
+    setAsideSection();
 
-      if (data.tistory.status == '200') {
+    // reaction 가져오기
+    getReaction();
+
+    // 스크롤 Event 설정
+    // 스크롤 위치에 따라 어느 영역에 있는지 확인하여 색상을 변경
+    $(window).scroll(function () {
+      const top = $(window).scrollTop();
+      // console.log('top >> ' + top);
+
+      let bFind = false;
+      $('div.aside ul li').each(function (idx, item) {
         if (
-          data.tistory.item.comments != null &&
-          data.tistory.item.comments.length > 0
+          !bFind &&
+          parseInt($(this).data('offsetTop')) <= top + 5 &&
+          ($(this).next().length > 0
+            ? parseInt($(this).next().data('offsetTop'))
+            : top + 5) >=
+            top + 5
         ) {
-          const treeSortComments = _.sortBy(data.tistory.item.comments, [
-            function (comment) {
-              function getParentDate(comment) {
-                if (comment.parentId == '') {
-                  comment.level = 1;
-                  return comment.date;
-                } else {
-                  const parent = _.find(data.tistory.item.comments, [
-                    'id',
-                    comment.parentId,
-                  ]);
-                  comment.level = parent.level + 1;
-                  return getParentDate(parent);
-                }
-              }
-              return getParentDate(comment);
-            },
-            'date',
-          ]);
-
-          // console.log(data.tistory.item.comments);
-          // console.log(treeSortComments);
-
-          this.comments = treeSortComments;
+          $(this).css('color', '#df7861');
+          bFind = true;
         } else {
-          this.comments = [];
+          $(this).css('color', '');
         }
-      }
-    },
-    addComment() {
-      // if (this.$parent.$parent.loginId == '') {
-      const { user } = window.initData;
-      if (user == null || user == undefined) {
-        alert('로그인이 필요합니다.');
-        return;
-      }
-
-      if (!this.acceptComment) {
-        alert('댓글이 허용되지 않는 글입니다.');
-        return;
-      }
-
-      this.showModal = true;
-    },
-    async hideModal(action, objData) {
-      this.showModal = false;
-
-      // 댓글 등록 및 수정
-      if (action == 'submit') {
-        objData.postId = this.postId;
-        // objData.blogName = this.$parent.$parent.loginId;
-        // console.log(objData);
-
-        try {
-          if (
-            objData.commentId != null &&
-            objData.commentId != undefined &&
-            objData.commentId != ''
-          ) {
-            // 수정
-            const { data } = await modifyComment(objData);
-            if (data.tistory.status == '200') {
-              alert('댓글이 수정되었습니다.');
-              this.getComments();
-            } else {
-              alert(data.tistory.error_message);
-            }
-          } else {
-            // 등록
-            const { data } = await insertComment(objData);
-            if (data.tistory.status == '200') {
-              alert('댓글이 등록되었습니다.');
-
-              this.getComments();
-              setTimeout(this.setAppHeight, 1000);
-            } else {
-              alert(data.tistory.error_message);
-            }
-          }
-        } catch (err) {
-          alert(err.response.data.tistory.error_message);
-        }
-      }
-    },
-    modComment(commentId, parentCommentId, comment) {
-      // vuex 댓글 부분 세팅
-      const commentInfo = {
-        parentCommentId,
-        commentId,
-        comment,
-      };
-      // console.log(commentInfo);
-
-      this.$store.dispatch('setCommentInfo', commentInfo);
-      this.showModal = true;
-    },
-    async delComment(commentId, homepage) {
-      if (confirm('댓글을 삭제하시겠습니까?')) {
-        const objData = {
-          blogName: homepage.split('//')[1].split('.')[0],
-          postId: this.postId,
-          commentId,
-        };
-        // console.log(objData);
-
-        try {
-          const { data } = await deleteComment(objData);
-          if (data.tistory.status == '200') {
-            alert('댓글이 삭제되었습니다.');
-
-            this.getComments();
-            setTimeout(this.setAppHeight, 1000);
-          }
-        } catch (err) {
-          // console.error(err);
-          alert(err.response.data.tistory.error_message);
-        }
-      }
-    },
-    gotoTop() {
-      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
-    },
-    gotoComments() {
-      const commentsEl = document.querySelector('div.comments');
-      commentsEl.scrollIntoView({ behavior: 'smooth' });
-    },
-    openCommenterPage(url) {
-      window.open(url, '_blank');
-    },
-    toggleCommentModDelBtn(el) {
-      $(el).parent().find('ul').toggle();
-    },
-    commentModDelOut(el) {
-      // console.log('test');
-      $(el).parent().find('ul').hide();
-    },
-    async getCategoryList() {
-      const { data } = await fetchCategoryList();
-
-      if (data.tistory.status == '200') {
-        const currentCategory = _.find(data.tistory.item.categories, [
-          'id',
-          this.categoryId,
-        ]);
-        // console.log(currentCategory);
-
-        if (currentCategory != null && currentCategory != undefined) {
-          this.categoryName = currentCategory.label.replace(/\//g, ' > ');
-        }
-      }
-    },
-    async getTagList() {
-      const { data } = await fetchPostList();
-      // console.log(data);
-
-      if (data.tistory.status == '200') {
-        // 최근글 5개만
-        const postList = _.take(data.tistory.item.posts, 5);
-
-        let tagList = [];
-        for (const post of postList) {
-          const { data } = await fetchPost(post.id);
-          if (data.tistory.status == '200') {
-            tagList = _.flatten([
-              ...tagList,
-              ...(data.tistory.item.tags.tag || []),
-            ]);
-          }
-        }
-
-        tagList = _.uniq(tagList);
-        this.recentTagData = tagList;
-      }
-    },
-    setAppHeight() {
-      const headerHeight = 60;
-      const contentTopMargin = 30;
-      const contentInnerPadding = 20;
-
-      $('#app').css(
-        'height',
-        this.$refs.content.clientHeight +
-          headerHeight +
-          contentTopMargin +
-          contentInnerPadding +
-          'px'
-      );
-    },
-    setAsideSection() {
-      $('div.aside ul li').remove();
-      $('div.aside').hide();
-
-      setTimeout(() => {
-        let sAsideHtml = '';
-        $('div.content')
-          .find('h2,h3,h4')
-          .each(function (idx, item) {
-            const tagName = item.tagName.toLowerCase();
-            sAsideHtml +=
-              '<li class="' +
-              tagName +
-              '" style="font-size: 1rem' +
-              ' margin: 2px 0">' +
-              $(this).text() +
-              '</li>';
-          });
-        // $('div.aside ul').append(sAsideHtml);
-        $('div.aside ul').html(sAsideHtml);
-        $('div.aside ul li')
-          .hover(
-            // hover
-            function () {
-              $(this)
-                .css('text-decoration', 'underline')
-                .css('cursor', 'pointer');
-            },
-            function () {
-              $(this).css('text-decoration', '').css('cursor', '');
-            }
-          )
-          .click(function () {
-            // 클릭 시 해당 영역으로 스크롤 이동
-            const asideTag = $(this).attr('class');
-            const asideText = $(this).text();
-
-            const clickEl = $('div.content')
-              .find(asideTag)
-              .filter(function () {
-                return $(this).text() == asideText;
-              });
-            // console.log(clickEl);
-
-            if (clickEl.length > 0) {
-              clickEl[0].scrollIntoView({ behavior: 'smooth' });
-            }
-          })
-          .each(function (idx, item) {
-            const asideTag = $(this).attr('class');
-            const asideText = $(this).text();
-
-            const el = $('div.content')
-              .find(asideTag)
-              .filter(function () {
-                return $(this).text() == asideText;
-              });
-            // console.log(el);
-
-            if (el.length > 0) {
-              const headerHeight = 60;
-              const contentTopMargin = 30;
-
-              $(this).attr(
-                'data-offset-top',
-                el[0].offsetTop + headerHeight + contentTopMargin
-              );
-            }
-          });
-        $('div.aside').fadeIn();
-      }, 500);
-    },
-    moveCategory() {
-      this.$router.push(`/category/${this.categoryId}`);
-    },
-    async searchTag(tag) {
-      this.$router.push(`/search/tags/${tag}`);
-    },
-    getReaction() {
-      if (this.postId != '') {
-        searchReaction(this.postId).then(({ data }) => {
-          // console.log(data);
-          if (data.code == '200') {
-            this.reactionCount = data.result.count;
-            this.isReactionCheck = data.result.isCheck;
-          }
-        });
-      }
-    },
-    toggleReaction() {
-      // const { user } = window.initData;
-      // if (user == null || user == undefined) {
-      //   alert('로그인이 필요합니다.');
-      //   return;
-      // }
-
-      if (this.isReactionCheck) {
-        deleteReaction(this.postId).then(this.getReaction);
-      } else {
-        postReaction(this.postId).then(this.getReaction);
-      }
-    },
-  },
-  created() {
-    // console.log(this.$route.params.id);
-
-    this.getContent();
-    this.getComments();
-
-    this.intervalId = setInterval(this.setAppHeight, 100);
-
-    setTimeout(() => {
-      clearInterval(this.intervalId);
-    }, 10000);
-  },
-  unmounted() {
-    $('#app').css('height', 'auto');
-    clearInterval(this.intervalId);
-  },
+      });
+    });
+  }
 };
+const getComments = async () => {
+  comments.length = 0;
+
+  const { data } = await fetchComments(route.params.id);
+  if (data.tistory.status == '200') {
+    if (
+      data.tistory.item.comments != null &&
+      data.tistory.item.comments.length > 0
+    ) {
+      const treeSortComments = _.sortBy(data.tistory.item.comments, [
+        function (comment) {
+          function getParentDate(comment) {
+            if (comment.parentId == '') {
+              comment.level = 1;
+              return comment.date;
+            } else {
+              const parent = _.find(data.tistory.item.comments, [
+                'id',
+                comment.parentId,
+              ]);
+              comment.level = parent.level + 1;
+              return getParentDate(parent);
+            }
+          }
+          return getParentDate(comment);
+        },
+        'date',
+      ]);
+
+      // console.log(data.tistory.item.comments);
+      // console.log(treeSortComments);
+
+      comments.push(...treeSortComments);
+    }
+  }
+};
+const addComment = () => {
+  const { user } = window.initData;
+  if (user == null || user == undefined) {
+    alert('로그인이 필요합니다.');
+    return;
+  }
+
+  if (!acceptComment.value) {
+    alert('댓글이 허용되지 않는 글입니다.');
+    return;
+  }
+
+  showModal.value = true;
+};
+const hideModal = async (action, objData) => {
+  showModal.value = false;
+
+  // 댓글 등록 및 수정
+  if (action == 'submit') {
+    objData.postId = postId.value;
+
+    try {
+      if (!isNullStr(objData.commentId)) {
+        // 수정
+        const { data } = await modifyComment(objData);
+        if (data.tistory.status == '200') {
+          alert('댓글이 수정되었습니다.');
+          getComments();
+        } else {
+          alert(data.tistory.error_message);
+        }
+      } else {
+        // 등록
+        const { data } = await insertComment(objData);
+        if (data.tistory.status == '200') {
+          alert('댓글이 등록되었습니다.');
+
+          getComments();
+          setTimeout(setAppHeight, 1000);
+        } else {
+          alert(data.tistory.error_message);
+        }
+      }
+    } catch (err) {
+      alert(err.response.data.tistory.error_message);
+    }
+  }
+};
+const modComment = (commentId, parentCommentId, comment) => {
+  // vuex 댓글 부분 세팅
+  const commentInfo = {
+    parentCommentId,
+    commentId,
+    comment,
+  };
+  // console.log(commentInfo);
+
+  store.dispatch('setCommentInfo', commentInfo);
+  showModal.value = true;
+};
+const delComment = async (commentId, homepage) => {
+  if (confirm('댓글을 삭제하시겠습니까?')) {
+    const objData = {
+      blogName: homepage.split('//')[1].split('.')[0],
+      postId: postId.value,
+      commentId,
+    };
+    // console.log(objData);
+
+    try {
+      const { data } = await deleteComment(objData);
+      if (data.tistory.status == '200') {
+        alert('댓글이 삭제되었습니다.');
+
+        getComments();
+        setTimeout(setAppHeight, 1000);
+      }
+    } catch (err) {
+      // console.error(err);
+      alert(err.response.data.tistory.error_message);
+    }
+  }
+};
+const gotoTop = () => {
+  window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+};
+const gotoComments = () => {
+  const commentsEl = document.querySelector('div.comments');
+  commentsEl.scrollIntoView({ behavior: 'smooth' });
+};
+const openCommenterPage = (url) => {
+  window.open(url, '_blank');
+};
+const toggleCommentModDelBtn = (el) => {
+  $(el).parent().find('ul').toggle();
+};
+const commentModDelOut = (el) => {
+  $(el).parent().find('ul').hide();
+};
+const getCategoryList = async () => {
+  const { data } = await fetchCategoryList();
+  if (data.tistory.status == '200') {
+    const currentCategory = _.find(data.tistory.item.categories, [
+      'id',
+      categoryId.value,
+    ]);
+    // console.log(currentCategory);
+
+    if (currentCategory != null) {
+      categoryName.value = currentCategory.label.replace(/\//g, ' > ');
+    }
+  }
+};
+const getTagList = async () => {
+  const { data } = await fetchPostList();
+  if (data.tistory.status == '200') {
+    // 최근글 5개만
+    const postList = _.take(data.tistory.item.posts, 5);
+
+    let tagList = [];
+    for (const post of postList) {
+      const { data } = await fetchPost(post.id);
+      if (data.tistory.status == '200') {
+        tagList = _.flatten([
+          ...tagList,
+          ...(data.tistory.item.tags.tag || []),
+        ]);
+      }
+    }
+
+    tagList = _.uniq(tagList);
+    recentTagData.push(...tagList);
+  }
+};
+const setAppHeight = () => {
+  const headerHeight = 60;
+  const contentTopMargin = 30;
+  const contentInnerPadding = 20;
+
+  $('#app').css(
+    'height',
+    contents.value.clientHeight +
+      headerHeight +
+      contentTopMargin +
+      contentInnerPadding +
+      'px'
+  );
+};
+const setAsideSection = () => {
+  $('div.aside ul li').remove();
+  $('div.aside').hide();
+
+  setTimeout(() => {
+    let sAsideHtml = '';
+    $('div.content')
+      .find('h2,h3,h4')
+      .each(function (idx, item) {
+        const tagName = item.tagName.toLowerCase();
+        sAsideHtml +=
+          '<li class="' +
+          tagName +
+          '" style="font-size: 1rem' +
+          ' margin: 2px 0">' +
+          $(this).text() +
+          '</li>';
+      });
+    // $('div.aside ul').append(sAsideHtml);
+    $('div.aside ul').html(sAsideHtml);
+    $('div.aside ul li')
+      .hover(
+        // hover
+        function () {
+          $(this).css('text-decoration', 'underline').css('cursor', 'pointer');
+        },
+        function () {
+          $(this).css('text-decoration', '').css('cursor', '');
+        }
+      )
+      .click(function () {
+        // 클릭 시 해당 영역으로 스크롤 이동
+        const asideTag = $(this).attr('class');
+        const asideText = $(this).text();
+
+        const clickEl = $('div.content')
+          .find(asideTag)
+          .filter(function () {
+            return $(this).text() == asideText;
+          });
+        // console.log(clickEl);
+
+        if (clickEl.length > 0) {
+          clickEl[0].scrollIntoView({ behavior: 'smooth' });
+        }
+      })
+      .each(function (idx, item) {
+        const asideTag = $(this).attr('class');
+        const asideText = $(this).text();
+
+        const el = $('div.content')
+          .find(asideTag)
+          .filter(function () {
+            return $(this).text() == asideText;
+          });
+        // console.log(el);
+
+        if (el.length > 0) {
+          const headerHeight = 60;
+          const contentTopMargin = 30;
+
+          $(this).attr(
+            'data-offset-top',
+            el[0].offsetTop + headerHeight + contentTopMargin
+          );
+        }
+      });
+    $('div.aside').fadeIn();
+  }, 500);
+};
+const moveCategory = () => {
+  router.push(`/category/${categoryId.value}`);
+};
+const searchTag = async (tag) => {
+  router.push(`/search/tags/${tag}`);
+};
+const getReaction = () => {
+  if (postId.value != '') {
+    searchReaction(postId.value).then(({ data }) => {
+      if (data.code == '200') {
+        reactionCount.value = data.result.count;
+        isReactionCheck.value = data.result.isCheck;
+      }
+    });
+  }
+};
+const toggleReaction = () => {
+  if (isReactionCheck.value) {
+    deleteReaction(postId.value).then(getReaction);
+  } else {
+    postReaction(postId.value).then(getReaction);
+  }
+};
+
+onMounted(() => {
+  getContent();
+  getComments();
+
+  intervalId.value = setInterval(setAppHeight, 100);
+
+  setTimeout(() => {
+    clearInterval(intervalId.value);
+  }, 10000);
+});
+onUnmounted(() => {
+  $('#app').css('height', 'auto');
+  clearInterval(intervalId.value);
+});
+
+// function
+function isNullStr(str) {
+  str = str.trim();
+  if (
+    str == null ||
+    str == 'undefined' ||
+    str.length == 0 ||
+    typeof str == 'undefined' ||
+    str == ''
+  ) {
+    return true;
+  } else {
+    return false;
+  }
+}
 </script>
 
 <style scoped>
@@ -766,11 +755,6 @@ div.nav div.category div.category-name:hover {
   text-decoration: underline;
   cursor: pointer;
 }
-div.nav div.adfit {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-}
 div.aside {
   position: fixed;
   right: 0;
@@ -778,14 +762,6 @@ div.aside {
   width: 20%;
   z-index: 100;
   display: inline-grid;
-}
-div.aside > div.list {
-  text-align: left;
-  border-left: 2px solid #df7861;
-}
-div.aside ul {
-  padding-left: 10px;
-  list-style: none;
 }
 div.aside div.recentTagData {
   margin-top: 50px;
