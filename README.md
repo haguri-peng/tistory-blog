@@ -1,14 +1,15 @@
 ## Vue 를 활용한 Tistory Blog
 
-어느 정도 작업이 완료되어 블로그에 배포하였습니다.   
-기능은 하나씩 추가중입니다.
+대부분의 기능이 구현되어 블로그에 배포한 상태이며,   
+보완사항이 있으면 시간이 날 때마다 수정하고 있습니다.
 
 🐸 [Haguri & Peng's Blog](https://haguri-peng.tistory.com) 🐧
 
 
 ## Vue
 
-[Vue3](https://vuejs.org/)
+[Vue3](https://vuejs.org/)   
+[(using Composition API inside SFCs)](https://vuejs.org/api/sfc-script-setup.html)
 
 [Vue Router](https://router.vuejs.org/)
 
@@ -93,12 +94,14 @@ Tistory 에서 제공하는 Open API 를 활용 ([Tistory Open API](https://tist
 ### 댓글
 
 댓글의 수정/삭제 기능을 구현하였으나 Open API 에서 로그인한 사용자의 정보를 알 수 없어(사용자 검증 문제) 실질적으로 사용할 수 없습니다.   
+(적용 가능한지 재확인중 😅)   
 로그인한 사용자를 알 수 없기에 댓글 등록 시, 블로그 주소 정보를 입력하고 댓글을 입력해야 등록할 수 있습니다.
 
 ### 공지사항 및 방명록
 
 Open API 에서 제공하지 않음.   
-추가 작업중..
+방명록 작업 완료   
+공지사항은 확인중..
 
 
 ## Tidory
