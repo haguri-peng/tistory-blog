@@ -615,7 +615,7 @@ onUnmounted(() => {
 });
 
 // function
-function isNullStr(str) {
+function isNullStr(str = '') {
   str = str.trim();
   if (
     str == null ||
