@@ -10,7 +10,7 @@ import * as htmlparser2 from 'htmlparser2';
 import _ from 'lodash';
 import loadScript from '../utils/load-script';
 
-const emit = defineEmits(['refreshAside']);
+const emit = defineEmits(['refreshAside', 'refreshAppHeight']);
 const props = defineProps(['content']);
 
 const { content } = toRefs(props);
@@ -26,14 +26,14 @@ watch(content, (val) => {
   if (dom != null && !isUpdated.value) {
     let modifiedContent = val;
 
-    // 광고 adfit
+    // 광고
     const ads = _.filter(
       dom.children,
       (c) => c.name == 'figure' && c.attribs.class == 'ad-wp'
     );
-    // console.log(ads);
     if (ads.length > 0) {
       for (let i = 0; i < ads.length; i++) {
+        // Adfit
         if (ads[i].attribs['data-ad-vendor'] == 'adfit') {
           const regex = new RegExp(
             '<figure[^>]*.data-ad-id-pc="(' +
@@ -41,6 +41,15 @@ watch(content, (val) => {
               ').*><\/figure>'
           );
           modifiedContent = modifiedContent.replace(regex, getAdfitHtml());
+        }
+        // Tenping
+        if (ads[i].attribs['data-ad-vendor'] == 'tenping') {
+          const regex = new RegExp(
+            '<figure[^>]*.data-ad-id-pc="(' +
+              ads[i].attribs['data-ad-id-pc'] +
+              ').*><\/figure>'
+          );
+          modifiedContent = modifiedContent.replace(regex, getTenpingHtml());
         }
       }
     }
@@ -71,12 +80,15 @@ watch(modContent, (val) => {
     adfitLoader().then(() => {
       adfit();
     });
+    // Tenping
+    loadScript('//tads.tenping.kr/scripts/adsbytenping.min.js', 'async');
   }
 });
 
 onMounted(() => {
   window.onload = () => {
     emit('refreshAside');
+    emit('refreshAppHeight');
   };
 
   twttr.ready((twttr) => {
@@ -90,6 +102,7 @@ onMounted(() => {
       if (event.widgets.length > 0) {
         // Tweet이 로딩되면서 content 영역이 변경됨에 따라 Aside 영역을 재설정한다.
         emit('refreshAside');
+        emit('refreshAppHeight');
       }
     });
   });
@@ -126,6 +139,15 @@ function getAdfitHtml() {
   const height = '90';
 
   return `<ins class="kakao_ad_area" data-ad-unit="${adfitMiddleId}" data-ad-width="${width}" data-ad-height="${height}"></ins>`;
+}
+function getTenpingHtml() {
+  return `
+    <tenping
+      class="adsbytenping" 
+      style="width:100%;max-width:768px;margin:0 auto;display:block;" 
+      mediaid="2876097" 
+      tenping-ad-display-type="UD8Mia8gyIoT5Z2MT6VB3Q%3d%3d">
+    </tenping>`;
 }
 </script>
 

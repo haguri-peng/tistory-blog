@@ -72,7 +72,11 @@
       <p class="date">작성일시: {{ date }}</p>
     </div>
 
-    <AppContentMain :content="content" @refreshAside="setAsideSection" />
+    <AppContentMain
+      :content="content"
+      @refreshAside="setAsideSection"
+      @refreshAppHeight="setHeight"
+    />
 
     <div class="tags">
       Tags
@@ -395,7 +399,7 @@ const hideModal = async (action, objData) => {
           alert('댓글이 등록되었습니다.');
 
           getComments();
-          setTimeout(setAppHeight, 1000);
+          setHeight();
         } else {
           alert(data.tistory.error_message);
         }
@@ -432,7 +436,7 @@ const delComment = async (commentId, homepage) => {
         alert('댓글이 삭제되었습니다.');
 
         getComments();
-        setTimeout(setAppHeight, 1000);
+        setHeight();
       }
     } catch (err) {
       // console.error(err);
@@ -490,6 +494,9 @@ const getTagList = async () => {
     tagList = _.uniq(tagList);
     recentTagData.push(...tagList);
   }
+};
+const setHeight = (delay = 1000) => {
+  setTimeout(setAppHeight, delay);
 };
 const setAppHeight = () => {
   const headerHeight = 60;
